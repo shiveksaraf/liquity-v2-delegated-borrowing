@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+
+# Lean 4 build caches
+/lean/.lake/
+/lean/build/
+
+# Foundry build caches
+/contracts/out/
+/contracts/cache/
+/contracts/broadcast/
+
+# LaTeX intermediates
+/papers/*/*.aux
+/papers/*/*.bbl
+/papers/*/*.blg
+/papers/*/*.fdb_latexmk
+/papers/*/*.fls
+/papers/*/*.log
+/papers/*/*.out
+/papers/*/*.synctex.gz
+/papers/*/*.toc
+
+# Empirical QA preview rasters
+/empirical/figures/*_qa.png
+
+# Explicitly keep canonical empirical CSV data tracked
+!empirical/**/*.csv
