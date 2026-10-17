@@ -1,0 +1,190 @@
+{
+  "canonical_inputs": {
+    "n_files": 28,
+    "files": [
+      {
+        "path": "batch_rate_ledger.json",
+        "bytes": 1799911,
+        "sha256": "d3c98320f003403a8ce08ae247f23d829f89a12bf4843b34c1120f5ac0016785"
+      },
+      {
+        "path": "checkpoints/checkpoint_evidence.json",
+        "bytes": 115114,
+        "sha256": "a9e4f9044647c9a4d8b8b388b6103064fab92296ce62b25169372f3e2ed7f66b"
+      },
+      {
+        "path": "checkpoints/holdout_reconciliation.json",
+        "bytes": 16294,
+        "sha256": "89afedd01acd319190320e1620e75572a477560cd473605275f674f53c8d8546"
+      },
+      {
+        "path": "confirmation_panel.csv.gz",
+        "bytes": 335669,
+        "sha256": "de52de2ee5c4316562342bd997edcee7529b59d2883891c1152dca3efcb4ca88"
+      },
+      {
+        "path": "contract_sources/WETH_BorrowerOperations.sol",
+        "bytes": 64911,
+        "sha256": "0580c28847dd794ae31eb6d4073111237a09ea79b2ea74b83bfd2de7c12e7f5d"
+      },
+      {
+        "path": "contract_sources/WETH_Constants.sol",
+        "bytes": 3687,
+        "sha256": "7c83831f63c06866ab9f5bdecb4197beb24b516879676a7145e87849584aeba3"
+      },
+      {
+        "path": "contract_sources/WETH_LiquityBase.sol",
+        "bytes": 2420,
+        "sha256": "dfd09ff802a56daedc1ce0b0c6fe2d50fad6eb7a436cd28b05baa63b6d9fcec7"
+      },
+      {
+        "path": "contract_sources/rETH_BorrowerOperations.sol",
+        "bytes": 64911,
+        "sha256": "0580c28847dd794ae31eb6d4073111237a09ea79b2ea74b83bfd2de7c12e7f5d"
+      },
+      {
+        "path": "contract_sources/rETH_Constants.sol",
+        "bytes": 3687,
+        "sha256": "7c83831f63c06866ab9f5bdecb4197beb24b516879676a7145e87849584aeba3"
+      },
+      {
+        "path": "contract_sources/rETH_LiquityBase.sol",
+        "bytes": 2420,
+        "sha256": "dfd09ff802a56daedc1ce0b0c6fe2d50fad6eb7a436cd28b05baa63b6d9fcec7"
+      },
+      {
+        "path": "contract_sources/wstETH_BorrowerOperations.sol",
+        "bytes": 64911,
+        "sha256": "0580c28847dd794ae31eb6d4073111237a09ea79b2ea74b83bfd2de7c12e7f5d"
+      },
+      {
+        "path": "contract_sources/wstETH_Constants.sol",
+        "bytes": 3687,
+        "sha256": "7c83831f63c06866ab9f5bdecb4197beb24b516879676a7145e87849584aeba3"
+      },
+      {
+        "path": "contract_sources/wstETH_LiquityBase.sol",
+        "bytes": 2420,
+        "sha256": "dfd09ff802a56daedc1ce0b0c6fe2d50fad6eb7a436cd28b05baa63b6d9fcec7"
+      },
+      {
+        "path": "daily_concentration.json",
+        "bytes": 1356346,
+        "sha256": "93c815412e6c26539fe8e05f0d1bf8846da3496f81c3375276b5c3f90507ec9f"
+      },
+      {
+        "path": "development_panel.csv.gz",
+        "bytes": 1737811,
+        "sha256": "be567fbf50fd3c15f26f5e41561371e9de1a72339a2f7f7ab4dfc582fc29727b"
+      },
+      {
+        "path": "events/confirmation_WETH.json.gz",
+        "bytes": 119119,
+        "sha256": "ab6fff629a24ee00f861ccb5cb84170f2f307933ab8b0cb2ad93b022da8c0390"
+      },
+      {
+        "path": "events/confirmation_rETH.json.gz",
+        "bytes": 38309,
+        "sha256": "9b331f82b4bb51d0c0c5b3538edcda24b42a5d679980e3d9e600998f834b7ed3"
+      },
+      {
+        "path": "events/confirmation_wstETH.json.gz",
+        "bytes": 137917,
+        "sha256": "58c85c8e6370bca75572ed86579fff15324e22bcd35064370bb459f3202e7b6d"
+      },
+      {
+        "path": "events/development_WETH.json.gz",
+        "bytes": 776334,
+        "sha256": "0c80811c89da1e4fe68b7a6cda5338aeb92d1768ef9ea51698cd99ac43eef41d"
+      },
+      {
+        "path": "events/development_rETH.json.gz",
+        "bytes": 416954,
+        "sha256": "39e6ec4401450cbd81cd6b5ebc8b0d93d0321e0d84cf5e0809954882bc43e7fa"
+      },
+      {
+        "path": "events/development_wstETH.json.gz",
+        "bytes": 803139,
+        "sha256": "d9e8dce3264a9e3a69626a7dffc5bdca001c348d814ad133da1e6ae2024da886"
+      },
+      {
+        "path": "gas_ledger.json",
+        "bytes": 8653546,
+        "sha256": "960c6f56ce52e6403adc0e1a365640af10c68ba6356e1ab28cf00da812c8e0b8"
+      },
+      {
+        "path": "holdout_logs/holdout_WETH_borrowerOperations_logs.json",
+        "bytes": 131499,
+        "sha256": "c01c8fcb3a2509856766dab8f72fe93e7795b7efeb60742b9388da22f29079e5"
+      },
+      {
+        "path": "holdout_logs/holdout_WETH_troveManager_logs.json",
+        "bytes": 1907635,
+        "sha256": "76060ab1d26cee1942fb827607a119fc19d705b89cf5573ca477233e11d73919"
+      },
+      {
+        "path": "holdout_logs/holdout_rETH_borrowerOperations_logs.json",
+        "bytes": 20616,
+        "sha256": "53f65cfa5a32a257050e5acc74882c2ed645d348f148186c0290f2c49de8534b"
+      },
+      {
+        "path": "holdout_logs/holdout_rETH_troveManager_logs.json",
+        "bytes": 634248,
+        "sha256": "7f8d0d855c079ac432ac192d16f455eda50bb65ce13867bdd848d30e60a9a0ec"
+      },
+      {
+        "path": "holdout_logs/holdout_wstETH_borrowerOperations_logs.json",
+        "bytes": 82466,
+        "sha256": "fc9552fe2999db8e0fa774e8e7e631433841b1a8320eb251c0e8c7a3e4a13fb4"
+      },
+      {
+        "path": "holdout_logs/holdout_wstETH_troveManager_logs.json",
+        "bytes": 2258115,
+        "sha256": "03e70434f31c98384f6d484dc429fe4df2696db22e063fcd6beff0b8851c27ec"
+      }
+    ]
+  },
+  "external_data_receipts": {
+    "n_raw_files": 20,
+    "n_derived_files": 2,
+    "manifest_path": "data_external/SHA256_RECEIPTS.json",
+    "manifest_sha256": "aa59bb1b367684acff3af84df9dbe3e395d93cfba371385364ff17241e7da0de"
+  },
+  "master_results": {
+    "file": "EMPIRICAL_MASTER_RESULTS.json",
+    "bytes": 775488,
+    "sha256": "34aaf1b6d1ae5967aeeb5c936f19f89762e360f1a5b4adfc458e731ab79ba52b"
+  },
+  "figures": [
+    {
+      "file": "figures/fig1_notch_bunching_agency.pdf",
+      "bytes": 28140,
+      "sha256": "46ff7f8639b05e66a15e1dacaf5c7d3acca2902cda4d13099a28757337c6664c"
+    },
+    {
+      "file": "figures/fig2_spike_cut_and_mechanisms.pdf",
+      "bytes": 35820,
+      "sha256": "0850c742bd9ca61238269d4d754037262f245111845aa39a45aeead435b9e758"
+    },
+    {
+      "file": "figures/fig3_causal_routing_did.pdf",
+      "bytes": 25870,
+      "sha256": "bf25a7657175c5ed7ef33a9dc65e9664d1fa799be4522e3e219e3c8597fd9526"
+    },
+    {
+      "file": "figures/fig4_hawkes_leapfrogging.pdf",
+      "bytes": 39487,
+      "sha256": "b59a9aa2d5ea09df9211667cc727c7be476120371287f29e996d12ad2e3a9752"
+    },
+    {
+      "file": "figures/fig5_gpv_structural_welfare.pdf",
+      "bytes": 46820,
+      "sha256": "9c63a1937fd23a97176de19f612985e3ab3a093ca93fc58c13c15c98b0f17ba2"
+    },
+    {
+      "file": "figures/fig6_cross_protocol_benchmark.pdf",
+      "bytes": 50223,
+      "sha256": "c2c9d7a7d3a06b5a3dbefb9f56e45fca9b50722b6b9f23595d8d72f8cffc99ec"
+    }
+  ]
+}
