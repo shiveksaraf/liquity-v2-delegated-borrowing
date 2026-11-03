@@ -1,0 +1,18 @@
+name = "liquity_v2"
+version = "0.1.0"
+keywords = ["math", "defi", "mechanism-design", "formal-verification"]
+defaultTargets = ["LiquityV2"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = false
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.0-rc2"
+
+[[lean_lib]]
+name = "LiquityV2"
