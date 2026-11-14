@@ -1,0 +1,27 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+test = "test"
+solc = "0.8.24"
+evm_version = "shanghai"
+optimizer = true
+optimizer_runs = 200
+gas_reports = [
+    "StatusQuoBorrowerOps",
+    "DesignABorrowerOps",
+    "DesignAStarBorrowerOps",
+    "DesignDBorrowerOps",
+    "CoPayBorrowerOps",
+]
+
+[lint]
+exclude_lints = ["block-timestamp"]
+
+[fuzz]
+runs = 2500
+seed = "0x4c6971756974795632"
+
+[profile.intense.fuzz]
+runs = 10000
+seed = "0x4c6971756974795632"
