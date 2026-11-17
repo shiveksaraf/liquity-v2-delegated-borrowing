@@ -1,0 +1,230 @@
+--- a/WETH_BorrowerOperations.sol
++++ b/WETH_BorrowerOperations.sol
+@@ -535,9 +535,18 @@
+         troveChange.newWeightedRecordedDebt = newDebt * _newAnnualInterestRate;
+         troveChange.oldWeightedRecordedDebt = trove.weightedRecordedDebt;
+ 
+-        // Apply upfront fee on premature adjustments. It checks the resulting ICR
++        // Apply Design A* symmetric-commitment upfront fee on premature adjustments. It checks the resulting ICR
+         if (block.timestamp < trove.lastInterestRateAdjTime + INTEREST_RATE_ADJ_COOLDOWN) {
+-            newDebt = _applyUpfrontFee(trove.entireColl, newDebt, troveChange, _maxUpfrontFee, false);
++            newDebt = _applyPrematureRateAdjFee(
++                trove.entireColl,
++                newDebt,
++                trove.annualInterestRate,
++                _newAnnualInterestRate,
++                block.timestamp - trove.lastInterestRateAdjTime,
++                troveChange,
++                _maxUpfrontFee,
++                false
++            );
+         }
+ 
+         // Recalculate newWeightedRecordedDebt, now taking into account the upfront fee
+@@ -929,15 +938,19 @@
+         batchChange.oldWeightedRecordedBatchManagementFee = batch.weightedRecordedBatchManagementFee;
+         batchChange.newWeightedRecordedBatchManagementFee = newDebt * batch.annualManagementFee;
+ 
+-        // Apply upfront fee on premature adjustments
++        // Apply Design A* symmetric-commitment upfront fee on premature adjustments
+         if (
+             batch.annualInterestRate != _newAnnualInterestRate
+                 && block.timestamp < batch.lastInterestRateAdjTime + INTEREST_RATE_ADJ_COOLDOWN
+         ) {
+             uint256 price = _requireOraclesLive();
+ 
+-            uint256 avgInterestRate = activePoolCached.getNewApproxAvgInterestRateFromTroveChange(batchChange);
+-            batchChange.upfrontFee = _calcUpfrontFee(newDebt, avgInterestRate);
++            batchChange.upfrontFee = _calcDesignAStarFee(
++                newDebt,
++                batch.annualInterestRate,
++                _newAnnualInterestRate,
++                block.timestamp - batch.lastInterestRateAdjTime
++            );
+             _requireUserAcceptsUpfrontFee(batchChange.upfrontFee, _maxUpfrontFee);
+ 
+             newDebt += batchChange.upfrontFee;
+@@ -971,6 +984,19 @@
+         uint256 _lowerHint,
+         uint256 _maxUpfrontFee
+     ) public override {
++        _setInterestBatchManager(
++            _troveId, _newBatchManager, _upperHint, _lowerHint, _maxUpfrontFee, type(uint256).max
++        );
++    }
++
++    function _setInterestBatchManager(
++        uint256 _troveId,
++        address _newBatchManager,
++        uint256 _upperHint,
++        uint256 _lowerHint,
++        uint256 _maxUpfrontFee,
++        uint256 _overrideLastInterestRateAdjTime
++    ) internal {
+         _requireIsNotShutDown();
+         LocalVariables_setInterestBatchManager memory vars;
+         vars.troveManager = troveManager;
+@@ -998,11 +1024,20 @@
+         newBatchTroveChange.newWeightedRecordedDebt =
+             (vars.newBatch.entireDebtWithoutRedistribution + vars.trove.entireDebt) * vars.newBatch.annualInterestRate;
+ 
+-        // An upfront fee is always charged upon joining a batch to ensure that borrowers can not game the fee logic
+-        // and gain free interest rate updates (e.g. if they also manage the batch they joined)
+-        // It checks the resulting ICR
+-        vars.trove.entireDebt =
+-            _applyUpfrontFee(vars.trove.entireColl, vars.trove.entireDebt, newBatchTroveChange, _maxUpfrontFee, true);
++        // Apply max(standard batch-join upfront fee, Design A* premature cut commitment)
++        // Closing zero-flash-loan spike -> setInterestBatchManager / switchBatchManager bypass (F2.2)
++        uint256 effectiveLastAdjTime = _overrideLastInterestRateAdjTime == type(uint256).max
++            ? vars.trove.lastInterestRateAdjTime
++            : _overrideLastInterestRateAdjTime;
++        vars.trove.entireDebt = _applyBatchJoinUpfrontFee(
++            vars.trove.entireColl,
++            vars.trove.entireDebt,
++            vars.trove.annualInterestRate,
++            vars.newBatch.annualInterestRate,
++            effectiveLastAdjTime,
++            newBatchTroveChange,
++            _maxUpfrontFee
++        );
+ 
+         // Recalculate newWeightedRecordedDebt, now taking into account the upfront fee
+         newBatchTroveChange.newWeightedRecordedDebt =
+@@ -1112,13 +1147,21 @@
+         vars.batchChange.newWeightedRecordedDebt =
+             vars.batchFutureDebt * vars.batch.annualInterestRate + vars.trove.entireDebt * _newAnnualInterestRate;
+ 
+-        // Apply upfront fee on premature adjustments. It checks the resulting ICR
++        // Apply Design A* symmetric-commitment upfront fee on premature adjustments. It checks the resulting ICR
+         if (
+             vars.batch.annualInterestRate != _newAnnualInterestRate
+                 && block.timestamp < vars.trove.lastInterestRateAdjTime + INTEREST_RATE_ADJ_COOLDOWN
+         ) {
+-            vars.trove.entireDebt =
+-                _applyUpfrontFee(vars.trove.entireColl, vars.trove.entireDebt, vars.batchChange, _maxUpfrontFee, false);
++            vars.trove.entireDebt = _applyPrematureRateAdjFee(
++                vars.trove.entireColl,
++                vars.trove.entireDebt,
++                vars.batch.annualInterestRate,
++                _newAnnualInterestRate,
++                block.timestamp - vars.trove.lastInterestRateAdjTime,
++                vars.batchChange,
++                _maxUpfrontFee,
++                false
++            );
+         }
+ 
+         // Recalculate newWeightedRecordedDebt, now taking into account the upfront fee
+@@ -1155,9 +1198,19 @@
+         _requireNewInterestBatchManager(oldBatchManager, _newBatchManager);
+ 
+         LatestBatchData memory oldBatch = troveManager.getLatestBatchData(oldBatchManager);
++        // Capture max(oldBatch, trove) cooldown timestamp BEFORE removeFromBatch because
++        // TroveManager.onRemoveFromBatch unconditionally sets lastInterestRateAdjTime = uint64(block.timestamp).
++        LatestTroveData memory oldTrove = troveManager.getLatestTroveData(_troveId);
+ 
+         removeFromBatch(_troveId, oldBatch.annualInterestRate, _removeUpperHint, _removeLowerHint, 0);
+-        setInterestBatchManager(_troveId, _newBatchManager, _addUpperHint, _addLowerHint, _maxUpfrontFee);
++        _setInterestBatchManager(
++            _troveId,
++            _newBatchManager,
++            _addUpperHint,
++            _addLowerHint,
++            _maxUpfrontFee,
++            oldTrove.lastInterestRateAdjTime
++        );
+     }
+ 
+     function _applyUpfrontFee(
+@@ -1193,8 +1246,91 @@
+ 
+     function _calcUpfrontFee(uint256 _debt, uint256 _avgInterestRate) internal pure returns (uint256) {
+         return _calcInterest(_debt * _avgInterestRate, UPFRONT_INTEREST_PERIOD);
++    }
++
++    function _applyBatchJoinUpfrontFee(
++        uint256 _troveEntireColl,
++        uint256 _troveEntireDebt,
++        uint256 _oldAnnualInterestRate,
++        uint256 _newBatchAnnualInterestRate,
++        uint256 _lastInterestRateAdjTime,
++        TroveChange memory _troveChange,
++        uint256 _maxUpfrontFee
++    ) internal returns (uint256) {
++        uint256 price = _requireOraclesLive();
++
++        uint256 avgInterestRate = activePool.getNewApproxAvgInterestRateFromTroveChange(_troveChange);
++        uint256 baseFee = _calcUpfrontFee(_troveEntireDebt, avgInterestRate);
++        uint256 fee = baseFee;
++        if (
++            _newBatchAnnualInterestRate < _oldAnnualInterestRate
++                && block.timestamp < _lastInterestRateAdjTime + INTEREST_RATE_ADJ_COOLDOWN
++        ) {
++            uint256 cutFee = _calcDesignAStarFee(
++                _troveEntireDebt,
++                _oldAnnualInterestRate,
++                _newBatchAnnualInterestRate,
++                block.timestamp - _lastInterestRateAdjTime
++            );
++            if (cutFee > fee) fee = cutFee;
++        }
++        _troveChange.upfrontFee = fee;
++        _requireUserAcceptsUpfrontFee(_troveChange.upfrontFee, _maxUpfrontFee);
++
++        _troveEntireDebt += _troveChange.upfrontFee;
++
++        uint256 newICR = LiquityMath._computeCR(_troveEntireColl, _troveEntireDebt, price);
++        _requireICRisAboveMCRPlusBCR(newICR);
++
++        uint256 newTCR = _getNewTCRFromTroveChange(_troveChange, price);
++        _requireNewTCRisAboveCCR(newTCR);
++
++        return _troveEntireDebt;
+     }
+ 
++    function _applyPrematureRateAdjFee(
++        uint256 _troveEntireColl,
++        uint256 _troveEntireDebt,
++        uint256 _oldAnnualInterestRate,
++        uint256 _newAnnualInterestRate,
++        uint256 _elapsed,
++        TroveChange memory _troveChange,
++        uint256 _maxUpfrontFee,
++        bool _isTroveInBatch
++    ) internal returns (uint256) {
++        uint256 price = _requireOraclesLive();
++
++        _troveChange.upfrontFee =
++            _calcDesignAStarFee(_troveEntireDebt, _oldAnnualInterestRate, _newAnnualInterestRate, _elapsed);
++        _requireUserAcceptsUpfrontFee(_troveChange.upfrontFee, _maxUpfrontFee);
++
++        _troveEntireDebt += _troveChange.upfrontFee;
++
++        uint256 newICR = LiquityMath._computeCR(_troveEntireColl, _troveEntireDebt, price);
++        if (_isTroveInBatch) {
++            _requireICRisAboveMCRPlusBCR(newICR);
++        } else {
++            _requireICRisAboveMCR(newICR);
++        }
++
++        uint256 newTCR = _getNewTCRFromTroveChange(_troveChange, price);
++        _requireNewTCRisAboveCCR(newTCR);
++
++        return _troveEntireDebt;
++    }
++
++    function _calcDesignAStarFee(
++        uint256 _debt,
++        uint256 _oldRate,
++        uint256 _newRate,
++        uint256 _elapsed
++    ) internal pure returns (uint256) {
++        if (_newRate > _oldRate) {
++            return _calcInterest(_debt * (_newRate - _oldRate), UPFRONT_INTEREST_PERIOD);
++        }
++        return _calcInterest(_debt * (_oldRate - _newRate), UPFRONT_INTEREST_PERIOD - _elapsed);
++    }
++
+     // Call from TM to clean state here
+     function onLiquidateTrove(uint256 _troveId) external {
+         _requireCallerIsTroveManager();
