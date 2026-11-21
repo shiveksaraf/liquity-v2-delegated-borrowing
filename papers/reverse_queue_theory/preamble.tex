@@ -1,0 +1,75 @@
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,multirow,makecell}
+\usepackage{threeparttable}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,patterns,positioning,calc,decorations.pathreplacing}
+\usepackage[authoryear,round]{natbib}
+\usepackage{setspace}
+\usepackage[protrusion=true,expansion=true]{microtype}
+\usepackage[labelfont=bf,font=small,labelsep=period,skip=6pt]{caption}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+% Okabe-Ito CVD-safe palette
+\definecolor{col1}{HTML}{0072B2}
+\definecolor{col2}{HTML}{D55E00}
+\definecolor{col3}{HTML}{009E73}
+\definecolor{col4}{HTML}{CC79A7}
+\definecolor{col5}{HTML}{E69F00}
+\definecolor{ink}{HTML}{222222}
+\definecolor{muted}{HTML}{555555}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=col1,
+  citecolor=col1,
+  urlcolor=col1,
+  bookmarksnumbered=true
+}
+
+\setstretch{1.05}
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{1.5em}
+\setlength{\bibsep}{3.2pt}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.25em}{0.45em}
+\titlespacing*{\subsection}{0pt}{0.95em}{0.35em}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}{Corollary}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}{Assumption}[section]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\bp}{\textup{bp}}
+\newcommand{\boldtok}{\textup{BOLD}}
+\newcommand{\DesignAStar}{\textup{Design A}^*}
+\newcommand{\DesignD}{\textup{Design D}}
+\newcommand{\DesignA}{\textup{Design A}}
+\newcommand{\SQ}{\mathrm{SQ}}
+
+\allowdisplaybreaks

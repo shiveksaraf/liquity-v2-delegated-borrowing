@@ -1,0 +1,995 @@
+\begin{abstract}
+User-set-rate collateralized stablecoins replace governance rates with a decentralized reverse priority queue: borrowers post continuous annual interest rates to avoid stochastic par redemptions, while a seven-day cooldown penalty deters reactive rate jumps. We develop a unified equilibrium, mechanism-design, and agency theory for this market structure, paired with formal proofs and compiled contract benchmarks. First, we solve the continuous-time reverse priority queue in closed form, characterize its endogenous absorber pool and unique general-equilibrium peg-defense fixed point, prove strict deadweight loss from lumpy frictions under full yield recycling, and establish nonparametric identification with a mandatory inverse-square-root boundary singularity. Second, we prove that zero-extra-storage symmetric-commitment increment fees (Design~A\textsuperscript{*}) are the unique pointwise-minimal admissible rule, uncover a discontinuous Brownian phase transition in optimal cooldown length, and prove a flash-loan close-and-reopen impossibility theorem resolved by single-slot principal escrow (Design~D). Third, we analyze liability-side rate delegation via impulse control, discrete Edgeworth leapfrogging, and drain-proof co-pays. All core results are certified in Lean~4 across 113 theorems without custom axioms and verified in Solidity~0.8.24 across 130,000 fuzz runs.
+\end{abstract}
+
+\noindent\textit{Keywords:} reverse priority queues, mechanism design, stablecoins, impulse control, principal-agent delegation, formal verification.\\
+\noindent\textit{JEL Classification:} C72, D47, D82, G23, C61.
+
+\section{Introduction}\label{sec:intro}
+
+Decentralized collateralized stablecoins face an enduring commitment problem. Protocol governance can adjust borrowing rates discretely to defend a dollar peg, yet discretionary rate committees suffer from latency, political capture, and time-inconsistency \citep{davernas2026can}. Liquity~V2 introduces a sharp market-design alternative for its BOLD stablecoin \citep{liquity2024whitepaper}. Instead of posting a uniform administrative rate, every borrower selects an individual annual interest rate, and arbitrageurs redeeming BOLD below par extract collateral sequentially from the lowest-rate debt upward. This contract embeds the first market-priced reverse priority queue in decentralized finance.
+
+The economic logic reverses the classical blockchain fee queue of \citet{huberman2021monopoly}. In a forward priority queue, users pay a one-shot fee to be served early and obtain a desirable slot. Here, borrowers pay a continuous flow bid to stand at the back of the queue and avoid an undesirable stochastic shock. To deter borrowers from quoting minimal rates during calm periods and jumping ahead of incoming redemptions only after a depeg begins, the protocol assesses a lumpy upfront penalty equal to seven days of the branch-average interest rate whenever a rate changes inside a seven-day cooldown window.
+
+Mainnet evidence documented in the companion empirical study \citep{companion2026} reveals that this statutory fee rule fails in both directions. On March 6, 2026, a wstETH batch holding 7.98 million BOLD raised its rate from 0.70\% to 10.50\% after cooldown expiration and cut back to 0.70\% after 1.01 hours; because the premature cut paid the modest branch average instead of the retracted 980 basis-point spread, the maneuver captured an 84.02\% total-excess discount (84.62\% on the cut fee relative to seven-day holding cost). Honest borrowers who track rising clearing rates in incremental steps suffer the mirror pathology. Across 308 consecutive premature upward adjustments in the 485-day mainnet record, repeated assessments of the full branch average imposed a 20.79-fold median per-event overcharge relative to incremental pricing and accounted for 93.73\% of all manager repricing fees. At the same time, third-party batch managers exhibit stark directional asymmetry around the 168-hour threshold: among managers whose registration does not hard-lock a 168-hour minimum change period, zero positive-debt cuts occur during hours 120--168 against 20 cuts in hour 168--169 (normalized post-notch excess mass $b = 91.8$, 95\% CI $[45.4, 153.7]$, binomial $p = 1.57 \times 10^{-34}$), whereas 65.6\% of positive-debt manager hikes occur prematurely.
+
+We develop a rigorous theory explaining all three phenomena and deriving optimal protocol remedies. Section~\ref{sec:queue} analyzes the frictionless reverse priority queue as a continuum Wardrop game with exact Liquity~V2 redemption rebates, where redeemed borrowers retain the protocol redemption fee inside their vaults and therefore bear net disruption cost equal to gross cost minus the fee rebate. Applying the envelope theorem of \citet{milgrom2002envelope} under a slot-assignment majorization condition covering FIFO, random, and Liquity~V2's LIFO tie-breaking rules, we obtain the unique equilibrium rate schedule in closed form, prove the emergence of an endogenous lower-boundary absorber pool of negative-net-cost borrowers, and establish uniqueness of the macro general-equilibrium peg-defense fixed point together with Karlin variation-diminishing unimodality in redemption size \citep{karlin1968total}. We separate first-best sorting gains from a hard-floor pooling externality and positional-rent dissipation, show that lumpy repricing frictions generate strict aggregate deadweight loss even when 100\% of upfront fees recycle to Stability Pool depositors and liquidity incentives, and establish exact nonparametric identification following \citet{guerre2000optimal} alongside a mandatory inverse-square-root density singularity at the minimum rate.
+
+Section~\ref{sec:cooldown} turns to axiomatic cooldown mechanism design across the full premature domain, including same-block transitions. We formalize five requirements spanning upward hold-cost deterrence, staircase path invariance, in-place spike-and-cut commitment, Sybil debt neutrality, and zero extra EVM storage. After characterizing the exact failure conditions of the deployed rule and earlier incremental, prepaid-time, and elapsed-time proposals, we prove by an elementary micro-hike argument that a symmetric-commitment increment rule, $\DesignAStar$, is the unique pointwise-minimal admissible mechanism. Its upward fee charges seven days of the positive rate increment, while its downward fee charges the remaining cooldown on the rate reduction across all four contract rate-transition paths. We derive exact tight 256-bit integer rounding bounds and an explicit non-overflow debt ceiling, characterize the unavoidable cooldown trilemma between just-in-time evasion and downward lock-in (uncovering a discontinuous first-order phase transition in optimal cooldown length under Brownian clearing-rate volatility), and prove an impossibility theorem showing that no pure in-place rate fee can block atomic flash-loan close-and-reopen exits. Single-slot principal escrow ($\DesignD$) and delayed rate activation trace the exact Pareto frontier between capital efficiency and response latency.
+
+Section~\ref{sec:agency} models borrower-side interest-rate delegation. Unlike supply-side vault curators on Morpho or Euler \citep{chitra2025curationary,zbandut2025institutionalizing,mancino2026sok}, Liquity~V2 batch managers control borrower liabilities: upfront repricing charges capitalize directly onto borrower principal, expanding the base on which management fees accrue while leaving managers exposed only to gas. Solving the resulting impulse-control problem \citep{harrison1983sellke}, we prove exact cut-bunching thresholds, cubic-root $(S,s)$ inaction bands whose borrower fee burn diverges as manager internalization falls, and the existence of strictly borrower-dominated premature hikes near the seven-day notch. Replacing fixed branch-average fees with $\DesignAStar$ collapses the impulse-control problem into singular control \citep{harrison1983instantaneous}, removes the fee-burn blow-up uniformly across arbitrary manager preferences, and strictly dominates client-side smoothing filters. In a duopoly of atomic batch managers under LIFO tie-breaking, we prove exact necessary and sufficient conditions for discrete-grid Edgeworth leapfrogging \citep{maskin1988theory} and show that $\DesignAStar$ collapses leapfrogging fee inflation by a factor strictly exceeding the ratio of branch average rate to twice the tick size. Finally, we derive drain-proof contractual manager co-pays and prove that pairing them with $\DesignAStar$ expands a high-churn manager's self-funded co-pay ceiling ninefold on mainnet parameters, from 7.2\% to 65.2\%.
+
+Section~\ref{sec:verification} pairs these mathematical results with formal verification and executable contract benchmarks. Following recent mechanized DeFi security work \citep{bartoletti2025lean,bartoletti2026comp}, we formalize the theorem suites in Lean~4 across eight files totaling 3,752 lines and 113 public theorems with zero unproven obligations and no non-standard kernel axioms. We also compile and benchmark all five mechanism variants in Foundry under pinned Solidity~0.8.24: $\DesignAStar$ requires zero extra storage slots and reduces warm-state execution gas by 1,937 gas on premature batch hikes and 1,863 gas on premature batch cuts, while $\DesignD$ fits below the 24,576-byte EIP-170 runtime limit at 22,767 bytes using one packed 256-bit escrow slot per position plus an append-only cut log. All 44 test cases and 130,000 randomized differential fuzz runs pass with zero failures, and an upstream diff applies cleanly across all five deployed rate-transition entry points.
+
+Our work connects five active research strands. Classical priority queueing \citep{kleinrock1967optimum,lui1985equilibrium,afeche2004pricing} and blockchain transaction fee design \citep{huberman2021monopoly,ganesh2024revisiting,bahrani2024tfm,babaioff2025welfare,capponi2026auctioning} analyze forward queues or latency auctions for inclusion; we solve the dual avoidance queue with dynamic adjustment penalties and characterize its Price of Anarchy \citep{roughgarden2017poa}. Stablecoin economics examines peg commitment, liquidation spirals, arbitrage concentration, and governance-free collateral-ratio queues \citep{klagesmundt2022while,ma2025stablecoin,davernas2026can,genc2026a,genc2026b}, while adaptive DeFi rate protocols study utilization controllers and auction-managed liquidity pools \citep{bastankhah2024thinking,adams2025amamm}. We complement these studies with the first equilibrium, mechanism-design, and liability-delegation theory for user-set-rate stablecoins. Section~\ref{sec:conclusion} concludes with design principles and open problems, and Appendix~\ref{app:proofs} collects proofs omitted from the main text.
+
+% =============================================================================
+\section{Reverse priority queue equilibrium and welfare}\label{sec:queue}
+
+\subsection{Institutional primitive and dimensional conventions}\label{subsec:queue_model}
+
+We maintain strict dimensional discipline throughout the paper. All flow rates ($r$, $\bar{r}$, $\Delta r$, $\Delta_\downarrow$, $m_j$, $\rho$, and redemption intensities $\nu, \lambda$) are annualized with units $\mathrm{yr}^{-1}$. Brownian rate-mismatch volatility $\sigma$ carries units $\mathrm{yr}^{-3/2}$ so that $dx = \sigma\,dB_t$ has units $\mathrm{yr}^{-1}$. Protocol durations ($P$, $t$, $\Delta t$, and remaining cooldown $\tau = P - t$ in Section~\ref{sec:agency}) and the protocol year constant $Y = 31{,}536{,}000\textup{ s/yr}$ are measured in seconds, making $P/Y$ and $\Delta t/Y$ dimensionless year fractions; macro stress-wave horizon $T_{\mathrm{wave}}$ in Section~\ref{sec:agency} is explicitly measured in years. Unit upfront fees $K = \bar{r}P/Y$, per-dollar redemption costs ($\tau$ in Section~\ref{sec:queue}, written $\tau_B$ in Section~\ref{sec:agency}) and $\phi$, and gas-to-debt ratios $g_{\mathrm{tx}}/D$ are dimensionless fractions of debt.
+
+Consider a single collateral branch (such as WETH, wstETH, or rETH in Liquity~V2) with total outstanding stablecoin debt mass $D > 0$. A continuum of infinitesimal borrowers indexed by $i \in [0, D]$ under Lebesgue debt measure holds unit debt positions, each carrying a private gross per-dollar redemption-disruption cost $\tau \in [\underline{\tau}, \bar{\tau}] \subset [0, \infty)$ that aggregates capital-gains tax realization, secondary-market slippage to re-establish collateralized exposure, opening fees, and mark-to-market basis costs.
+
+\begin{assumption}[Type distribution]\label{assump:types}
+The debt-weighted cumulative distribution function $H : [\underline{\tau}, \bar{\tau}] \to [0, 1]$ is continuous and strictly increasing with $H(\underline{\tau}) = 0$ and $H(\bar{\tau}) = 1$, so its inverse $H^{-1} : [0, 1] \to [\underline{\tau}, \bar{\tau}]$ is continuous and strictly increasing. Wherever type densities appear, $H \in C^1([\underline{\tau}, \bar{\tau}])$ with $h(\tau) = H'(\tau) > 0$ on $(\underline{\tau}, \bar{\tau})$.
+\end{assumption}
+
+In Liquity~V2's \texttt{TroveManager.sol}, redeeming one dollar of debt at oracle price $P_{\mathrm{coll}}$ and stationary effective redemption-fee rate $\phi \in [\phi_{\min}, 1)$ (where $\phi_{\min} = 0.005$ plus an exponentially decaying base rate) computes collateral fee $\phi / P_{\mathrm{coll}}$ and transfers only $(1 - \phi)/P_{\mathrm{coll}}$ of collateral to the redeemer, retaining the fee inside the redeemed vault. Valuing retired debt at its one-dollar par liability and folding any temporary secondary-market basis into $\tau$, a redeemed borrower bears net per-dollar disruption cost
+\begin{equation}\label{eq:net_cost}
+c(\tau; \phi) = \tau - \phi.
+\end{equation}
+Types with $\tau < \phi$ earn a net rebate upon redemption; types with $\tau > \phi$ suffer a net loss.
+
+Each borrower selects an annual interest rate $r \in [r_{\min}, r_{\max}]$ with $0 < r_{\min} < r_{\max}$ (in Liquity~V2, $r_{\min} = 0.5\%$ and $r_{\max} = 250\%$). Let $F : [r_{\min}, r_{\max}] \to [0, 1]$ denote the right-continuous debt-weighted CDF of posted rates with left limit $F(r^-) = \lim_{s \uparrow r} F(s)$ and $F(r_{\min}^-) = 0$. Lower queue depth, upper queue depth, and point mass at rate $r$ are $q^-(r) = D F(r^-)$, $q^+(r) = D F(r)$, and $m(r) = q^+(r) - q^-(r)$.
+
+\begin{assumption}[Compound-Poisson redemptions]\label{assump:redemptions}
+Branch redemptions arrive according to a Poisson process of intensity $\nu > 0$ with independent and identically distributed dollar sizes $Q \sim G_Q$ supported on $(0, \infty)$ such that $\E[Q] < \infty$. The survival function $\bar{G}_Q(q) = \Prob(Q > q)$ is continuously differentiable and strictly decreasing on $[0, D]$, with continuous density $g_Q(q) = -\bar{G}_Q'(q) > 0$ on $[0, D]$ and $\bar{G}_Q(0) = 1$.
+\end{assumption}
+
+Assumption~\ref{assump:redemptions} induces the depth-dependent annualized redemption hazard
+\begin{equation}\label{eq:hazard}
+\lambda(q) = \nu\,\bar{G}_Q(q), \qquad \lambda'(q) = -\nu\,g_Q(q) < 0 \quad \textup{for all } q \in [0, D].
+\end{equation}
+Redemptions traverse vaults sequentially from queue depth $0$ to $D$ in ascending order of $r$. At any continuity point of $F$ ($m(r) = 0$), a vault at rate $r$ occupies depth $q = D F(r)$ and faces hazard $\tilde{\lambda}_F(r) = \lambda(D F(r))$. At any atom $m(r) > 0$ spanning $[q^-(r), q^+(r)]$, any physical tie-breaking discipline (uniform random, FIFO, or Liquity~V2's LIFO insertion rule in \texttt{SortedTroves.sol}) assigns tied borrowers via a lottery over measure-preserving bijections into $[q^-(r), q^+(r)]$. By Hardy--Littlewood majorization, every measurable subset $S$ inside the atom of debt mass $\delta = \mu(S) \in (0, m(r)]$ receives average realized hazard $\hat{\lambda}_i$ satisfying the slot-assignment majorization bounds
+\begin{equation}\label{eq:majorization}
+\frac{1}{\delta}\int_{q^+(r)-\delta}^{q^+(r)} \lambda(q)\,dq \le \frac{1}{\delta}\int_S \hat{\lambda}_i\,d\mu(i) \le \frac{1}{\delta}\int_{q^-(r)}^{q^-(r)+\delta} \lambda(q)\,dq.
+\end{equation}
+Because $\lambda$ is strictly decreasing, the lower bound in~\eqref{eq:majorization} strictly exceeds $\lambda(q^+(r))$ for every positive-measure subset $S$.
+
+A type-$\tau$ borrower minimizes expected instantaneous flow cost per dollar of debt:
+\begin{equation}\label{eq:flow_cost}
+J_F(r; \tau) = r + (\tau - \phi)\,\tilde{\lambda}_F(r).
+\end{equation}
+A measurable strategy profile $\rho : [0, D] \to [r_{\min}, r_{\max}]$ inducing CDF $F(r) = D^{-1}\mu(\{i : \rho(i) \le r\})$ is a continuum Wardrop equilibrium if $J_F(\rho(i); \tau(i)) \le J_F(r'; \tau(i))$ for all $r' \in [r_{\min}, r_{\max}]$ and almost every borrower $i$. Let $\tau_0 = \max(\underline{\tau}, \phi)$ and $q_0 = D H(\tau_0)$ denote the absorber threshold and absorber debt mass.
+
+\begin{assumption}[Non-binding rate cap]\label{assump:cap}
+The upper rate bound satisfies
+\[
+r_{\min} + \int_{q_0}^{D} \bigl(H^{-1}(q/D) - \phi\bigr)\bigl(-\lambda'(q)\bigr)\,dq \le r_{\max}.
+\]
+\end{assumption}
+
+\subsection{Closed-form equilibrium and endogenous absorber pool}\label{subsec:eq_theorem}
+
+\begin{theorem}[Reverse priority queue equilibrium]\label{thm:eq}
+Suppose Assumptions~\ref{assump:types}--\ref{assump:cap} hold, and let $\tau_0 = \max(\underline{\tau}, \phi)$ and $q_0 = D H(\tau_0)$. Under any admissible physical tie-breaking rule satisfying~\eqref{eq:majorization}:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Endogenous absorber pool.} Every borrower with $\tau \le \phi$ plays $r^*(\tau) = r_{\min}$ in every equilibrium, forming a lower-boundary atom of exact debt mass $q_0 = D H(\phi)$ at $r_{\min}$ whenever $\phi > \underline{\tau}$.
+\item \emph{Uniqueness and strict assortative monotonicity.} There exists a unique (up to $H$-null sets) equilibrium strategy profile $r^* : [\underline{\tau}, \bar{\tau}] \to [r_{\min}, r_{\max}]$. On $(\tau_0, \bar{\tau}]$, $r^*$ is continuous and strictly increasing with no interior atoms and no support gaps, inducing $F^*(r^*(\tau)) = H(\tau)$ and right limit $\lim_{\tau \downarrow \tau_0} r^*(\tau) = r_{\min}$.
+\item \emph{Envelope closed form.} For every $\tau \in (\tau_0, \bar{\tau}]$, the unique equilibrium rate is
+\begin{equation}\label{eq:r_envelope}
+r^*(\tau) = r_{\min} + (\tau_0 - \phi)\bigl[\lambda(q_0) - \lambda(D H(\tau))\bigr] + \int_{\tau_0}^{\tau} \bigl[\lambda(D H(u)) - \lambda(D H(\tau))\bigr]\,du,
+\end{equation}
+and equivalently, via Riemann--Stieltjes integration by parts,
+\begin{equation}\label{eq:r_stieltjes}
+r^*(\tau) = r_{\min} + \int_{q_0}^{D H(\tau)} \bigl(H^{-1}(q/D) - \phi\bigr)\bigl(-\lambda'(q)\bigr)\,dq.
+\end{equation}
+\item \emph{Homogeneous-type benchmark.} If all borrowers share a common type $\tau > \phi$, no symmetric pure-strategy equilibrium exists, while every equilibrium (symmetric mixed strategy or deterministic asymmetric Wardrop assignment $\rho(i) = (F_{\mathrm{hom}}^*)^{-1}(i/D)$) induces the unique atomless strictly increasing CDF on $[r_{\min},\, r_{\min} + (\tau - \phi)(\lambda(0) - \lambda(D))]$,
+\begin{equation}\label{eq:r_hom}
+F_{\mathrm{hom}}^*(r) = \frac{1}{D}\,\lambda^{-1}\!\left(\lambda(0) - \frac{r - r_{\min}}{\tau - \phi}\right).
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+The proof appears in Appendix~\ref{app:proofs}. Three mechanisms govern Theorem~\ref{thm:eq}. Borrowers with $\tau \le \phi$ earn weakly positive rebates when redeemed and strictly save interest at $r_{\min}$, creating a natural shock-absorbing buffer $q_0$ at the front of the queue. No interior atoms can survive. By~\eqref{eq:majorization}, any positive-mass subset of $\tau > \phi$ borrowers inside an atom faces average hazard strictly above $\lambda(q^+(r))$, so an arbitrarily small upward bid clears the entire atom at negligible interest cost. Single-crossing incentive compatibility then forces strict assortative sorting on $(\tau_0, \bar{\tau}]$, and the envelope theorem of \citet{milgrom2002envelope} pins down the indirect cost function $V(\tau) = \inf_r J_{F^*}(r; \tau)$ via $V'(\tau) = \lambda(D H(\tau))$, yielding~\eqref{eq:r_envelope}--\eqref{eq:r_stieltjes}.
+
+\begin{remark}[Capped-rate regime]\label{rem:capped}
+When Assumption~\ref{assump:cap} fails, behavior at $r_{\max}$ depends on tie-breaking. Under uniform tie-breaking at $r_{\max}$, if $r_{\min} + (\tau_0 - \phi)[\lambda(q_0) - \bar{\lambda}_{\max}(\tau_0)] < r_{\max}$, an interior threshold $\tau_c \in (\tau_0, \bar{\tau})$ separates a continuous lower schedule from an upper atom $[D H(\tau_c), D]$ across a zero-mass rate gap $(r^*(\tau_c^-), r_{\max})$ pinned down by $r_{\max} - r^*(\tau_c^-) = (\tau_c - \phi)[\lambda(D H(\tau_c)) - \bar{\lambda}_{\max}(\tau_c)]$; if the inequality reverses, all $\tau > \tau_0$ pool at $r_{\max}$. Under LIFO tie-breaking, a late entrant at $r_{\max}$ inherits worst-of-atom hazard $\lambda(D H(\tau_c))$ and undercuts any positive gap below $r_{\max}$.
+\end{remark}
+
+\subsection{General-equilibrium peg defense and comparative statics}\label{subsec:ge}
+
+In Liquity~V2, a fixed share $\eta \in (0, 1]$ (\texttt{SP\_YIELD\_SPLIT} $= 0.75$) of borrower interest flows continuously to Stability Pool BOLD depositors, while $1 - \eta = 0.25$ funds protocol-incentivized liquidity (PIL). Higher Stability Pool yield $y_{\mathrm{SP}} = \eta \bar{r}$ attracts BOLD demand, raises secondary-market price support, and reduces redemption frequency.
+
+\begin{assumption}[Macro peg-demand closure]\label{assump:macro}
+Aggregate redemption arrival intensity is a continuous, nonincreasing function $\nu = \nu(\eta \bar{r}; \phi, \theta) \ge 0$ of Stability Pool yield $y_{\mathrm{SP}} = \eta \bar{r}$, fee floor $\phi$, and exogenous depeg-demand shock $\theta \in \R$, with $\partial_y \nu \le 0$, $\partial_\phi \nu \le 0$, and $\partial_\theta \nu > 0$. Furthermore, $r_{\min} + \nu(\eta r_{\min}; \phi, \theta)\int_{q_0}^D (H^{-1}(q/D) - \phi) g_Q(q)\,dq \le r_{\max}$, so Assumption~\ref{assump:cap} holds at equilibrium.
+\end{assumption}
+
+\begin{theorem}[General-equilibrium peg-defense fixed point and comparative statics]\label{thm:ge}
+Under Assumptions~\ref{assump:types}, \ref{assump:redemptions}, and~\ref{assump:macro}:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Fubini rate-response identity.} For any exogenous arrival intensity $\nu \ge 0$, the debt-weighted average equilibrium rate is strictly affine in $\nu$:
+\begin{equation}\label{eq:rbar_affine}
+\bar{r}(\nu, \phi) = \frac{1}{D}\int_0^D r^*\!\bigl(H^{-1}(q/D)\bigr)\,dq = r_{\min} + \nu\,A(\phi),
+\end{equation}
+where the queue-sensitivity slope is
+\begin{equation}\label{eq:A_phi}
+A(\phi) = \frac{1}{D}\int_{q_0}^{D} (D - q)\bigl(H^{-1}(q/D) - \phi\bigr)\,g_Q(q)\,dq \ge 0,
+\end{equation}
+strictly positive whenever $\phi < \bar{\tau}$.
+\item \emph{Unique general equilibrium.} The fixed-point equation $\bar{r} = r_{\min} + A(\phi)\,\nu(\eta \bar{r}; \phi, \theta)$ admits a unique solution $\bar{r}^* \in [r_{\min}, r_{\max}]$, uniquely pinning down $\nu^* = \nu(\eta \bar{r}^*; \phi, \theta)$ and $F^*$.
+\item \emph{Exact comparative statics.} Suppose $\phi < \bar{\tau}$ and $\nu$ is $C^1$. For $\phi \in (\underline{\tau}, \bar{\tau})$, absorber mass expands at $\partial_\phi q_0 = D h(\phi) > 0$. Across the moving boundary $q_0(\phi)$, $A'(\phi) = -\frac{1}{D}\int_{q_0}^D (D - q) g_Q(q)\,dq < 0$ identically; whenever $\nu^* > 0$ or $\partial_\phi \nu < 0$, raising the redemption fee suppresses average borrowing rates through both queue sorting and macro demand:
+\begin{equation}\label{eq:cs_phi}
+\frac{\partial \bar{r}^*}{\partial \phi} = \frac{A'(\phi)\nu^* + A(\phi)\,\partial_\phi \nu}{1 - \eta A(\phi)\,\partial_y \nu} < 0,
+\end{equation}
+while exogenous depeg shocks pass through with Stability Pool damping:
+\begin{equation}\label{eq:cs_theta}
+\frac{\partial \bar{r}^*}{\partial \theta} = \frac{A(\phi)\,\partial_\theta \nu}{1 - \eta A(\phi)\,\partial_y \nu} \in \bigl(0,\, A(\phi)\,\partial_\theta \nu\bigr].
+\end{equation}
+\item \emph{Redemption-size scaling and variation-diminishing unimodality.} Parameterize $Q_\sigma = \sigma \tilde{Q}$ with $\tilde{Q} \sim \mathrm{Exp}(1)$ so $g_{Q_\sigma}(q) = \sigma^{-1} e^{-q/\sigma}$. Then $\lim_{\sigma \to \infty} A(\phi; \sigma) = 0$, while
+\begin{equation}\label{eq:sigma_limit}
+\lim_{\sigma \downarrow 0} A(\phi; \sigma) = \begin{cases}
+0 & \textup{if } \phi \ge \underline{\tau}, \\
+\underline{\tau} - \phi > 0 & \textup{if } \phi < \underline{\tau}.
+\end{cases}
+\end{equation}
+Whenever $\phi \in [\underline{\tau}, \bar{\tau})$, $A(\phi; \sigma)$ and $\bar{r}^*(\sigma)$ vanish at both extremes and attain a strict interior global maximum on $(0, \infty)$; setting $\beta = 1/\sigma$ and $w(q) = (D - q)(H^{-1}(q/D) - \phi)$, integration by parts gives
+\begin{equation}\label{eq:karlin_deriv}
+\frac{d}{d\beta}\!\left[\beta\int_{q_0}^D w(q)e^{-\beta q}\,dq\right] = -\int_{q_0}^D q\,w'(q)\,e^{-\beta q}\,dq,
+\end{equation}
+so $A(\phi; \sigma)$ is strictly unimodal whenever $w$ is log-concave on $(q_0, D)$ (for instance, whenever $H^{-1}$ is concave).
+\end{enumerate}
+\end{theorem}
+
+Equation~\eqref{eq:karlin_deriv} uses the total positivity of the Laplace kernel $e^{-\beta q}$ \citep{karlin1968total}. When $w$ is log-concave on $(q_0, D)$, the integrand $-q w'(q)$ changes sign once from negative to positive, so Karlin's variation-diminishing theorem forces the derivative in $\beta$ to change sign at most once. Economically, very small redemptions are fully absorbed by $q_0$ without threatening interior borrowers, whereas very large redemptions sweep the entire queue and flatten marginal hazard gradients $-\lambda'(q)$; intermediate redemption sizes generate the sharpest positional competition and highest equilibrium rates. Figure~\ref{fig:queue_eq} illustrates both the equilibrium schedule and the macro fixed point.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[>=Latex, font=\footnotesize]
+% Panel (a): Equilibrium rate schedule r*(tau)
+\begin{scope}[xshift=0cm]
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (5.5,0);
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (0,3.8);
+  \node[font=\footnotesize] at (2.75,-0.62) {Gross redemption cost $\tau$};
+  \node[left=2pt, font=\footnotesize] at (0,3.72) {$r^*(\tau)$};
+  \node[anchor=west, font=\bfseries\small] at (0.12,3.72) {(a)};
+
+  % r_min dotted baseline
+  \draw[muted, dotted, line width=0.7pt] (0,0.72) -- (5.15,0.72);
+  \node[left=2pt, muted, font=\scriptsize] at (0,0.72) {$r_{\min}$};
+
+  % Absorber pool shading [0.35, 1.80]
+  \fill[col3!16!white] (0.35,0) rectangle (1.80,0.72);
+  \draw[col3, line width=1.4pt] (0.35,0.72) -- (1.80,0.72)
+    node[pos=0.36, above=4pt, font=\scriptsize] {Absorber $q_0$};
+
+  % Vertical guides at tau_lo, phi, tau_hi
+  \draw[muted, dashed, line width=0.6pt] (0.35,0) -- (0.35,0.72);
+  \node[below=2pt, font=\scriptsize] at (0.35,0) {$\underline{\tau}$};
+  \draw[col3, densely dashdotted, line width=0.7pt] (1.80,0) -- (1.80,3.25);
+  \node[below=2pt, font=\scriptsize, col3] at (1.80,0) {$\tau_0 = \phi$};
+  \draw[muted, dashed, line width=0.6pt] (4.85,0) -- (4.85,3.30);
+  \node[below=2pt, font=\scriptsize] at (4.85,0) {$\bar{\tau}$};
+
+  % Equilibrium curve r*(tau) with flat tangent at tau_0
+  \draw[col1, line width=1.4pt]
+    (1.80,0.72) .. controls (2.55,0.72) and (3.40,1.60) .. (4.85,3.30)
+    node[pos=0.58, above left=3pt, font=\scriptsize] {$r^*(\tau)$};
+
+  % Tangent flatness annotation cleanly BELOW the dashed tangent (zero curve or vertical-line crossing)
+  \draw[col2, dashed, line width=0.85pt] (1.80,0.72) -- (3.00,0.72);
+  \draw[col2, dashed, ->, line width=0.65pt] (2.34,0.34) -- (2.02,0.68)
+    node[pos=0.0, right=2pt, font=\scriptsize, col2] {$(F^{-1})'(p_0^+)=0$};
+
+  % Point markers
+  \fill[col1] (1.80,0.72) circle (1.9pt);
+  \fill[col1] (4.85,3.30) circle (1.9pt);
+\end{scope}
+
+% Panel (b): GE Peg-Defense Fixed Point
+\begin{scope}[xshift=7.1cm]
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (5.5,0);
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (0,3.8);
+  \node[font=\footnotesize] at (2.75,-0.62) {Average borrowing rate $\bar{r}$};
+  \node[left=2pt, font=\footnotesize] at (0,3.72) {Rate};
+  \node[anchor=west, font=\bfseries\small] at (0.12,3.72) {(b)};
+
+  % 45-degree line
+  \draw[ink, line width=0.9pt] (0,0) -- (3.55,3.55);
+  \node[font=\scriptsize, ink] at (3.76,3.44) {$45^\circ$};
+
+  % Depeg shock theta' > theta (upper curve)
+  \draw[col2, dashed, line width=1.25pt]
+    (0.32,3.45) .. controls (1.55,2.78) and (3.00,2.15) .. (5.05,1.72);
+  \node[col2, font=\scriptsize, anchor=south] at (4.30,2.24) {Shock $\theta' > \theta$};
+
+  % Baseline response curve (middle)
+  \draw[col1, line width=1.35pt]
+    (0.32,2.85) .. controls (1.35,2.08) and (2.75,1.42) .. (5.05,1.04)
+    node[pos=0.72, above=2pt, font=\scriptsize] {Baseline $(\phi,\theta)$};
+
+  % Higher fee floor phi' > phi (lower curve)
+  \draw[col3, densely dashdotted, line width=1.25pt]
+    (0.32,2.05) .. controls (1.35,1.35) and (2.75,0.84) .. (5.05,0.56);
+  \node[col3, font=\scriptsize, anchor=north] at (4.10,0.44) {Higher $\phi' > \phi$};
+
+  % Fixed points
+  \fill[col3] (1.32,1.32) circle (2.0pt);
+  \draw[col3, dotted, line width=0.7pt] (1.32,1.32) -- (1.32,0) node[below=2pt, font=\scriptsize] {$\bar{r}^*_{\phi'}$};
+
+  \fill[col1] (1.82,1.82) circle (2.0pt);
+  \draw[col1, dotted, line width=0.7pt] (1.82,1.82) -- (1.82,0) node[below=2pt, font=\scriptsize] {$\bar{r}^*$};
+
+  \fill[col2] (2.42,2.42) circle (2.0pt);
+  \draw[col2, dotted, line width=0.7pt] (2.42,2.42) -- (2.42,0) node[below=2pt, font=\scriptsize] {$\bar{r}^*_{\theta'}$};
+\end{scope}
+\end{tikzpicture}
+\caption{Reverse priority queue equilibrium and macro peg-defense fixed point. Panel~(a) plots the equilibrium schedule $r^*(\tau)$ from Theorem~\ref{thm:eq}: borrowers with $\tau \le \phi$ pool at $r_{\min}$ to form the endogenous absorber mass $q_0 = D H(\phi)$, while separated types on $(\tau_0, \bar{\tau}]$ sort continuously upward with flat initial slope $(F^{-1})'(p_0^+) = 0$. Panel~(b) depicts the unique fixed point $\bar{r}^* = r_{\min} + A(\phi)\nu(\eta \bar{r}^*; \phi, \theta)$ from Theorem~\ref{thm:ge}, contrasting upward damped pass-through from a depeg shock $\theta' > \theta$ against downward rate suppression from a higher redemption fee floor $\phi' > \phi$.}
+\label{fig:queue_eq}
+\end{figure}
+
+\subsection{Sorting efficiency, rate-floor pooling, and price of anarchy}\label{subsec:poa}
+
+Fix arrival intensity $\nu > 0$ and compare the equilibrium reverse priority queue ($\mathrm{PQ}$) against both the first-best fully sorted allocation ($\mathrm{FB}$) and pro-rata random redemption ($\mathrm{PR}$), where every dollar of debt pays $r_{\min}$ and faces average hazard $\bar{\lambda} = D^{-1}\int_0^D \lambda(q)\,dq$. Define first-best social redemption cost
+\[
+C_{\mathrm{FB}} = \int_0^D \bigl(H^{-1}(q/D) - \phi\bigr)\lambda(q)\,dq
+\]
+and pro-rata cost $C_{\mathrm{PR}} = \bar{\lambda}\int_0^D (H^{-1}(q/D) - \phi)\,dq$. Under symmetric or uncorrelated tie-breaking inside the lower absorber atom $[0, q_0]$ (mean atom hazard $\bar{\lambda}_0 = q_0^{-1}\int_0^{q_0}\lambda(q)\,dq$ when $q_0 > 0$), actual equilibrium redemption cost is
+\[
+C_{\mathrm{PQ}}^{\mathrm{actual}} = \bar{\lambda}_0\int_0^{q_0}\bigl(H^{-1}(q/D) - \phi\bigr)\,dq + \int_{q_0}^{D}\bigl(H^{-1}(q/D) - \phi\bigr)\lambda(q)\,dq,
+\]
+which equals $C_{\mathrm{FB}}$ when $\phi \le \underline{\tau}$ ($q_0 = 0$). Let $T_{\mathrm{PQ}} = D(\bar{r}^* - r_{\min})$ be the positional interest transfer above $r_{\min}$, and let $E_{\mathrm{PQ}} = D r_{\min} + T_{\mathrm{PQ}} + C_{\mathrm{PQ}}^{\mathrm{actual}}$ and $E_{\mathrm{PR}} = D r_{\min} + C_{\mathrm{PR}}$ denote total borrower costs.
+
+\begin{theorem}[Sorting efficiency, rate-floor pooling loss, and price of anarchy]\label{thm:poa}
+Under Assumptions~\ref{assump:types}--\ref{assump:cap} at any fixed $\nu > 0$:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Allocative efficiency and rate-floor pooling loss.} When $\phi \le \underline{\tau}$ ($q_0 = 0$), $\mathrm{PQ}$ achieves exact first-best sorting ($C_{\mathrm{PQ}}^{\mathrm{actual}} = C_{\mathrm{FB}}$), beating pro-rata by
+\begin{equation}\label{eq:sort_gain}
+\Delta_{\mathrm{sort}}^{\mathrm{FB}} = C_{\mathrm{PR}} - C_{\mathrm{FB}} = -D\,\Cov_{q \sim \mathrm{Unif}[0, D]}\!\bigl(H^{-1}(q/D),\, \lambda(q)\bigr) > 0.
+\end{equation}
+When $\phi > \underline{\tau}$ ($q_0 > 0$), $\mathrm{PQ}$ sorts $(q_0, D]$ efficiently, but the hard floor $r_{\min}$ prevents heterogeneous absorbers in $[\underline{\tau}, \phi]$ from bidding negative rates to separate among themselves, creating an exact rate-floor pooling loss
+\begin{equation}\label{eq:floor_loss}
+L_{\mathrm{floor}} = C_{\mathrm{PQ}}^{\mathrm{actual}} - C_{\mathrm{FB}} = -q_0\,\Cov_{q \sim \mathrm{Unif}[0, q_0]}\!\bigl(H^{-1}(q/D),\, \lambda(q)\bigr) > 0.
+\end{equation}
+Even so, $\mathrm{PQ}$ strictly beats pro-rata ($C_{\mathrm{PQ}}^{\mathrm{actual}} < C_{\mathrm{PR}}$) whenever $q_0 < D$.
+\item \emph{Borrower price of anarchy.} Total borrower cost satisfies $E_{\mathrm{PQ}} - E_{\mathrm{PR}} = T_{\mathrm{PQ}} - (C_{\mathrm{PR}} - C_{\mathrm{PQ}}^{\mathrm{actual}})$. In the homogeneous limit ($\tau_i \equiv \tau > \phi$), positional rent dissipates completely ($T_{\mathrm{PQ}} = D(\tau - \phi)(\lambda(0) - \bar{\lambda})$), yielding exact borrower price of anarchy
+\begin{equation}\label{eq:poa_hom}
+\mathrm{PoA}_{\mathrm{borr}}^{\mathrm{hom}} = \frac{E_{\mathrm{PQ}} - D r_{\min}}{C_{\mathrm{PQ}}^{\mathrm{actual}}} = \frac{\lambda(0)}{\bar{\lambda}} = \frac{D}{\E[\min(Q, D)]} \ge 1.
+\end{equation}
+For any heterogeneous $H \in C^1$ with $\phi < \underline{\tau}$ ($q_0 = 0$), exact integration by parts yields
+\begin{equation}\label{eq:virtual_cost}
+E_{\mathrm{PQ}} - D r_{\min} = D(\underline{\tau} - \phi)\lambda(0) + \int_0^D (D - q)\frac{d H^{-1}(q/D)}{dq}\,\lambda(q)\,dq \le D\lambda(0)\bigl(\E[\tau] - \phi\bigr),
+\end{equation}
+giving the universal upper bound (tight as $\E[\tau] \to \underline{\tau}$)
+\begin{equation}\label{eq:poa_het}
+1 \le \mathrm{PoA}_{\mathrm{borr}} = \frac{E_{\mathrm{PQ}} - D r_{\min}}{C_{\mathrm{FB}}} \le \frac{\E[\tau] - \phi}{\underline{\tau} - \phi}\cdot \frac{D}{\E[\min(Q, D)]} \le \frac{\bar{\tau} - \phi}{\underline{\tau} - \phi}\cdot \frac{D}{\E[\min(Q, D)]}.
+\end{equation}
+\item \emph{Social welfare price of anarchy.} When $T_{\mathrm{PQ}}$ transfers without burn to Stability Pool depositors and PIL, frictionless social welfare price of anarchy equals $1$ if and only if $\phi \le \underline{\tau}$; when $\phi > \underline{\tau}$, the hard floor $r_{\min}$ leaves irreducible pooling loss $L_{\mathrm{floor}} > 0$.
+\end{enumerate}
+\end{theorem}
+
+A natural objection holds that lumpy cooldown penalties merely redistribute money inside the protocol because upfront fees $\bar{\Phi}$ route through the identical 75\%/25\% split as recurring interest into the Stability Pool and PIL. Let $\bar{\phi}_{\mathrm{upf}} = \bar{\Phi}/D$, $\bar{R}_{\mathrm{eff}} = \bar{r} + \bar{\phi}_{\mathrm{upf}}$, and $y_{\mathrm{SP}} = \eta \bar{R}_{\mathrm{eff}}$. The next proposition refutes that neutrality claim.
+
+\begin{proposition}[Strict deadweight loss under 100\% yield recycling]\label{prop:recycling}
+Hold the aggregate transfer rate $\bar{R}_{\mathrm{eff}} = \bar{r} + \bar{\phi}_{\mathrm{upf}}$ (and hence $y_{\mathrm{SP}} = \eta \bar{R}_{\mathrm{eff}}$ and $\nu(y_{\mathrm{SP}})$) fixed, and compare two regimes: a smooth benchmark achieving equilibrium ordering $\pi^*$ (fully sorted on $(q_0, D]$) with validator gas expenditure $G^*$, versus a lumpy fee regime inducing an ordering $\pi_{\mathrm{lumpy}}$ that differs from $\pi^*$ on a positive-measure subset of $(q_0, D]$ (due to discrete inaction bands or asynchronous cooldown clocks) with gas flow $G_{\mathrm{lumpy}} \ge G^*$ and borrower risk premium $\Delta\mathrm{RP}_{\mathrm{var}} \ge 0$. Even under 100\% recycling of $\bar{\Phi}$ to Stability Pool depositors and PIL:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item Aggregate surplus $\mathcal{W} = \textup{Borrower Surplus} + \textup{SP Surplus} + \textup{PIL Surplus}$ suffers strict deadweight loss
+\begin{equation}\label{eq:dwl_recycling}
+\mathrm{DWL} = \mathcal{W}^* - \mathcal{W}_{\mathrm{lumpy}} = \bigl(C(\pi_{\mathrm{lumpy}}) - C_{\mathrm{PQ}}^{\mathrm{actual}}\bigr) + \bigl(G_{\mathrm{lumpy}} - G^*\bigr) + \Delta\mathrm{RP}_{\mathrm{var}} > 0.
+\end{equation}
+\item Whenever total borrower burden is positive ($D\bar{R}_{\mathrm{eff}} + C_{\mathrm{PQ}}^{\mathrm{actual}} + G^* > 0$), the yield-per-burden efficiency ratio $\mathcal{E} = D\bar{R}_{\mathrm{eff}} / (D\bar{R}_{\mathrm{eff}} + C(\pi) + G)$ satisfies $\mathcal{E}^* > \mathcal{E}_{\mathrm{lumpy}}$ strictly. Under downward-sloping borrower debt demand $D(\mathrm{CE}_{\mathrm{borr}})$, eliminating $\mathrm{DWL}$ strictly increases total dollar Stability Pool yield $\eta D \bar{R}_{\mathrm{eff}}$ both when holding $\bar{R}_{\mathrm{eff}}$ fixed (via higher equilibrium debt $D$) and when holding borrower certainty-equivalent cost $\mathrm{CE}_{\mathrm{borr}}$ fixed (via higher $\bar{R}_{\mathrm{eff}}$).
+\end{enumerate}
+\end{proposition}
+
+Pecuniary transfers cancel across borrowers and Stability Pool depositors, but mis-sorted redemptions and validator gas do not. Removing lumpy adjustment distortions shifts the protocol's two-sided frontier outward, raising borrower welfare and Stability Pool dollar revenue together.
+
+\subsection{Nonparametric identification and boundary singularity}\label{subsec:gpv}
+
+Theorem~\ref{thm:eq} yields an exact nonparametric inversion mapping observed rate distributions and redemption sizes directly into latent borrower disruption costs, extending \citet{guerre2000optimal} to avoidance queues. In a stationary branch regime, suppose an econometrician observes debt $D > 0$, redemption fee $\phi \in [\phi_{\min}, 1)$, debt-weighted rate CDF $F$ with lower-boundary mass $p_0 = F(r_{\min}) \in [0, 1)$ and support ceiling $\bar{r}_F = \inf\{r : F(r) = 1\} \le r_{\max}$, intensity $\nu > 0$, and normalized redemption-size density $\tilde{g}(s) = D\,g_Q(Ds) > 0$ continuous on $[0, 1]$.
+
+\begin{theorem}[Nonparametric identification, boundary singularity, and rationalizability]\label{thm:gpv}
+Suppose $(F, \nu, \tilde{g}, \phi, D)$ is generated by an equilibrium satisfying Assumptions~\ref{assump:types}--\ref{assump:cap}.
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Absorber mass and quantile inversion.} The absorber fraction satisfies $H(\phi) = p_0 = F(r_{\min})$. For every normalized queue quantile $s = q/D \in (p_0, 1)$ with $r = F^{-1}(s) \in (r_{\min}, \bar{r}_F)$, latent gross cost $\tau(s) = H^{-1}(s)$ is uniquely point-identified by
+\begin{equation}\label{eq:gpv_inv}
+\tau(s) = \phi + \frac{(F^{-1})'(s)}{\nu\,\tilde{g}(s)} = \phi + \frac{1}{\nu\,f\bigl(F^{-1}(s)\bigr)\,\tilde{g}(s)}.
+\end{equation}
+\item \emph{Mandatory boundary density singularity.} Whenever an absorber pool exists ($p_0 > 0$) and $H$ is continuous at $\phi$ ($H^{-1}(p_0) = \phi$), equilibrium forces $\lim_{s \downarrow p_0} (F^{-1})'(s) = 0$ and $\lim_{r \downarrow r_{\min}} f(r) = +\infty$. If $H \in C^1$ with $h(\phi) > 0$, then as $r \downarrow r_{\min}$,
+\begin{equation}\label{eq:gpv_singularity}
+f(r) \sim \sqrt{\frac{h(\phi)}{2\,\nu\,\tilde{g}(p_0)\,(r - r_{\min})}}.
+\end{equation}
+\item \emph{Necessary and sufficient rationalizability.} An observable triple $(F, \nu, \tilde{g})$ with $F$ right-continuous at $r_{\min}$, continuous on $(r_{\min}, \bar{r}_F]$ with $\bar{r}_F \le r_{\max}$, $F \in C^1((r_{\min}, \bar{r}_F))$, $f > 0$ on $(r_{\min}, \bar{r}_F)$, $\tilde{g} > 0$ continuous on $[0, 1]$, and $p_0 < 1$ is rationalizable by a unique continuous strictly increasing bounded quantile function $H^{-1} : [p_0, 1] \to [\tau_0, \bar{\tau}]$ (with $H^{-1}(p_0) = \phi$ if $p_0 > 0$ and $H^{-1}(p_0) \ge \phi$ if $p_0 = 0$) if and only if:
+\begin{enumerate}[label=(GPV-\arabic*), leftmargin=4.2em, itemsep=1pt]
+\item the map $s \mapsto f(F^{-1}(s))\tilde{g}(s)$ is strictly decreasing on $(p_0, 1)$;
+\item $\lim_{s \uparrow 1} f(F^{-1}(s))\tilde{g}(s) > 0$;
+\item if $p_0 > 0$, then $\lim_{s \downarrow p_0} f(F^{-1}(s)) = +\infty$.
+\end{enumerate}
+\end{enumerate}
+\end{theorem}
+
+Part~(ii) carries an immediate practical lesson for empirical estimation \citep{companion2026}. Near $r_{\min}$, naive kernel density estimation of $f(r)$ smooths out the $(r - r_{\min})^{-1/2}$ spike and biases inverted costs $1/(\nu \hat{f}\tilde{g})$ severely upward. Estimating $\hat{\tau}(s)$ directly from the monotone quantile derivative $(F^{-1})'(s)$ avoids the singularity cleanly because $(F^{-1})'(s)$ approaches zero smoothly as $s \downarrow p_0$.
+
+% =============================================================================
+\section{Cooldown fee mechanisms: uniqueness, trilemma, and flash-loan impossibility}\label{sec:cooldown}
+
+\subsection{Mechanism space and axioms}\label{subsec:axioms}
+
+We now move from the frictionless queue to dynamic rate transitions inside a cooldown horizon $P > 0$ ($P = 604{,}800\textup{ s}$ in Liquity~V2). A zero-extra-storage rate-transition fee mechanism is a map
+\[
+\Phi : \R_{>0} \times [r_{\min}, r_{\max}]^2 \times [r_{\min}, r_{\max}] \times \R_{\ge 0} \longrightarrow \R_{\ge 0}, \qquad (D, r_0, r_1, \bar{r}, \Delta t) \longmapsto \Phi(D, r_0, r_1, \bar{r}, \Delta t),
+\]
+assigning the upfront fee assessed when a vault or batch of debt $D > 0$ moves from annual rate $r_0$ to $r_1$ at elapsed time $\Delta t \ge 0$ (including same-block updates $\Delta t = 0$) since its last rate adjustment, given projected branch average rate $\bar{r} \in [r_{\min}, r_{\max}]$. Every admissible mechanism obeys the cooldown expiration and no-op convention
+\begin{equation}\label{eq:convention}
+\Phi(D, r_0, r_0, \bar{r}, \Delta t) = 0 \quad (\forall \Delta t \ge 0), \qquad \Phi(D, r_0, r_1, \bar{r}, \Delta t) = 0 \quad (\forall \Delta t \ge P),
+\end{equation}
+and is continuous in $(r_0, r_1)$ up to the diagonal $r_1 = r_0$ (in particular, right no-op continuity $\lim_{r_1 \downarrow r_0} \Phi(D, r_0, r_1, \bar{r}, \Delta t) = 0$). Five axioms govern the entire premature domain $\Delta t \in [0, P)$:
+\begin{enumerate}[label=(A\arabic*), leftmargin=2.8em, itemsep=3pt]
+\item \emph{Upward hold-cost floor.} Quoting $r_0$ for $\Delta t \in [0, P)$ and jumping up to $r_1 > r_0$ costs weakly more over $[0, \Delta t]$ than quoting $r_1$ throughout:
+\[
+D r_0 \frac{\Delta t}{Y} + \Phi(D, r_0, r_1, \bar{r}, \Delta t) \ge D r_1 \frac{\Delta t}{Y} \quad \Longleftrightarrow \quad \Phi(D, r_0, r_1, \bar{r}, \Delta t) \ge D(r_1 - r_0)\frac{\Delta t}{Y}.
+\]
+\item \emph{Upward staircase path invariance.} For fixed $(D, \bar{r})$, any strictly increasing rate sequence $r_{\min} \le r_0 < r_1 < \dots < r_K \le r_{\max}$, and any step intervals $\Delta t_1, \dots, \Delta t_K \ge 0$ summing to $T = \sum_{k=1}^K \Delta t_k < P$,
+\[
+\sum_{k=1}^K \Phi(D, r_{k-1}, r_k, \bar{r}, \Delta t_k) = \Phi(D, r_0, r_K, \bar{r}, T).
+\]
+\item \emph{In-place spike-and-cut commitment.} After a free post-cooldown hike to $r_0 \in (r_{\min}, r_{\max}]$ at $t = 0$, cutting prematurely to any $r_1 \in [r_{\min}, r_0)$ at $\Delta t \in [0, P)$ and remaining at $r_1$ over $[\Delta t, P]$ cannot beat holding $r_0$ over $[0, P]$:
+\begin{align*}
+D r_0 \frac{\Delta t}{Y} + \Phi(D, r_0, r_1, \bar{r}, \Delta t) + D r_1 \frac{P - \Delta t}{Y} &\ge D r_0 \frac{P}{Y} \\
+\Longleftrightarrow \qquad \Phi(D, r_0, r_1, \bar{r}, \Delta t) &\ge D(r_0 - r_1)\frac{P - \Delta t}{Y}.
+\end{align*}
+\item \emph{Debt-scaling and Sybil neutrality.} Fees are homogeneous of degree one in debt ($\Phi(\lambda D, \cdot) = \lambda \Phi(D, \cdot)$ for all $\lambda > 0$), and credit acquired on small debt cannot subsidize a zero-fee transition on later incremental debt.
+\item \emph{Zero extra storage slots.} The fee depends exclusively on existing contract state $(D, r_0, r_1, \bar{r}, \Delta t)$, adding zero EVM storage slots per vault or batch.
+\end{enumerate}
+
+Restricting~(A2) to strictly increasing sequences $r_0 < r_1 < \dots < r_K$ is deliberate. In Liquity~V2, solo \texttt{adjustTroveInterestRate} reverts on $r_1 = r_0$, whereas any strictly positive micro-hike $r_0 < y < r_1$ is executable on both solo vaults and batches and legitimately resets the cooldown timestamp.
+
+\subsection{Failure of status quo and prior proposals}\label{subsec:failures}
+
+Four candidate mechanisms illustrate why naive repairs break down: the deployed status quo rule $\Phi_{\SQ}(D, r_0, r_1, \bar{r}, \Delta t) = D \bar{r} P/Y$ for $r_1 \neq r_0$ and $\Delta t \in [0, P)$; simple increment-only $\DesignA$ ($\Phi_{\mathrm{A}} = D(r_1 - r_0)P/Y$ on hikes, $\Phi_{\mathrm{A}} = D\bar{r}P/Y$ on cuts); time-only prepaid credit ($\Phi_{\mathrm{B}}$, tracking a timestamp \texttt{prepaidUntil} and charging $D\bar{r}\max(0, t + P - \texttt{prepaidUntil})/Y$ on hikes while revoking credit on cuts); and elapsed-time pricing ($\Phi_{\mathrm{C}} = D\bar{r}\Delta t/Y$ on hikes and $D\bar{r}P/Y$ on cuts).
+
+\begin{theorem}[Failure of status quo and prior rules]\label{thm:failures}
+On $\Delta t \in [0, P)$:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Status quo.} $\Phi_{\SQ}$ violates~(A2) and~(A3). On fixed pre-fee debt $D$ along any $K$-step premature upward staircase $r_0 < r_1 < \dots < r_K$, status quo charges $K$ times the single-jump fee and exceeds $D(r_K - r_0)P/Y$ by exact overcharge factor
+\begin{equation}\label{eq:sq_staircase}
+\mathcal{I}_{\SQ}(K; \bar{r}, r_K - r_0) = \frac{\sum_{k=1}^K \Phi_{\SQ}}{D(r_K - r_0)P/Y} = \frac{K\,\bar{r}}{r_K - r_0},
+\end{equation}
+which diverges as $K \to \infty$ or $(r_K - r_0)/K \to 0$ (and compounds even faster to $D[(1 + \bar{r}P/Y)^K - 1]$ under Liquity~V2 fee capitalization). Conversely, after a free post-cooldown spike $r_{\mathrm{low}} \to r_{\mathrm{high}}$ cut back at $\Delta t \in [0, P)$, $\Phi_{\SQ}$ violates~(A3) whenever
+\begin{equation}\label{eq:sq_cut_cond}
+r_{\mathrm{high}} - r_{\mathrm{low}} > \bar{r}\cdot \frac{P}{P - \Delta t},
+\end{equation}
+granting fractional discount relative to honest holding excess $D(r_{\mathrm{high}} - r_{\mathrm{low}})P/Y$ of
+\begin{equation}\label{eq:sq_discount}
+\mathrm{Discount}_{\SQ} = 1 - \frac{\Delta t}{P} - \frac{\bar{r}}{r_{\mathrm{high}} - r_{\mathrm{low}}} \xrightarrow[\Delta t \to 0,\; r_{\mathrm{high}} \to r_{\max}]{} 1 - \frac{\bar{r}}{r_{\max} - r_{\min}} \approx 98.6\%.
+\end{equation}
+\item \emph{Simple increment-only $\DesignA$.} $\Phi_{\mathrm{A}}$ satisfies~(A1), (A2), (A4), and~(A5) on hikes, yet strictly violates~(A3) under the exact same condition~\eqref{eq:sq_cut_cond} and discount~\eqref{eq:sq_discount}.
+\item \emph{Time-only credit and elapsed-time rules.} $\Phi_{\mathrm{B}}$ violates~(A4) and~(A5) because credit bought on minimal debt subsidizes a free jump on arbitrary later debt while requiring added storage. $\Phi_{\mathrm{C}}$ violates~(A1) whenever $\bar{r} < r_1 - r_0$, charges zero at same-block $\Delta t = 0$, and violates~(A2).
+\end{enumerate}
+\end{theorem}
+
+The March 6, 2026 mainnet episodes match~\eqref{eq:sq_cut_cond}--\eqref{eq:sq_discount} to two decimal places \citep{companion2026}. On the wstETH branch ($D = 7.98$ million BOLD, $\bar{r} \approx 1.51\%$, $\Delta t = 3{,}636\textup{ s}$), spiking 980~bp and cutting back captured an 84.02\% total-excess discount (84.62\% cut-fee-to-hold discount); on WETH ($D = 1.79$ million BOLD, $\bar{r} \approx 3.77\%$), spiking 1,000~bp and cutting 980~bp captured a 60.96\% total-excess discount (61.56\% replay / 61.61\% isolated Foundry cut-fee-to-hold discount). Simple increment-only $\DesignA$ leaves both exploits untouched.
+
+\subsection{Pointwise-minimal uniqueness and integer bounds of Design A*}\label{subsec:design_astar}
+
+Define the symmetric-commitment increment fee ($\DesignAStar$):
+\begin{equation}\label{eq:design_astar}
+\Phi^*(D, r_0, r_1, \bar{r}, \Delta t) = \begin{cases}
+0 & \textup{if } \Delta t \ge P \textup{ or } r_1 = r_0, \\[4pt]
+D\,(r_1 - r_0)\,\dfrac{P}{Y} & \textup{if } \Delta t \in [0, P) \textup{ and } r_1 > r_0, \\[8pt]
+D\,(r_0 - r_1)\,\dfrac{P - \Delta t}{Y} & \textup{if } \Delta t \in [0, P) \textup{ and } r_1 < r_0.
+\end{cases}
+\end{equation}
+
+In deployed Liquity~V2 (\texttt{BorrowerOperations.sol}), a borrower's effective rate changes through four distinct transition paths (spanning five Solidity entry points): solo \texttt{adjustTrove\allowbreak InterestRate}, batch \texttt{setBatchManager\allowbreak AnnualInterestRate}, \texttt{removeFromBatch}, and batch entry or migration via \texttt{setInterest\allowbreak BatchManager} and \texttt{switchBatch\allowbreak Manager}. Patching only rate-setter functions leaves a 98.60\% zero-flash-loan bypass: a borrower executes a free post-cooldown spike from 0.5\% to 250\%, waits 12 seconds, and joins a self-owned 0.5\% batch, paying only the branch-average join fee. Consequently, $\DesignAStar$ must guard all four transition paths, charging $\max(\Phi_{\mathrm{join}}, \Phi^*_\downarrow(D, r_{\mathrm{old}}, r_{\mathrm{new}}, \Delta t))$ whenever a vault enters or switches into a lower-rate batch inside cooldown.
+
+\begin{theorem}[Uniqueness and EVM bounds of $\DesignAStar$]\label{thm:astar}
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Axiom satisfaction.} $\Phi^*$ satisfies~\eqref{eq:convention} and~(A1)--(A5) on $\Delta t \in [0, P)$ without depending on $\bar{r}$ or adding storage.
+\item \emph{Global pointwise-minimal uniqueness.} Let $\Phi$ be any mechanism satisfying~\eqref{eq:convention}, (A1)--(A5), and right no-op continuity on $\Delta t \in [0, P)$ (allowing arbitrary nonlinearity or $\bar{r}$-dependence). On premature hikes ($\Delta t \in [0, P)$, $r_1 > r_0$), $\Phi$ must be strictly independent of $\Delta t$ on $[0, P)$, must take the additive potential form $D[\Psi_{\bar{r}}(r_1) - \Psi_{\bar{r}}(r_0)]$, and must satisfy $\Phi \ge \Phi^*$ pointwise. On premature cuts ($\Delta t \in [0, P)$, $r_1 < r_0$), $\Phi \ge \Phi^*$ pointwise as well. Hence $\DesignAStar$ is the unique pointwise-minimal admissible mechanism, and the unique affine rule tight on the supremum boundary $\Delta t \uparrow P$ of~(A1) and on~(A3).
+\item \emph{Multi-step cut superadditivity and oscillation deterrence.} After a free hike to $r_0$, any $K \ge 1$ premature downward cuts $r_0 > r_1 > \dots > r_K$ at step intervals $\delta_1, \dots, \delta_K > 0$ with $\sum_{k=1}^K \delta_k < P$ incur total cost over $[0, P]$ equal to
+\begin{equation}\label{eq:multicut}
+\mathrm{TotalCost}_{[0, P]} = D r_0 \frac{P}{Y} + \frac{D}{Y}\sum_{k=2}^K (r_{k-1} - r_k)\!\left(\sum_{j=1}^{k-1}\delta_j\right) \ge D r_0 \frac{P}{Y},
+\end{equation}
+with exact equality at $K = 1$ and strict inequality for every $K \ge 2$. Any cut-then-hike oscillation $r_0 \to r_1 \to r_0$ ($r_1 < r_0$) starting from a free cut at $t = 0$ and hiking prematurely at $\delta \in [0, P)$ strictly exceeds holding $r_0$ over $[0, \delta]$ by $D(r_0 - r_1)(P - \delta)/Y > 0$.
+\item \emph{Exact \texttt{uint256} integer bounds.} Implementing $\texttt{\_calcInterest}(w, p) = \lfloor \lfloor w p / Y \rfloor / W \rfloor$ ($W = 10^{18}$) in unsigned 256-bit arithmetic satisfies:
+\begin{enumerate}[label=(\alph*), leftmargin=1.8em, itemsep=1pt]
+\item For $K \ge 1$ premature hikes on fixed debt $D$, $0 \le \Phi^*_{\mathrm{int}}(r_0 \to r_K) - \sum_{k=1}^K \Phi^*_{\mathrm{int}}(r_{k-1} \to r_k) \le K - 1$ wei.
+\item For any $M$-way debt split $D = \sum_{m=1}^M D_m$, $0 \le \Phi^*_{\mathrm{int}}(D) - \sum_{m=1}^M \Phi^*_{\mathrm{int}}(D_m) \le M - 1$ wei.
+\item On spike-and-cut over $[0, P]$, comparing $\mathrm{int}(\delta) + \Phi^*_{\downarrow,\mathrm{int}}(\delta) + \mathrm{int}(P - \delta)$ against $\mathrm{int}(P)$ has tight worst-case shortfall $\le 2$ wei under floor division, $\le 1$ wei under overflow-safe ceiling division $\texttt{ceilDiv}$, and $0$ wei identically under $\texttt{ceilDiv} + 1$ on positive premature cuts.
+\item No \texttt{uint256} overflow occurs in $D r P < 2^{256}$ for all $D \le 7.658 \times 10^{52}$ wei at $r \le r_{\max} = 250\%$ (and up to $7.673 \times 10^{52}$ wei on maximum rate spread $r_{\max} - r_{\min} = 249.5\%$).
+\end{enumerate}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof of Parts~(i)--(ii)]
+\emph{Step 1 (Verification).} For $\Delta t \in [0, P)$ and $r_1 > r_0$, $\Phi^* = D(r_1 - r_0)P/Y > D(r_1 - r_0)\Delta t/Y$ gives~(A1), and telescoping $\sum_{k=1}^K (r_k - r_{k-1}) = r_K - r_0$ gives~(A2). For $\Delta t \in [0, P)$ and $r_1 < r_0$, $\Phi^* = D(r_0 - r_1)(P - \Delta t)/Y$ attains~(A3) with equality across $[0, P)$, including $\Delta t = 0$. Linearity in $D$ and state dependence yield~(A4)--(A5).
+
+\emph{Step 2 (Time independence via strictly increasing micro-hikes).} Let $\Phi$ satisfy~\eqref{eq:convention}, (A1)--(A5), and right no-op continuity on $[0, P)$. Fix $D > 0$ and $\bar{r}$, and write $f(x, y, t) = \Phi(D, x, y, \bar{r}, t)$ for $x \le y$ and $t \in [0, P)$. Take any $x < z$ and any $0 \le t_2 < t' < P$. Set $t_1 = t' - t_2 > 0$, so $t_1 + t_2 = t' < P$. For any strictly intermediate rate $y \in (x, z)$, Axiom~(A2) on the strictly increasing triple $x < y < z$ gives
+\[
+f(x, y, t_1) + f(y, z, t_2) = f(x, z, t').
+\]
+Letting $y \downarrow x$, right no-op continuity drives $f(x, y, t_1) \to 0$ while continuity of $y \mapsto f(y, z, t_2)$ at $y = x$ sends $f(y, z, t_2) \to f(x, z, t_2)$. Hence $f(x, z, t_2) = f(x, z, t')$ for all $0 \le t_2 < t' < P$, proving $f(x, z, t) = g(x, z)$ is strictly independent of $t$ on $[0, P)$.
+
+\emph{Step 3 (Potential form and global dominance).} Substituting $f(x, y, t) = g(x, y)$ into~(A2) gives $g(x, y) + g(y, z) = g(x, z)$ for all $x < y < z$. Defining $\Psi_{\bar{r}}(r) = g(r_{\min}, r)/D$ with $\Psi_{\bar{r}}(r_{\min}) = 0$, homogeneity~(A4) yields $\Phi(D, r_0, r_1, \bar{r}, \Delta t) = D[\Psi_{\bar{r}}(r_1) - \Psi_{\bar{r}}(r_0)]$. Applying~(A1) for every $\Delta t \in [0, P)$ gives $g(r_0, r_1) \ge D(r_1 - r_0)\Delta t/Y$. Taking the supremum over $\Delta t \in [0, P)$ on the right while the left is constant forces $g(r_0, r_1) \ge D(r_1 - r_0)P/Y = \Phi^*$. On premature cuts ($r_1 < r_0$, $\Delta t \in [0, P)$), Axiom~(A3) immediately requires $\Phi \ge D(r_0 - r_1)(P - \Delta t)/Y = \Phi^*$. Pointwise minimality therefore pins down $\Phi^*$ uniquely; in the affine subclass, no-op continuity kills any $\bar{r}$ constant while boundary tightness pins down both slopes. Proofs of Parts~(iii)--(iv) appear in Appendix~\ref{app:proofs}.
+\end{proof}
+
+Rounding errors remain tiny. Even under Liquity~V2's verbatim floored integer primitive, the worst-case spike-and-cut residual is two wei ($2 \times 10^{-18}$ BOLD), and adding one wei to positive ceiling-rounded cuts eliminates integer shortfall completely.
+
+\subsection{The cooldown trilemma and Brownian phase transition}\label{subsec:trilemma}
+
+$\DesignAStar$ eliminates every within-cooldown distortion, yet the cooldown horizon $P$ itself creates an irreducible trade-off. If $P$ is short, strategic borrowers hold $r_{\min}$ between redemption waves and pay high rates only while shocks arrive. If $P$ is long, honest borrowers who raise rates during a temporary shock remain locked into that higher effective rate over $[0, P]$ even after market clearing rates retreat.
+
+\begin{theorem}[Cooldown trilemma, optimal horizon, and Brownian phase transition]\label{thm:trilemma}
+Consider any mechanism bounded below by $\Phi^*$ under Poisson redemption waves of intensity $\nu > 0$ and spike amplitude $\Delta_H = r_H - r_{\min} > 0$:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Just-in-time evasion bounds.} Under Liquity~V2's resetting cut clock, a strategic borrower who holds $r_H$ for $P$, cuts free to $r_{\min}$ at $t = P$ (resetting the cooldown timer), and jumps back to $r_H$ upon the next Poisson shock $W \sim \mathrm{Exp}(\nu)$ pays exact renewal-reward excess rate fraction
+\begin{equation}\label{eq:jit_reset}
+\rho_{\mathrm{JIT}}^{\mathrm{reset}}(P) = \frac{\nu P(2 - e^{-\nu P})}{1 + \nu P},
+\end{equation}
+which lies strictly below $1$ if and only if $\nu P < x^* \approx 1.349976$ (the unique positive root of $x(1 - e^{-x}) = 1$). Hence profitable just-in-time evasion vanishes identically for $P \ge x^*/\nu$. Under a non-resetting cut-clock upper envelope, just-in-time yield erosion equals $E_{\mathrm{JIT}}(P) = \Delta_H / (1 + \nu P) > 0$ for all finite $P > 0$.
+\item \emph{Downward lock-in loss.} Under $\Phi^*$, any honest borrower raising her rate to $r_0$ pays effective rate $r_0$ over $[0, P]$ whether she holds or cuts early. If the frictionless clearing rate declines linearly at drift $\sigma_r > 0$ ($\mathrm{yr}^{-2}$), downward lock-in overpayment is $L_{\mathrm{lock}}(P) = \frac{1}{2}\sigma_r P$; under Brownian clearing-rate fluctuations $dr^* = \sigma_{\mathrm{BM}}\,dB_t$ ($\mathrm{yr}^{-3/2}$), expected lock-in overpayment is $L_{\mathrm{lock}}^{\mathrm{BM}}(P) = c_2 \sigma_{\mathrm{BM}}\sqrt{P}$ with $c_2 = \frac{2}{3\sqrt{2\pi}}$. No finite $P > 0$ drives both $E_{\mathrm{JIT}}(P)$ and downward lock-in to zero.
+\item \emph{Optimal cooldown horizon and discontinuous phase transition.} With weights $w_1, w_2 > 0$:
+\begin{enumerate}[label=(\alph*), leftmargin=1.8em, itemsep=2pt]
+\item Under linear drift loss, $\mathcal{L}(P) = w_1\frac{\Delta_H}{1 + \nu P} + \frac{1}{2}w_2 \sigma_r P$ is strictly convex on $[0, \infty)$ with unique global minimizer
+\begin{equation}\label{eq:pstar_linear}
+P^* = \max\!\left(0,\; \sqrt{\frac{2 w_1 \Delta_H}{w_2 \sigma_r \nu}} - \frac{1}{\nu}\right) \propto (\sigma_r \nu)^{-1/2} \qquad (2 w_1 \Delta_H \nu > w_2 \sigma_r),
+\end{equation}
+and under resetting cut clocks any optimal horizon obeys $P^*_{\mathrm{reset}} \le x^*/\nu$.
+\item Under Brownian volatility loss $\mathcal{L}_{\mathrm{BM}}(P) = w_1\frac{\Delta_H}{1 + \nu P} + c_2 w_2 \sigma_{\mathrm{BM}}\sqrt{P}$, define the dimensionless volatility-to-evasion ratio $R = \frac{c_2 w_2 \sigma_{\mathrm{BM}}}{w_1 \Delta_H \sqrt{\nu}} > 0$. Because $\mathcal{L}_{\mathrm{BM}}'(0^+) = +\infty$, $P = 0$ is always a strict local minimizer, and the global optimum exhibits a first-order discontinuous phase transition at $R = 1/2$: if $R > 1/2$, then $P^*_{\mathrm{BM}} = 0$ is the unique global minimizer (even on $(1/2,\, 3\sqrt{3}/8) \approx (0.500, 0.6495)$ where a strictly suboptimal interior local minimum exists); at $R = 1/2$, $P = 0$ and $P = 1/\nu$ tie for global optimality; and if $R < 1/2$, the unique global minimizer jumps discontinuously to $P^*_{\mathrm{BM}} = (x^*)^2/\nu > 1/\nu$ solving $\frac{2 x^*}{(1 + (x^*)^2)^2} = R$, scaling as $P^*_{\mathrm{BM}} \sim \bigl(\frac{3\sqrt{2\pi}\,w_1 \Delta_H}{w_2 \sigma_{\mathrm{BM}} \nu}\bigr)^{2/3} \propto (\sigma_{\mathrm{BM}}\nu)^{-2/3}$ as $R \downarrow 0$.
+\end{enumerate}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\emph{Step 1 (Renewal-reward and lock-in losses).} A cycle lasts $P + W$ with mean $P + 1/\nu$. Under resetting cut clocks, the borrower pays excess rate-time $\Delta_H P$ during the initial hold and incurs a premature jump fee $\Delta_H P$ whenever $W < P$ (probability $1 - e^{-\nu P}$), yielding mean cost per cycle $\Delta_H P(2 - e^{-\nu P})$ and rate fraction~\eqref{eq:jit_reset}. Then $\rho_{\mathrm{JIT}}^{\mathrm{reset}}(P) < 1$ holds if and only if $\nu P(1 - e^{-\nu P}) < 1$, giving $\nu P < x^* \approx 1.349976$. Without cut-clock resets, mean cost per cycle is $\Delta_H P$, so yield erosion is $\Delta_H[1 - \nu P/(1 + \nu P)] = \Delta_H/(1 + \nu P)$. Over $[0, P]$, linear drift yields average overpayment $P^{-1}\int_0^P \sigma_r t\,dt = \frac{1}{2}\sigma_r P$, while Brownian motion yields $P^{-1}\int_0^P \E[\sigma_{\mathrm{BM}}(-B_t)_+]\,dt = P^{-1}\int_0^P \frac{\sigma_{\mathrm{BM}}\sqrt{t}}{\sqrt{2\pi}}\,dt = \frac{2}{3\sqrt{2\pi}}\sigma_{\mathrm{BM}}\sqrt{P}$.
+
+\emph{Step 2 (Linear convex minimization).} Differentiating gives $\mathcal{L}'(P) = -w_1 \Delta_H \nu(1 + \nu P)^{-2} + \frac{1}{2}w_2 \sigma_r$ and $\mathcal{L}''(P) = 2 w_1 \Delta_H \nu^2 (1 + \nu P)^{-3} > 0$, directly yielding~\eqref{eq:pstar_linear}.
+
+\emph{Step 3 (Brownian AM-GM phase transition).} Substitute $x = \sqrt{\nu P} \ge 0$ and normalize by $w_1 \Delta_H$:
+\[
+\tilde{\mathcal{L}}(x) = \frac{\mathcal{L}_{\mathrm{BM}}(x^2/\nu)}{w_1 \Delta_H} = \frac{1}{1 + x^2} + R\,x.
+\]
+Since $\tilde{\mathcal{L}}(0) = 1$, an interior $x > 0$ strictly beats $P = 0$ if and only if $R x < x^2 / (1 + x^2)$, or equivalently $R < x/(1 + x^2)$. By the AM-GM inequality, $\max_{x > 0} x/(1 + x^2) = 1/2$, attained uniquely at $x = 1$ ($P = 1/\nu$). Thus $R > 1/2$ forces $\tilde{\mathcal{L}}(x) > 1$ for every $x > 0$, making $P^*_{\mathrm{BM}} = 0$ uniquely optimal even when $\tilde{\mathcal{L}}'(x) = R - 2x/(1 + x^2)^2 = 0$ admits two positive critical points (which occurs for $R < \max_{x>0} 2x/(1 + x^2)^2 = 3\sqrt{3}/8$). At $R = 1/2$, $\tilde{\mathcal{L}}(1) = 1 = \tilde{\mathcal{L}}(0)$ and $\tilde{\mathcal{L}}'(1) = 0$. For $R < 1/2$, $\tilde{\mathcal{L}}'(1) = R - 1/2 < 0$ while $x \mapsto 2x/(1 + x^2)^2$ decreases strictly on $(1/\sqrt{3}, \infty)$ toward zero, yielding a unique global minimizer $x^* > 1$ solving $2x^*/(1 + (x^*)^2)^2 = R$. As $R \downarrow 0$, $2/(x^*)^3 \sim R$ implies $x^* \sim (2/R)^{1/3}$ and $P^*_{\mathrm{BM}} \sim (2/R)^{2/3}/\nu$.
+\end{proof}
+
+\subsection{Flash-loan impossibility and principal-escrow Design D}\label{subsec:design_d}
+
+Axioms~(A1)--(A5) govern in-place rate adjustments, but permissionless lending contracts also allow borrowers to close and reopen positions atomically using flash loans. Flash loans break every in-place rule.
+
+\begin{theorem}[Flash-loan impossibility and principal-escrow $\DesignD$]\label{thm:flash}
+Consider any permissionless CDP protocol where \texttt{closeTrove} (or partial \texttt{repayBold} down to minimum debt) is free, \texttt{openTrove} and \texttt{withdrawBold} assess $\Phi_{\mathrm{open}} = D\bar{r}P/Y$, post-cooldown hikes ($\Delta t \ge P$) are free, and hikes activate instantaneously ($\Delta_{\mathrm{act}} = 0$). Suppose flash loans are available at proportional fee $f_{\mathrm{flash}} \ge 0$ plus gas $g_{\mathrm{tx}} \ge 0$.
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Impossibility ceiling for pure in-place rules.} No in-place rate-change fee rule $\Phi(D, r_0, r_1, \bar{r}, \Delta t)$ whatsoever (including $\DesignAStar$ and even $\Phi_\downarrow \equiv +\infty$) prevents a profitable atomic flash-loan \texttt{closeTrove} plus \texttt{openTrove}$(D, r_{\mathrm{low}})$ (or partial repayment down to minimum debt, rate cut, and re-borrowing) after a free post-cooldown spike $r_{\mathrm{low}} \to r_{\mathrm{high}}$ held for $\delta \in [0, P)$ whenever
+\begin{equation}\label{eq:flash_imposs}
+r_{\mathrm{high}} - r_{\mathrm{low}} > \frac{P}{P - \delta}\!\left(\bar{r} + \frac{Y}{P}\,f_{\mathrm{flash}} + \frac{Y}{P D}\,g_{\mathrm{tx}}\right).
+\end{equation}
+\item \emph{Constructive resolution via single-slot principal escrow ($\DesignD$).} Augment each vault (or batch, tracked pro-rata per borrower debt share) with a packed 256-bit state triple $(B, t_{\mathrm{last}}, t_{\mathrm{end}}) = (\texttt{unvestedBond}, \texttt{lastUpdateTime}, \texttt{vestEndTime})$ governed on every interaction at timestamp $t$ by three transition rules:
+\begin{enumerate}[label=(\alph*), leftmargin=1.8em, itemsep=2pt]
+\item \emph{Linear vesting \textup{(D-Settle)}.} If $t \ge t_{\mathrm{end}}$, vest all remaining escrow back to the borrower ($B \leftarrow 0$, $t_{\mathrm{last}} = t_{\mathrm{end}} \leftarrow t$). Otherwise, for $t > t_{\mathrm{last}}$ and $B > 0$, vest $B(t - t_{\mathrm{last}})/(t_{\mathrm{end}} - t_{\mathrm{last}})$, reduce $B$ accordingly, and set $t_{\mathrm{last}} \leftarrow t$ while keeping $t_{\mathrm{end}}$ fixed.
+\item \emph{Exposure increase \textup{(D-Increase)}.} On any voluntary exposure increase to $(D_{\mathrm{new}}, r_{\mathrm{new}})$ with $r_{\mathrm{new}} > r_{\min}$ (such as \texttt{openTrove}, any premature or post-cooldown hike, any \texttt{withdrawBold} regardless of $\Delta t$, or joining a higher-rate batch), run \textup{(D-Settle)}, set $t_{\mathrm{end}} \leftarrow t + P$, and top up $B$ to the coverage invariant
+\begin{equation}\label{eq:designD_target}
+B_{\mathrm{target}} = D_{\mathrm{new}}\,(r_{\mathrm{new}} - r_{\min})\,\frac{P}{Y}.
+\end{equation}
+\item \emph{Accrued-interest-safe exposure decrease \textup{(D-Decrease)}.} On any voluntary reduction while $t < t_{\mathrm{end}}$ ($\tau_{\mathrm{rem}} = t_{\mathrm{end}} - t > 0$), run \textup{(D-Settle)} to obtain $B_{\mathrm{rem}} = D_{\mathrm{bonded}}(r_{\mathrm{old}} - r_{\min})\tau_{\mathrm{rem}}/Y$ (where $D_{\mathrm{bonded}} \le D_{\mathrm{curr}}$ is the principal at the previous \textup{(D-Increase)} prior to passive interest accrual) and keep $t_{\mathrm{end}}$ unchanged. On a pure rate cut $r_{\mathrm{old}} \to r_{\mathrm{new}} < r_{\mathrm{old}}$, forfeit the scale-invariant fraction
+\begin{equation}\label{eq:designD_cut}
+\mathrm{Forfeit}_{\mathrm{cut}} = B_{\mathrm{rem}}\cdot \frac{r_{\mathrm{old}} - r_{\mathrm{new}}}{r_{\mathrm{old}} - r_{\min}}, \qquad B_{\mathrm{after}} = B_{\mathrm{rem}}\cdot \frac{r_{\mathrm{new}} - r_{\min}}{r_{\mathrm{old}} - r_{\min}} \ge 0.
+\end{equation}
+On voluntary repayment $\Delta D > 0$ (\texttt{repayBold} or \texttt{closeTrove} with $\Delta D = D_{\mathrm{curr}}$), forfeit the zero-dilution cap
+\begin{equation}\label{eq:designD_repay}
+\mathrm{Forfeit}_{\mathrm{repay}} = \min\!\left(B_{\mathrm{rem}},\; \Delta D\,(r_{\mathrm{old}} - r_{\min})\frac{\tau_{\mathrm{rem}}}{Y}\right) \in [0, B_{\mathrm{rem}}].
+\end{equation}
+On mixed transitions (batch join, switch, or removal), compare $B_{\textup{target,rem}} = D_{\mathrm{new}}(r_{\mathrm{new}} - r_{\min})\tau_{\mathrm{rem}}/Y$ to $B_{\mathrm{rem}}$: route to \textup{(D-Increase)} if $B_{\textup{target,rem}} \ge B_{\mathrm{rem}}$, and otherwise forfeit $B_{\mathrm{rem}} - B_{\textup{target,rem}}$. Involuntary redemptions and liquidations refund pro-rata unvested escrow.
+\end{enumerate}
+Under these rules, $\DesignD$ preserves its coverage invariant without underflow under continuous interest compounding, defeats all six attack vectors (unbonded high-rate opening, pre-aged micro-hike clock manipulation, cut-then-re-hike cycles, post-cut vesting mismatches, batch-transition griefing, and dormant low-debt shield vaults topped up via \texttt{withdrawBold}) with
+\begin{equation}\label{eq:designD_dom}
+\mathrm{Cost}_{\mathrm{attack}} \ge D r_{\mathrm{high}}\frac{P}{Y} + \Phi_{\mathrm{open}} + f_{\mathrm{flash}} D + g_{\mathrm{tx}} \ge D r_{\mathrm{high}}\frac{P}{Y},
+\end{equation}
+incurs zero forfeiture on honest $P$-day holds, and preserves fixed-debt upward staircase path invariance and degree-one debt homogeneity.
+\item \emph{Activation delay frontier.} Delaying rate-hike activation by $\Delta_{\mathrm{act}}$ exceeding mempool observation latency $\tau_{\mathrm{mem}}$ defeats mempool front-running informationally with zero escrow lockup, tracing the capital-efficiency versus response-latency Pareto frontier against $\DesignD$.
+\end{enumerate}
+\end{theorem}
+
+Equation~\eqref{eq:designD_cut} is essential in Solidity implementations. Passive continuous interest accrual raises current debt $D_{\mathrm{curr}}$ above bonded principal $D_{\mathrm{bonded}}$ between transactions; naively subtracting $D_{\mathrm{curr}}(r_{\mathrm{old}} - r_{\mathrm{new}})\tau_{\mathrm{rem}}/Y$ from $B_{\mathrm{rem}}$ can underflow on a 250\%-to-249\% cut after half a cooldown window. Multiplying $B_{\mathrm{rem}}$ by the dimensionless ratio $(r_{\mathrm{old}} - r_{\mathrm{new}})/(r_{\mathrm{old}} - r_{\min})$ prevents underflow identically while maintaining exact bonded coverage. Similarly, in EVM batch implementations where borrowers settle lazily against a shared batch manager, Section~\ref{sec:verification} pairs a single 32-byte packed \texttt{RateBond} struct with an append-only \texttt{CutEvent} log so that no-op refreshes, sequential cuts, or subsequent re-hikes never clobber an unsettled borrower's historical cut record. Figure~\ref{fig:mechanisms} contrasts the four fee regimes across spike-and-cut, staircase, and flash-loan attacks.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[>=Latex, font=\footnotesize]
+% Panel (a): Premature cut cost vs elapsed time (calibrated to wstETH 980bp spike)
+\begin{scope}[xshift=0cm]
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (5.4,0);
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (0,3.95);
+  \node[font=\footnotesize] at (2.70,-0.78) {Elapsed cooldown fraction $\Delta t / P$};
+  \node[left=2pt, font=\footnotesize] at (0,3.86) {Cost / Hold};
+  \node[anchor=west, font=\bfseries\small] at (0.12,3.82) {(a)};
+
+  % Arbitrage shading between SQ/A and 1.0 (raised to y = 3.05 for generous label room)
+  \fill[col2!13!white] (0,0.46) -- (4.06,3.05) -- (0,3.05) -- cycle;
+
+  % Reference line y = 1.0 (honest 7d hold = 3.05 units), label shifted right of y-axis
+  \draw[col1, line width=1.4pt] (0,3.05) -- (4.80,3.05)
+    node[pos=0.55, above=4pt, font=\scriptsize] {$\DesignAStar$ and $\DesignD$ (parity $1.0$)};
+
+  % SQ and Design A curve
+  \draw[col2, dashed, line width=1.3pt] (0,0.46) -- (4.06,3.05) -- (4.42,3.28);
+  \node[col2, font=\scriptsize, anchor=north west] at (2.75,2.04) {SQ and $\DesignA$};
+
+  % Arbitrage gap label cleanly housed inside upper-left shaded triangle (>=6pt padding)
+  \node[col2, font=\tiny, align=center] at (0.98,2.56) {Arbitrage gap\\(84.0\% at 1.01\,h)};
+
+  % Flash-loan bypass ceiling on Design A*
+  \draw[col4, densely dashdotted, line width=1.15pt] (0,1.08) -- (3.12,3.05);
+  \node[col4, font=\scriptsize, anchor=west] at (1.72,1.12) {Flash-loan exit on $\DesignAStar$};
+  \draw[col4, dotted, ->, line width=0.65pt] (1.68,1.18) -- (1.20,1.76);
+
+  % Ticks
+  \draw[ink] (0,3.05) -- (-0.08,3.05) node[left=1pt, font=\scriptsize] {$1.0$};
+  \draw[ink] (4.80,0) -- (4.80,-0.08) node[below=2pt, font=\scriptsize] {$1$};
+  \draw[ink] (2.40,0) -- (2.40,-0.08) node[below=2pt, font=\scriptsize] {$0.5$};
+\end{scope}
+
+% Panel (b): 5-step upward staircase cumulative cost multiple
+\begin{scope}[xshift=7.1cm]
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (5.4,0);
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (0,3.95);
+  \node[font=\footnotesize] at (2.70,-0.78) {Premature upward hike steps $K$};
+  \node[left=2pt, font=\footnotesize] at (0,3.86) {Fee / jump};
+  \node[anchor=west, font=\bfseries\small] at (0.12,3.82) {(b)};
+
+  % Status Quo linear growth: y(k) = 0.85 + 0.60*(k-1)
+  \draw[col2, dashed, line width=1.3pt]
+    (0.88,0.85) -- (1.76,1.45) -- (2.64,2.05) -- (3.52,2.65) -- (4.40,3.25);
+  \node[col2, font=\scriptsize, anchor=south east] at (3.65,2.94) {Status quo ($\propto K\bar{r}/\Delta r$)};
+  \foreach \k in {1,2,3,4,5} {
+    \fill[col2] (0.88*\k, {0.85 + 0.60*(\k - 1)}) circle (1.8pt);
+  }
+
+  % Design A* flat path-invariant line at y = 0.85, label cleanly right of diagonal
+  \draw[col1, line width=1.4pt] (0.88,0.85) -- (4.40,0.85)
+    node[pos=0.82, above=5pt, font=\scriptsize] {$\DesignAStar$ ($\le K{-}1$ wei)};
+  \foreach \k in {1,2,3,4,5} {
+    \draw[col1, fill=white, line width=0.9pt] (0.88*\k,0.85) circle (1.8pt);
+  }
+
+  % Design D honest hold net cost = 0 at y = 0.16
+  \draw[col3, dotted, line width=1.45pt] (0.88,0.16) -- (4.40,0.16)
+    node[pos=0.62, above=3pt, font=\scriptsize] {$\DesignD$ (honest 7d hold: $0$)};
+
+  % X ticks 1..5
+  \foreach \k in {1,2,3,4,5} {
+    \draw[ink] (0.88*\k,0) -- (0.88*\k,-0.08) node[below=2pt, font=\scriptsize] {$\k$};
+  }
+  \draw[ink] (0,0.85) -- (-0.08,0.85) node[left=1pt, font=\scriptsize] {$1$};
+  \draw[ink] (0,3.25) -- (-0.08,3.25) node[left=1pt, font=\scriptsize] {$5$};
+\end{scope}
+\end{tikzpicture}
+\caption{Security and path-invariance comparison across cooldown fee rules. Panel~(a) plots total excess cost (normalized to honest seven-day holding cost) for a premature cut after a 980~bp spike ($\bar{r} = 1.51\%$, matching the March~6, 2026 wstETH event): status quo and $\DesignA$ permit an 84.0\% discount at 1.01 hours, whereas $\DesignAStar$ and $\DesignD$ eliminate in-place arbitrage identically; the dash-dotted line illustrates the flash-loan close-and-reopen ceiling on $\DesignAStar$ from Theorem~\ref{thm:flash}(i) that $\DesignD$ blocks. Panel~(b) shows cumulative fees across $K$ consecutive premature upward hikes: status quo inflates costs linearly in $K$, $\DesignAStar$ remains flat up to $K - 1$ wei rounding, and $\DesignD$ refunds 100\% of escrow on honest seven-day holds.}
+\label{fig:mechanisms}
+\end{figure}
+
+% =============================================================================
+\section{Delegated rate-management agency, impulse control, and atomic oligopoly}\label{sec:agency}
+
+\subsection{Contractual incidence and fee-base capitalization}\label{subsec:incidence}
+
+Delegation in Liquity~V2 operates on the liability side of the protocol balance sheet. Registered batch managers $m \in \{1, \dots, M\}$ manage pooled borrower debt $D_m > 0$ at a shared annual base rate $r_m \in [r_{\min}, r_{\max}]$ and collect an annual management fee $m_j \in (0, 0.10]$. When manager $m$ updates the batch rate prematurely ($\Delta t < P$) and triggers upfront fee $\Phi$, three contract rules in \texttt{BorrowerOperations.sol} govern financial incidence:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item Borrowers absorb 100\% of $\Phi$ through direct principal capitalization, updating debt to $D_m^+ = D_m + \Phi$.
+\item The manager pays 0\% of $\Phi$ directly, bearing only transaction gas $g_{\mathrm{tx}} > 0$.
+\item Ongoing management fees accrue on post-fee capitalized debt ($D_m^+ m_j > D_m m_j$), mechanically increasing the manager's annual fee stream by $+m_j \Phi$.
+\end{enumerate}
+
+At manager discount or attrition rate $\rho > r_m + m_j$, the simple present value of capitalized fee expansion is $+\mu_{\mathrm{pv}}\Phi$ with $\mu_{\mathrm{pv}} = m_j/\rho > 0$ (continuous compounding raises this strictly to $\frac{m_j}{\rho - (r_m + m_j)}\Phi$, so $\mu_{\mathrm{pv}} = m_j/\rho$ is a conservative lower bound). Let borrowers carry net per-dollar redemption cost $c_B = \tau_B - \phi > 0$. Manager $m$ evaluates recurring base interest with weight $\alpha_m^{\mathrm{int}} \in (0, 1]$, values upfront fees with effective weight $\alpha_m = \alpha_0 - \mu_{\mathrm{pv}} \in [-\mu_{\mathrm{pv}}, 1]$ (where $\alpha_0 \in [0, 1]$ captures indirect client attrition from silent principal growth), and suffers effective per-dollar redemption aversion $c_m = c_B + \gamma_m \ge c_B$ (where $\gamma_m \ge 0$ reflects reputational client flight upon a visible redemption hit). Under status quo ($\Phi_{\SQ} = D_m K$ with dimensionless unit fee $K = \bar{r}P/Y$), the manager's effective unit lump-sum adjustment cost is
+\begin{equation}\label{eq:keff}
+K_{\mathrm{eff}}(\alpha_m) = \alpha_m K + \frac{g_{\mathrm{tx}}}{D_m}.
+\end{equation}
+Notice that $\alpha_m$ turns strictly negative whenever indirect attrition $\alpha_0$ falls below $m_j/\rho$.
+
+\subsection{Asymmetric cooldown dynamics and borrower-dominated hikes}\label{subsec:impulse}
+
+\begin{theorem}[Asymmetric cooldown behavior, impulse control, and dominated hikes]\label{thm:agency_impulse}
+Under status quo fixed cooldown fee $K = \bar{r}P/Y$:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Downward stickiness and 168-hour cut bunching.} At elapsed time $t \in (0, P)$ (remaining cooldown $\tau = P - t$ seconds), suppose the target rate falls by $\Delta_\downarrow = r_0 - r_{\mathrm{target}} > 0$ ($\mathrm{yr}^{-1}$) below $r_0$ and cutting early weakly increases annualized redemption hazard by $\delta\lambda_{\mathrm{cut}} \ge 0$ ($\mathrm{yr}^{-1}$). For a borrower-aligned controller ($\alpha_m = \alpha_m^{\mathrm{int}} = 1$, $c_m = c_B$), cutting prematurely dominates waiting $\tau$ for the free boundary $t = P$ if and only if
+\begin{equation}\label{eq:cut_bunch}
+\Delta_\downarrow > \bar{r}\cdot\frac{P}{P - t} + c_B\,\delta\lambda_{\mathrm{cut}} + \frac{Y\,g_{\mathrm{tx}}}{D_m(P - t)}.
+\end{equation}
+Because $\bar{r}P/(P - t) \to +\infty$ as $t \uparrow P$, bounded rate declines create a strict missing-mass hole before $P$ and a Dirac bunching spike at $t = P^+$ (168 hours).
+\item \emph{Continuous-time $(S,s)$ impulse control and cubic-root fee blow-up.} In the active-cooldown regime ($\Lambda^* \gg 1/P$), let rate mismatch $x_t = r^*(t) - r_m(t)$ evolve as Brownian motion $dx_t = \sigma\,dB_t$ ($\sigma > 0$) with symmetric linear flow misalignment cost $h_1|x|$ per dollar-year ($h_1 > 0$). Whenever $K_{\mathrm{eff}} > 0$, the stationary Hamilton--Jacobi--Bellman (HJB) quasi-variational inequality admits a unique closed-form symmetric inaction band $b^*$ ($\mathrm{yr}^{-1}$) and adjustment frequency $\Lambda^*$ ($\mathrm{yr}^{-1}$):
+\begin{equation}\label{eq:hjb_band}
+b^* = \left(\frac{6\,\sigma^2 K_{\mathrm{eff}}}{h_1}\right)^{1/3}, \qquad \Lambda^* = \frac{\sigma^2}{(b^*)^2} = \left(\frac{h_1^2 \sigma^2}{36\,K_{\mathrm{eff}}^2}\right)^{1/3},
+\end{equation}
+inducing annualized borrower upfront-fee burn
+\begin{equation}\label{eq:fee_burn}
+K\,\Lambda^* = K\left(\frac{h_1^2 \sigma^2}{36\,(\alpha_m K + g_{\mathrm{tx}}/D_m)^2}\right)^{1/3} \propto \alpha_m^{-2/3} \xrightarrow{\alpha_m \downarrow 0^+} K\left(\frac{h_1^2 \sigma^2 D_m^2}{36\,g_{\mathrm{tx}}^2}\right)^{1/3}.
+\end{equation}
+\item \emph{Strictly borrower-dominated premature hikes near the notch.} Consider a premature hike $\Delta r > 0$ at remaining cooldown $\tau = P - t \in (0, P)$ seconds reducing annualized redemption hazard by $\Delta\lambda \ge 0$. Define the borrower and manager waiting-dominance horizons (in seconds)
+\begin{equation}\label{eq:tau_dom}
+\tau_{\mathrm{dom}}^B = \frac{Y\,K}{(c_B \Delta\lambda - \Delta r)_+}, \qquad \tau_{\mathrm{dom}}^m = \frac{Y\,\max(0,\, \alpha_m K + g_{\mathrm{tx}}/D_m)}{(c_m \Delta\lambda - \alpha_m^{\mathrm{int}}\Delta r)_+},
+\end{equation}
+with $a/0_+ = +\infty$ for $a > 0$ and $0/0_+ = 0$. Whenever \textup{(a)} $\alpha_m K + g_{\mathrm{tx}}/D_m < K$ (or $\alpha_m K + g_{\mathrm{tx}}/D_m \le K$ with $c_m \Delta\lambda - \alpha_m^{\mathrm{int}}\Delta r > (c_B\Delta\lambda - \Delta r)_+$) and \textup{(b)} $(c_m \Delta\lambda - \alpha_m^{\mathrm{int}}\Delta r)P/Y > \alpha_m K + g_{\mathrm{tx}}/D_m$ (equivalently $\tau_{\mathrm{dom}}^m < P$), the open interval $(\tau_{\mathrm{dom}}^m,\, \min(P, \tau_{\mathrm{dom}}^B)) \subset (0, P)$ is nonempty. For every $\tau$ in this interval, the manager strictly profits from hiking prematurely while waiting $\tau$ for the free boundary strictly dominates for borrowers.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof of Part~(ii)]
+Following \citet{harrison1983sellke}, on the continuation region $(0, b)$, the differential value function $V$ and long-run average cost rate $\gamma^*$ satisfy $\frac{1}{2}\sigma^2 V''(x) + h_1 x = \gamma^*$ with symmetry $V'(0) = 0$. Integrating once yields $\frac{1}{2}\sigma^2 V'(x) = \gamma^* x - \frac{1}{2}h_1 x^2$. Smooth pasting $V'(b) = 0$ pins down $\gamma^* = \frac{1}{2}h_1 b$. Integrating again over $[0, b]$ gives $\frac{1}{2}\sigma^2[V(b) - V(0)] = \frac{1}{12}h_1 b^3$. Value matching $V(b) - V(0) = K_{\mathrm{eff}}$ solves directly to $b^* = (6\sigma^2 K_{\mathrm{eff}}/h_1)^{1/3}$. Because $V'(x) = (h_1/\sigma^2)x(b^* - x) > 0$ on $(0, b^*)$, we have $V(x) < V(0) + K_{\mathrm{eff}}$ inside the band, while $\gamma^* - h_1|x| < 0$ outside verifies optimality of immediate reset. Standard Brownian exit time from $(-b^*, b^*)$ equals $(b^*)^2/\sigma^2$, yielding $\Lambda^* = \sigma^2/(b^*)^2$ and borrower burn~\eqref{eq:fee_burn}. Proofs of Parts~(i) and~(iii) appear in Appendix~\ref{app:proofs}.
+\end{proof}
+
+Three comparative remarks sharpen Theorem~\ref{thm:agency_impulse}. First, if $\alpha_m < -g_{\mathrm{tx}}/(D_m K)$, then $K_{\mathrm{eff}} < 0$ and unconstrained optimization degenerates to boundary churning at the contract's one-hour minimum rate-change period. Second, the distortion persists under alternative flow costs: quadratic misalignment $h_0 x^2$ gives $b^*_q = (6\sigma^2 K_{\mathrm{eff}}/h_0)^{1/4}$ and burn $\propto \alpha_m^{-1/2}$, while deterministic drift $\mu > 0$ with linear cost gives $b^*_d = \sqrt{2\mu K_{\mathrm{eff}}/h_1}$ and burn $\propto \alpha_m^{-1/2}$. Third, the directional asymmetry in~\eqref{eq:cut_bunch} and~\eqref{eq:tau_dom} explains the mainnet notch evidence of \citet{companion2026} (grounded in \citealp{kleven2013using}): cuts wait strictly for 168 hours, while manager hikes frequently cross into the near-notch dominated region.
+
+\subsection{Agency invariance of Design A* and singular control}\label{subsec:agency_astar}
+
+\begin{theorem}[Agency invariance of $\DesignAStar$ and singular-control collapse]\label{thm:agency_astar}
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Staircase savings and singular-control variational inequality.} Let a manager with arbitrary preferences $(\alpha_m, \alpha_m^{\mathrm{int}}, \gamma_m)$ execute any $K$-step premature upward staircase $r_0 < r_1 < \dots < r_K$ inside $P$ on fixed debt $D_m$. Replacing $\Phi_{\SQ}$ with $\DesignAStar$ reduces cumulative borrower fees by
+\begin{equation}\label{eq:agency_savings}
+\Phi_{\SQ}^{\mathrm{tot}} - \Phi^{*,\mathrm{tot}} = D_m\bigl(K\bar{r} - (r_K - r_0)\bigr)\frac{P}{Y},
+\end{equation}
+strictly positive whenever $r_K - r_0 < K\bar{r}$ regardless of $(\alpha_m, \gamma_m)$. In continuous-time control, replacing lump-sum $K$ with proportional upward cost $p_{\mathrm{inc}} = P/Y$ eliminates the fixed-cost distortion ($K_{\mathrm{fixed}} = 0$) and collapses the HJB quasi-variational inequality into the exact singular-control cost-minimization variational inequality \citep{harrison1983instantaneous}:
+\begin{equation}\label{eq:singular_vi}
+\min\Bigl\{\mathcal{L}V(x) + h_1|x| - \gamma^*,\;\; \alpha_m p_{\mathrm{inc}} - V'(x)\Bigr\} = 0 \qquad (x \ge 0),
+\end{equation}
+where $\mathcal{L}V = \frac{1}{2}\sigma^2 V''$. Along any finite-variation nondecreasing upward path, cumulative borrower fee equals $p_{\mathrm{inc}}(R_T - R_0)$ independently of step count $K$, eliminating the $\alpha_m^{-2/3}$ staircase blow-up.
+\item \emph{Near-notch attenuation.} For any near-notch premature hike $\Delta r \ll \bar{r}$, $\DesignAStar$ scales down the borrower charge by exact factor $\Delta r/\bar{r}$ (a 99.81\% reduction on a 1~bp premature hike at $\bar{r} = 5.26\%$).
+\item \emph{Structural dominance over client-side controllers.} Under status quo, every client-side smoothing filter faces an unavoidable trade-off among rate deficits (and queue mis-sorting deadweight loss per Proposition~\ref{prop:recycling}), extra recurring interest from persistent overstepping, and minimum-change-period permission conflicts from scheduled reversion, and remains incentive-incompatible for voluntary adoption whenever $\alpha_m \le 0$. Protocol-level $\DesignAStar$ enforces~\eqref{eq:agency_savings} unconditionally in immutable bytecode with zero rate deficit, zero extra recurring interest, zero permission conflicts, and zero extra storage slots.
+\end{enumerate}
+\end{theorem}
+
+While $\DesignAStar$ eliminates upward-staircase multiplication completely, rapid small-amplitude up-and-down oscillations by $\alpha_m \le 0$ bots are curbed further by pairing $\DesignAStar$ with the contractual co-pay derived in Subsection~\ref{subsec:copay}.
+
+\subsection{Atomic Edgeworth leapfrogging under LIFO tie-breaking}\label{subsec:leapfrog}
+
+Because batch managers control large discrete blocks of debt (with the top three Liquity~V2 managers controlling over half of managed debt in \citealp{companion2026}), they interact as atomic oligopolists in the redemption queue. Consider $M = 2$ atomic managers with positive debt shares $w_1, w_2 > 0$ ($W = w_1 + w_2 \le 1$, debt $D_m = w_m D$) positioned above sticky unbatched debt mass $u = 1 - W$ during a redemption stress wave of duration $T_{\mathrm{wave}} > 0$ (in years). An atomic batch of share $w_m$ starting at normalized queue depth $s$ occupies $[s D, (s + w_m)D]$ and incurs exact batch-integral annualized hazard
+\[
+\bar{\lambda}(s, w_m) = \frac{1}{w_m D}\int_{s D}^{(s + w_m)D} \lambda(q)\,dq.
+\]
+Moving from below rival $-m$ (depth $u D$) to strictly above rival $-m$ (depth $(u + w_{-m})D$) reduces annualized hazard by $\Delta\bar{\lambda}_m = \bar{\lambda}(u, w_m) - \bar{\lambda}(u + w_{-m}, w_m) > 0$. Define manager $m$'s annualized net leapfrogging surplus ($\mathrm{yr}^{-1}$):
+\begin{equation}\label{eq:delta_jump}
+\Delta_{\mathrm{jump}, m} = c_m\,\Delta\bar{\lambda}_m - \frac{\alpha_m K + g_{\mathrm{tx}}/D_m}{T_{\mathrm{wave}}}.
+\end{equation}
+
+\begin{theorem}[Atomic Edgeworth leapfrogging and fee collapse under $\DesignAStar$]\label{thm:leapfrog}
+Under Liquity~V2's LIFO tie-breaking rule (\texttt{SortedTroves.sol}):
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Non-existence of pure-strategy static Nash equilibrium.} In the continuous-rate game on $[r^{(0)}, \infty)^2$, no pure-strategy static Nash equilibrium exists whenever $\Delta_{\mathrm{jump}, m} > 0$ for both $m \in \{1, 2\}$. On a discrete $\varepsilon$-tick grid $\{r^{(0)} + k\varepsilon : k \in \Z_{\ge 0}\}$ ($\varepsilon > 0$), no pure-strategy static Nash equilibrium exists if and only if
+\begin{equation}\label{eq:grid_iff}
+\Delta_{\mathrm{jump}, m} > 2\varepsilon \qquad \textup{for both } m \in \{1, 2\}.
+\end{equation}
+Condition~\eqref{eq:grid_iff} is tight: whenever $\Delta_{\mathrm{jump}, 1} \le 2\varepsilon$ and $\Delta_{\mathrm{jump}, 2} > \varepsilon$, the asymmetric pair $(r^{(0)}, r^{(0)} + \varepsilon)$ is a pure static Nash equilibrium (and symmetrically $(r^{(0)} + \varepsilon, r^{(0)})$ when $\Delta_{\mathrm{jump}, 2} \le 2\varepsilon$ and $\Delta_{\mathrm{jump}, 1} > \varepsilon$), while if $\Delta_{\mathrm{jump}, m} \le \varepsilon$ for some $m \in \{1, 2\}$, the tied profile $(r^{(0)}, r^{(0)})$ placing manager $m$ at the front of the LIFO tie is a pure static Nash equilibrium.
+\item \emph{Dynamic alternating Edgeworth staircase.} Under asynchronous best response on the $\varepsilon$-grid satisfying~\eqref{eq:grid_iff}, starting from $(r^{(0)}, r^{(0)})$, Managers~1 and~2 execute an alternating upward staircase (an initial $+\varepsilon$ jump followed by alternating $+2\varepsilon$ overbids) up to reset ceiling $r_{\mathrm{ceil}} = r^{(0)} + \min_{m \in \{1, 2\}} \Delta_{\mathrm{jump}, m}$ in $N_{\mathrm{leap}} = \lfloor (r_{\mathrm{ceil}} - r^{(0)})/\varepsilon \rfloor$ total steps ($n_1 + n_2 = N_{\mathrm{leap}}$, $|n_1 - n_2| \le 1$), followed by synchronized downward drops after cooldown $P$ expires \citep{maskin1988theory}.
+\item \emph{Collapse of leapfrogging fee externality under $\DesignAStar$.} If the cycle occurs inside cooldown window $P$, status quo charges $\Phi_{\SQ}^{\mathrm{leap}} = (n_1 D_1 + n_2 D_2)\bar{r}P/Y$ (linear in $N_{\mathrm{leap}}$), whereas $\DesignAStar$ telescopes each manager's trajectory to
+\begin{equation}\label{eq:leap_astar}
+\Phi^{*,\mathrm{leap}} = \Bigl[D_1\bigl(r_1^{(n_1)} - r^{(0)}\bigr) + D_2\bigl(r_2^{(n_2)} - r^{(0)}\bigr)\Bigr]\frac{P}{Y} \le (D_1 + D_2)\bigl(r_{\mathrm{ceil}} - r^{(0)}\bigr)\frac{P}{Y},
+\end{equation}
+independent of $N_{\mathrm{leap}}$ and $\varepsilon$. For symmetric batches ($D_1 = D_2 = D_0$) and even $N_{\mathrm{leap}} = 2n \ge 2$ ($n_1 = n_2 = n$), the exact fee-inflation ratio satisfies
+\begin{equation}\label{eq:leap_ratio}
+\frac{\Phi_{\SQ}^{\mathrm{leap}}}{\Phi^{*,\mathrm{leap}}} = \frac{2n\,\bar{r}}{(4n - 1)\varepsilon} > \frac{\bar{r}}{2\varepsilon} \qquad \textup{strictly}.
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+At mainnet parameters ($\bar{r} = 356$~bp, median step $\varepsilon = 20$~bp), the strict lower bound $\bar{r}/(2\varepsilon)$ equals $8.9\times$. Notice also an immediate structural implication for manager market structure.
+
+\begin{corollary}[Consolidation versus market power]\label{cor:consolidation}
+Merging Managers~1 and~2 internalizes bilateral queue leapfrogging (collapsing $N_{\mathrm{leap}}$ premature updates to one), at the cost of allowing oligopolistic management-fee extraction $m_j$ up to borrowers' self-management monitoring cost $\psi$.
+\end{corollary}
+
+\subsection{Drain-proof manager co-pays and self-funding feasibility}\label{subsec:copay}
+
+Eliminating the fee-base inflation bug (computing management fees on pre-fee debt $D_m$ instead of $D_m + \Phi$) removes the perverse negative shift $-\mu_{\mathrm{pv}}$, yet managers with $\alpha_0 < 1$ still externalize most premature charges onto borrowers. A natural contractual remedy requires the manager to co-pay share $\beta \in [0, 1]$ of any premature adjustment fee $\Phi$.
+
+In deployed Liquity~V2 (\texttt{ActivePool.sol}), however, \texttt{batchAccruedManagementFee} is automatically minted out to the manager's wallet on every batch interaction, including permissionless \texttt{applyPendingDebt} calls. A naive co-pay deducting $\beta \Phi$ from accrued on-chain fees can therefore be drained to zero one block before a rate update. Enforceable co-pay requires either direct caller pull inside \texttt{setBatchManagerAnnualInterestRate} (Option~C1, burning or routing $\beta \Phi$ directly from \texttt{msg.sender} with zero added storage slots) or an internal manager fee-escrow mapping with a $P$-day withdrawal delay (Option~C2), paired with non-inflating fee-base accounting.
+
+\begin{theorem}[Contractual co-pay alignment and limited-liability feasibility]\label{thm:copay}
+Under non-inflating fee-base accounting and drain-proof contractual co-pay $\beta \in [0, 1]$, let $\alpha_0 \in [0, 1)$ denote baseline internalization, $K = \Phi/D_m$ the dimensionless unit fee, and $g_{\mathrm{tx}}$ gas cost:
+\begin{enumerate}[label=(\roman*), leftmargin=2.2em, itemsep=2pt]
+\item \emph{Linear internalization gain and burn reduction.} Effective fee internalization rises from $\alpha_{\SQ} = \alpha_0 - m_j/\rho$ to $\alpha_{\mathrm{eff}}(\beta) = \beta + (1 - \beta)\alpha_0 = \alpha_0 + \beta(1 - \alpha_0) \in [\alpha_0, 1]$, widening the $(S,s)$ band $b^*(\beta) \propto K_{\mathrm{eff}}(\beta)^{1/3}$ and scaling borrower fee burn down by exact factor $(1 - \beta)\bigl(K_{\mathrm{eff}}(0)/K_{\mathrm{eff}}(\beta)\bigr)^{2/3} < 1$.
+\item \emph{Exact alignment thresholds.} In the zero-reputation-wedge benchmark ($c_m = c_B$, $\alpha_m^{\mathrm{int}} = 1$), all strictly borrower-dominated premature hikes are eliminated if and only if $\beta \ge \beta^*_{\mathrm{pure}}$, where
+\begin{equation}\label{eq:beta_pure}
+\beta^*_{\mathrm{pure}} = \max\!\left(0,\; 1 - \frac{g_{\mathrm{tx}}}{(1 - \alpha_0) D_m K}\right) \in [0, 1).
+\end{equation}
+In the general reputation-wedge case ($c_m = c_B + \gamma_m > c_B$), for any target region $[0, \tau_0] \times [0, \bar{\lambda}_0]$ ($\tau_0 \in (0, P)$ seconds, $\bar{\lambda}_0$ in $\mathrm{yr}^{-1}$) at step $\Delta r$, define
+\begin{equation}\label{eq:beta_general}
+\tilde{\beta}(\tau_0, \bar{\lambda}_0, \Delta r) = \frac{\bigl[(c_m \bar{\lambda}_0 - \alpha_m^{\mathrm{int}}\Delta r)\tau_0/Y - g_{\mathrm{tx}}/D_m\bigr]/K - \alpha_0}{1 - \alpha_0}.
+\end{equation}
+A co-pay $\beta \in [0, 1]$ eliminates all premature hikes in that region if and only if $\tilde{\beta} \le 1$ and $\beta \ge \max(0, \tilde{\beta})$. Whenever $\tilde{\beta} > 1$, no co-pay $\beta \in [0, 1]$ suffices alone without an external slashable reputation bond.
+\item \emph{Self-funding limited-liability interaction with $\DesignAStar$.} Funding $\beta \Phi$ strictly from ongoing management-fee cash flow requires $\beta\,\bar{\phi}_{\mathrm{upf}} \le m_j$, capping feasible co-pay at $\beta_{\max} = \min(1, m_j/\bar{\phi}_{\mathrm{upf}})$.
+\end{enumerate}
+\end{theorem}
+
+The calibration in Part~(iii) is striking. On mainnet Liquity~V2 parameters \citep{companion2026}, high-churn manager M02 generates status quo upfront fees $\bar{\phi}_{\mathrm{upf}} = 4.18\%$ APR against management fee $m_j = 0.30\%$ APR, capping self-funded co-pay at $\beta_{\max}^{\SQ} = 0.30/4.18 = 7.2\%$. Under $\DesignAStar$, an 89\% static staircase reduction lowers M02's upfront burden to $0.46\%$ APR, expanding its self-funded co-pay ceiling 9.1-fold to $\beta_{\max}^{A^*} = 0.30/0.46 = 65.2\%$. For moderate-churn manager M01 ($1.65\%$ APR falling to $0.18\%$ APR against $m_j = 0.30\%$), the ceiling expands from 18.2\% to 100\%. Mechanism reform and contractual alignment reinforce one another directly. Figure~\ref{fig:agency} summarizes the asymmetric cooldown regions and the $(S,s)$ fee-burn mechanics.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[>=Latex, font=\footnotesize]
+% Panel (a): Asymmetric cooldown notch (cut threshold vs dominated hike window)
+\begin{scope}[xshift=0cm]
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (5.15,0);
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (0,3.85);
+  \node[font=\footnotesize] at (2.58,-0.80) {Elapsed time $t$};
+  \node[left=2pt, font=\footnotesize] at (0,3.76) {$|\Delta r|$};
+  \node[anchor=west, font=\bfseries\small] at (0.12,3.72) {(a)};
+
+  % Missing-mass hole shading below cut curve
+  \fill[col2!12!white] (1.90,0) -- (3.92,0) -- (3.92,2.24) -- (2.94,2.24)
+    -- (2.45,1.49) -- (1.90,1.09) -- cycle;
+
+  % Vertical cooldown boundary at t = P (x = 3.92)
+  \draw[ink, dashed, line width=0.85pt] (3.92,0) -- (3.92,3.55);
+  \node[below=2pt, font=\scriptsize] at (3.92,0) {$P = 168\textup{h}$};
+
+  % Cut-bunching curve: Delta_down(t) = rbar * P / (P - t)
+  \draw[col2, dashed, line width=1.3pt, domain=0:2.94, samples=60]
+    plot (\x, {0.56 / (1 - \x/3.92)});
+
+  % Cut threshold label strictly left of blue dotted x = 1.78 (zero crossing)
+  \node[col2, font=\scriptsize, anchor=south west, align=left] at (0.10,1.16) {Cut bound\\$\bar{r}P/(P{-}t)$};
+
+  % Missing-mass hole label centered cleanly between x = 1.78 and x = 3.55 (zero crossing)
+  \node[col2, font=\scriptsize, align=center] at (2.66,0.52) {Cut missing-\\mass hole};
+
+  % Dirac bunching spike at t = P+
+  \draw[col3, line width=1.9pt, ->] (4.02,0) -- (4.02,3.35)
+    node[pos=0.90, right=2pt, font=\scriptsize, align=left] {Dirac cut\\bunching ($P^+$)};
+
+  % Near-notch borrower-dominated hike window on x-axis: [1.78, 3.55]
+  \draw[col1, densely dashdotted, line width=2.0pt] (1.78,0.03) -- (3.55,0.03);
+  \draw[col1, dotted, line width=0.8pt] (1.78,0) -- (1.78,2.42);
+  \draw[col1, dotted, line width=0.8pt] (3.55,0) -- (3.55,2.42);
+  \draw[col1, decorate, decoration={brace, amplitude=4pt}, line width=0.8pt]
+    (1.78,2.45) -- (3.55,2.45)
+    node[midway, above=5pt, xshift=-7pt, font=\scriptsize, align=center] {Dominated window\\$\tau \in (\tau_{\mathrm{dom}}^m, \tau_{\mathrm{dom}}^B)$};
+\end{scope}
+
+% Panel (b): (S,s) borrower fee burn vs manager internalization alpha_m (widened xshift = 7.60cm)
+\begin{scope}[xshift=7.60cm]
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (5.15,0);
+  \draw[ink, line width=0.8pt, ->] (0,0) -- (0,3.85);
+  \node[font=\footnotesize] at (2.58,-0.80) {Manager internalization $\alpha_m$};
+  \node[left=2pt, font=\footnotesize] at (0,3.76) {Fee burn};
+  \node[anchor=west, font=\bfseries\small] at (0.12,3.72) {(b)};
+
+  % Status Quo burn curve (clear separation above Design A*)
+  \draw[col2, dashed, line width=1.35pt, domain=0.30:4.45, samples=70]
+    plot (\x, {0.62 + 0.72 / ((\x/4.4 + 0.045)^(0.6667))});
+  \node[col2, font=\scriptsize, anchor=west] at (1.50,2.92) {Status quo ($\propto \alpha_m^{-2/3}$)};
+
+  % Design A* flat path-invariant bound at y = 0.42 with label cleanly above
+  \draw[col1, line width=1.4pt] (0.18,0.42) -- (4.45,0.42)
+    node[pos=0.58, above=3pt, font=\scriptsize] {$\DesignAStar$ singular control (bounded)};
+
+  % Co-pay shift arrow with lifted control point for extra air above vermillion curve
+  \fill[col3] (0.82,2.50) circle (2.0pt);
+  \fill[col3] (2.90,1.54) circle (2.0pt);
+  \draw[col3, densely dashdotted, line width=1.1pt, ->] (0.93,2.45) .. controls (1.92,2.14) .. (2.81,1.62)
+    node[pos=0.52, above right=2pt, font=\scriptsize] {Co-pay $\beta$};
+
+  \draw[ink] (0.82,0) -- (0.82,-0.08) node[below=2pt, font=\scriptsize] {$\alpha_0$};
+  \draw[ink] (2.90,0) -- (2.90,-0.08) node[below=2pt, font=\scriptsize] {$\alpha_{\mathrm{eff}}(\beta)$};
+  \draw[ink] (4.40,0) -- (4.40,-0.08) node[below=2pt, font=\scriptsize] {$1$};
+\end{scope}
+\end{tikzpicture}
+\caption{Delegated rate-management agency and structural remedies. Panel~(a) plots the diverging downward cut threshold $\bar{r}P/(P-t)$ from Theorem~\ref{thm:agency_impulse}(i), producing a missing-mass hole before $P = 168$ hours and a Dirac bunching spike at $P^+$, juxtaposed against the near-notch borrower-dominated premature hike interval $\tau = P - t \in (\tau_{\mathrm{dom}}^m, \tau_{\mathrm{dom}}^B)$ from Theorem~\ref{thm:agency_impulse}(iii). Panel~(b) contrasts the $\alpha_m^{-2/3}$ status quo borrower fee-burn divergence under $(S,s)$ impulse control against the bounded singular-control cost of $\DesignAStar$ (Theorem~\ref{thm:agency_astar}) and the rightward internalization shift $\alpha_0 \to \alpha_{\mathrm{eff}}(\beta)$ induced by drain-proof manager co-pays (Theorem~\ref{thm:copay}).}
+\label{fig:agency}
+\end{figure}
+
+% =============================================================================
+\section{Mechanized Lean 4 formalization and compiled Solidity verification}\label{sec:verification}
+
+Economic theorems for immutable smart contracts carry two distinct implementation risks: subtle omissions in edge-case hypotheses (such as same-block zero-elapsed transitions, accrued-interest compounding underflow, or lazy batch-state clobbering) and discrepancies between real-valued mechanism formulas and 256-bit integer EVM execution. Following the formal economic security methodology of \citet{bartoletti2025lean,bartoletti2026comp}, we close both gaps by certifying the mathematical results in Lean~4 and compiling, benchmarking, and fuzzing all five contract variants in Foundry under pinned Solidity~0.8.24.
+
+\subsection{Machine-checked Lean 4 theorems and kernel axiom footprint}\label{subsec:lean}
+
+The Lean~4 formalization spans eight files totaling 3,752 lines (root export \texttt{LiquityV2.lean} plus seven proof modules) and proves 113 public theorems and lemmas with zero compiler warnings, zero \texttt{sorry} placeholders, and zero \texttt{native\_decide} or custom axioms. Checking every one of the 113 public theorems and lemmas across all seven proof modules via \texttt{\#print axioms} confirms that the entire development depends strictly on the three standard Lean kernel foundations: \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+
+Table~\ref{tab:lean} maps each Lean module to the paper's theorems and exact certified declarations. Three design choices deserve emphasis. First, \texttt{ReverseQueue.lean} certifies discrete finite-type equilibrium global incentive compatibility across pooled absorber pools ($k_0 \ge 1$), weighted Chebyshev sorting efficiency, unique macro peg-defense fixed points, two-sided yield-recycling deadweight loss, and exact continuous GPV identification. Second, \texttt{DesignAStar.lean} proves global pointwise-minimal uniqueness directly from strictly increasing micro-hikes ($r_0 < y < r_1$ as $y \downarrow r_0$) and right no-op continuity without assuming time independence or zero-change resets, and certifies all exact \texttt{uint256} integer rounding bounds ($\le K - 1$ wei staircase, $\le 2$ wei floor cut, $\le 1$ wei \texttt{ceilDiv}, $0$ wei \texttt{ceilDiv}+1, $\le 1$ wei Sybil split, and strict non-overflow $D r P < 2^{256}$ up to $7.658 \times 10^{52}$ wei). Third, \texttt{FlashLoanEscrow.lean} and \texttt{DelegationAgency.lean} certify the complete stateful $\DesignD$ coverage invariant under continuous debt compounding (proving zero underflow on scale-invariant cuts and zero dilution on partial repayments), the exact discrete $\varepsilon$-grid LIFO leapfrogging equivalence ($\Delta_{\mathrm{jump}, m} > 2\varepsilon$), and the strict leapfrogging fee-collapse inequality~\eqref{eq:leap_ratio}.
+
+\begin{table}[t]
+\centering
+\begin{threeparttable}
+\caption{Mechanized Lean~4 formalization inventory and theorem correspondence.}
+\label{tab:lean}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l r >{\raggedright\arraybackslash}p{2.7cm} >{\raggedright\arraybackslash}p{8.5cm}@{}}
+\toprule
+Module & Thms & Paper results & Key certified Lean declarations \\
+\midrule
+\texttt{Defs.lean} & 10 & Sec.~\ref{sec:cooldown}, Thm.~\ref{thm:astar}(iv) &
+{\scriptsize\texttt{calcInterestNat\_eq\_single\_div}, \texttt{calcInterestNat\_no\_overflow}, \texttt{calcInterestCeilSafeNat\_eq\_calcInterestCeilNat}} \\
+\addlinespace[3pt]
+\texttt{ReverseQueue.lean} & 24 & Thms.~\ref{thm:eq}--\ref{thm:gpv}, Prop.~\ref{prop:recycling} &
+{\scriptsize\texttt{absorber\_strictly\_optimal\_at\_rMin}, \texttt{discreteEqRatePooled\_isIC}, \texttt{sorting\_efficiency\_weighted\_chebyshev}, \texttt{peg\_defense\_exists\_unique}, \texttt{two\_sided\_sp\_recycling\_dwl}, \texttt{gpv\_continuous\_identification}} \\
+\addlinespace[3pt]
+\texttt{CooldownFees.lean} & 10 & Thm.~\ref{thm:failures} &
+{\scriptsize\texttt{statusQuo\_staircase\_inflation}, \texttt{statusQuo\_spike\_and\_cut\_arbitrage}, \texttt{designA\_spike\_and\_cut\_failure}, \texttt{mainnet\_2026\_03\_06\_wstETH\_exploit}} \\
+\addlinespace[3pt]
+\texttt{DesignAStar.lean} & 26 & Thm.~\ref{thm:astar}(i)--(iv) &
+{\scriptsize\texttt{designAStar\_global\_lower\_bound\_from\_strict\_micro\_hikes}, \texttt{designAStar\_unique\_minimal}, \texttt{designAStar\_multi\_cut\_superadditive}, \texttt{designAStarFeeNat\_cut\_floor\_bound}, \texttt{designAStarFeeCeilPlusOneNat\_zero\_total\_shortfall}} \\
+\addlinespace[3pt]
+\texttt{FlashLoanEscrow.lean} & 21 & Thm.~\ref{thm:flash}(i)--(iii) &
+{\scriptsize\texttt{flash\_loan\_reopen\_impossibility}, \texttt{designD\_blocks\_flash\_loan\_reopen}, \texttt{designD\_pure\_cut\_zero\_underflow\_and\_invariant}, \texttt{designD\_withdrawBold\_stateful\_blocks\_bypass}, \texttt{activation\_delay\_blocks\_atomic\_jit}} \\
+\addlinespace[3pt]
+\texttt{DelegationAgency.lean} & 14 & Thms.~\ref{thm:agency_impulse}--\ref{thm:copay} &
+{\scriptsize\texttt{cut\_bunching\_threshold}, \texttt{dominated\_near\_notch\_hike\_exists}, \texttt{copay\_eliminates\_dominated\_hikes}, \texttt{leapfrogging\_discrete\_grid\_no\_pure\_nash\_iff}, \texttt{designAStar\_collapses\_leapfrog\_fee\_exact}} \\
+\addlinespace[3pt]
+\texttt{Main.lean} & 8 & Unified exports &
+{\scriptsize\texttt{main\_reverse\_queue\_equilibrium\_and\_ge}, \texttt{main\_designAStar\_security\_and\_uniqueness}, \texttt{main\_designAStar\_evm\_uint256\_bounds}, \texttt{main\_flash\_loan\_impossibility\_and\_designD}} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes.} Complete development totals 3,752 lines across eight Lean~4 files (including root import \texttt{LiquityV2.lean}) and 113 public theorems/lemmas with zero warnings, zero \texttt{sorry}, and zero \texttt{native\_decide}. Auditing every one of the 113 public theorems and lemmas across all seven proof modules via \texttt{\#print axioms} confirms strict dependence on \texttt{[propext, Classical.choice, Quot.sound]}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Compiled Solidity storage layout, gas benchmarks, and stateful fuzzing}\label{subsec:solidity}
+
+To verify EVM deployability, storage compatibility, and adversarial resistance under actual 256-bit execution, we implement all five mechanism variants (\texttt{StatusQuo}, \texttt{DesignA}, \texttt{DesignAStar}, \texttt{DesignD}, and \texttt{CoPay}) over a shared 11-slot \texttt{LiquityV2CoreBase} contract matching deployed Liquity~V2 accounting verbatim, compiled under Foundry (\texttt{forge 1.10.0}) with pinned \texttt{solc 0.8.24}, EVM target \texttt{shanghai}, optimizer enabled at 200 runs, and \texttt{forge build --deny warnings} exiting with zero warnings and zero errors. In addition, an upstream unified diff (\texttt{LiquityV2FeePatch.diff}) applies cleanly (\texttt{patch --dry-run} exit code~0) against mainnet \texttt{WETH\_Borrower\allowbreak Operations.sol} across all five rate-transition entry points: \texttt{adjustTrove\allowbreak InterestRate}, \texttt{setBatchManager\allowbreak AnnualInterestRate}, \texttt{setInterest\allowbreak BatchManager}, \texttt{switchBatch\allowbreak Manager} (which records the vault's pre-removal cooldown timestamp before \texttt{removeFromBatch} stamps the current block so honest post-cooldown switches incur zero false cut penalty), and \texttt{\_removeFromBatch}.
+
+Storage costs remain unchanged under $\DesignAStar$. Inspecting compiler storage layouts confirms that \texttt{DesignA\allowbreak BorrowerOps}, \texttt{DesignAStar\allowbreak BorrowerOps}, and \texttt{CoPay\allowbreak BorrowerOps} occupy the exact 11 storage slots of \texttt{StatusQuo\allowbreak BorrowerOps} with byte-for-byte identical slot offsets. \texttt{DesignD\allowbreak BorrowerOps} adds exactly three mapping base slots (\texttt{troveBonds}, \texttt{batchBonds}, and \texttt{batchCuts}), packing every active position's \texttt{RateBond} struct into one 32-byte (256-bit) slot without padding ({\small\texttt{uint104 lockedBond}}, {\small\texttt{uint64 highWaterRate}}, {\small\texttt{uint40 lastUpdateTime}}, {\small\texttt{uint24 remainingTime}}, and {\small\texttt{uint24 startCutIdx}}) and recording each downward batch cut in an append-only 32-byte \texttt{CutEvent} entry ({\small\texttt{uint64 newRate}}, {\small\texttt{uint40 cutTime}}, and {\small\texttt{uint40 coveredBefore}}) to prevent lazy-sync timestamp clobbering across no-op refreshes, multi-step cuts, re-hikes, and same-block atomic opens. Runtime bytecode for \texttt{DesignD\allowbreak BorrowerOps} compiles to 22,767 bytes, leaving 1,809 bytes of headroom below the 24,576-byte EIP-170 deployment ceiling (and 25,379 initcode bytes versus the 49,152-byte EIP-3860 limit).
+
+\begin{table}[t]
+\centering
+\begin{threeparttable}
+\caption{Compiled Solidity~0.8.24 storage layout, isolated warm-state gas benchmarks, and exploit reproductions.}
+\label{tab:solidity}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l r r r r r@{}}
+\toprule
+\multicolumn{6}{@{}l}{\textit{Panel A: Storage footprint, EIP-170 runtime bytecode, and isolated warm-state gas (gasleft)}} \\
+\midrule
+Metric / Operation & Status Quo & Design A & $\DesignAStar$ & $\DesignD$ & Co-Pay (50\%) \\
+\midrule
+Storage slots (delta vs.\ SQ) & 11 (0) & 11 (0) & 11 (0) & 14 (+3) & 11 (0) \\
+Runtime bytecode (B; limit 24,576) & 14,523 & 14,561 & 15,009 & 22,767 & 15,463 \\
+Deployment gas & 3,658,237 & 3,666,451 & 3,763,380 & 5,440,260 & 3,861,764 \\
+\addlinespace[3pt]
+\texttt{openTrove} (solo, 2.0\% APR) & 245,792 & 245,792 & 245,792 & 282,301 & 245,792 \\
+Batch hike (post-cd, 2\%$\to$10\%) & 118,617 & 118,617 & 118,595 & 164,933 & 121,120 \\
+Batch hike (prem., 10\%$\to$12\%, 1h) & 109,403 & 107,377 & 107,466 & 129,483 & 149,509 \\
+Batch cut (prem., 12\%$\to$2\%, 1h) & 109,391 & 109,416 & 107,528 & 183,953 & 146,782 \\
+Solo hike (prem., 10\%$\to$12\%, 1h) & 95,183 & 93,157 & 93,356 & 113,225 & 93,232 \\
+Solo cut (prem., 12\%$\to$2\%, 1h) & 95,170 & 95,195 & 93,417 & 122,626 & 93,305 \\
+\texttt{repayBold} (partial, 12s after hike) & 91,546 & 91,546 & 91,546 & 116,256 & 91,546 \\
+\texttt{closeTrove} (honest / prem.) & 103,382 & 103,382 & 103,382 & 120,421 / 126,292 & 103,382 \\
+\addlinespace[6pt]
+\multicolumn{6}{@{}l}{\textit{Panel B: Deterministic exploit reproductions (BOLD cost or forfeiture) and fuzz verification}} \\
+\midrule
+Attack / Stress Scenario & Status Quo & Design A & $\DesignAStar$ & $\DesignD$ & Key outcome \\
+\midrule
+2026-03-06 wstETH cut (7.98M) & 2,306.64 & 2,306.64 & 14,917.16 & 14,916.98 & SQ/A: 84.62\% disc. \\
+2026-03-06 WETH cut (1.79M) & 1,290.60 & 1,290.60 & 3,341.96 & 3,341.90 & SQ/A: 61.61\% disc. \\
+5-step +20~bp staircase (5M) & 13,284.87 & 959.47 & 959.47 & 0.00 (7d) & SQ: 13.85$\times$ infl. \\
+Flash-loan close+reopen (5M) & Bypassed & Bypassed & 5,219.47 & 19,131.24 & Blocked (100\% ref.) \\
+Zero-flash batch-join (250\%) & 1,787.16 & 1,787.16 & 239,353.79 & Blocked & All 4 paths guarded \\
+Dormant 2k + \texttt{withdrawBold} & Bypassed & Bypassed & Bypassed & 479,706.69 & Escrow on debt add \\
+99.96\% partial \texttt{repayBold} & No escrow & No escrow & No escrow & 18,701.46 & Zero-dilution forfeit \\
+Fresh \texttt{openTrove}(250\%) 1h & Bypassed & Bypassed & Bypassed & 239,798.31 & Initial lock blocks \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \textit{Notes.} Compiled under Foundry (\texttt{forge 1.10.0}), pinned \texttt{solc 0.8.24}, EVM target \texttt{shanghai}, 200 optimizer runs, zero warnings. Panel~A measures isolated \texttt{gasleft()} on identical warm branch state (10M BOLD background vault plus 5M BOLD target vault/batch at \$2,500 collateral price). Relative to Status Quo, $\DesignAStar$ saves 1,937 gas on premature batch hikes, 1,863 gas on premature batch cuts, 1,827 gas on solo hikes, 1,753 gas on solo cuts, and 22 gas on post-cooldown batch hikes, while adding 0 gas to \texttt{openTrove}, \texttt{repayBold}, and \texttt{closeTrove}. Across the full test suite, all 44 tests pass (25 deterministic exploit/regression tests, 6 storage/gas tests, and 13 differential fuzz invariants executed for 32,500 default runs and 130,000 intense runs under seed \texttt{0x4c6971756974795632} with zero failures). In production Liquity~V2 (\texttt{ActivePool.sol}), co-pay inflows and forfeited escrow route directly to the Stability Pool and interest router instead of burning without debt reduction, preserving the supply-debt accounting identity.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Table~\ref{tab:solidity} reports exact storage layouts, isolated warm-state gas costs, and deterministic exploit outcomes. Two systems findings stand out. First, $\DesignAStar$ is strictly cheaper in execution gas than the deployed status quo on every premature rate update ($-1{,}937$ gas on batch hikes, $-1{,}863$ gas on batch cuts, $-1{,}827$ gas on solo hikes, and $-1{,}753$ gas on solo cuts), because eliminating branch-average dependence removes the aggregate interest-rate lookup (and avoids an external \texttt{STATICCALL} to \texttt{ActivePool} on mainnet). Second, stateful fuzzing across 13 independent properties and 130,000 intense runs directly improved contract security: during randomized partial-repayment testing at 250\% APR, the fuzzer exposed a compounding dilution error in naive ratio-based forfeiture ($\mathrm{unvested} \times \Delta D / D_{\mathrm{curr}}$) when accrued interest swells $D_{\mathrm{curr}}$, motivating the zero-dilution capped formula~\eqref{eq:designD_repay} that subsequently passed all 10,000 randomized runs per property with zero failures.
+
+% =============================================================================
+\section{Concluding remarks}\label{sec:conclusion}
+
+Two design lessons follow from our analysis. First, a decentralized reverse priority queue sorts heterogeneous borrowers efficiently only when dynamic adjustment penalties remain aligned with incremental rate commitments. Fixed branch-average fees break both margins. Charging a lumpy average penalty inside a cooldown window punishes honest stepwise rate tracking while subsidizing large spike-and-cut reversals. Replacing that rule with $\DesignAStar$ across all four contract rate-transition paths eliminates both distortions with zero added storage slots, lower execution gas, and machine-checked uniqueness.
+
+Second, balance-sheet reset security and delegated liability alignment require distinct instruments. In-place fees cannot defeat flash loans. Under permissionless borrowing, closing the close-and-reopen channel requires either single-slot principal escrow ($\DesignD$, adding three mapping slots and bounded gas overhead while fitting cleanly inside EIP-170) or an activation delay that trades mempool response latency for capital efficiency. On the delegation margin, eliminating fee-base capitalization and pairing $\DesignAStar$ with drain-proof manager co-pays eliminates near-notch churning while keeping co-pays self-funded from ordinary management-fee cash flows across active mainnet managers.
+
+Explicit scope boundaries also point to open questions. Our equilibrium model in Section~\ref{sec:queue} analyzes a single collateral branch under stationary compound-Poisson redemption intensities and calm collateral liquidation risk, whereas multi-branch collateral migration during correlated price crashes couples branch-level queues through shared stablecoin peg demand. Extending our stationary impulse-control and atomic oligopoly characterizations to dynamic non-stationary global games of stablecoin runs, and measuring equilibrium re-optimization once $\DesignAStar$ or $\DesignD$ enters live production, remain priority problems for market design in decentralized finance.
+
+% =============================================================================
+\appendix
+\section{Complete proofs omitted from the main text}\label{app:proofs}
+
+\subsection{Proofs for Section~\ref{sec:queue}}\label{app:proofs_queue}
+
+\begin{proof}[Proof of Theorem~\ref{thm:eq}]
+\emph{Step 1 (Strict dominance of $r_{\min}$ for $\tau \le \phi$).} Fix any equilibrium CDF $F$. If $\tau < \phi$, then $\tau - \phi < 0$. For any $r > r_{\min}$, slot-assignment majorization~\eqref{eq:majorization} implies $\tilde{\lambda}_F(r) \le \lambda(q^-(r)) \le \lambda(q^+(r_{\min})) \le \tilde{\lambda}_F(r_{\min})$, so $J_F(r; \tau) = r + (\tau - \phi)\tilde{\lambda}_F(r) > r_{\min} + (\tau - \phi)\tilde{\lambda}_F(r_{\min}) = J_F(r_{\min}; \tau)$. If $\tau = \phi$, then $J_F(r; \phi) = r > r_{\min} = J_F(r_{\min}; \phi)$. Hence almost every borrower with $\tau \le \phi$ plays $r_{\min}$, giving $q^+(r_{\min}) \ge D H(\phi)$.
+
+\emph{Step 2 (Absence of interior atoms and exclusion of $\tau > \phi$ from $r_{\min}$).} Suppose $F$ places mass $m(r_a) > 0$ at some $r_a \in (r_{\min}, r_{\max})$. By Step~1, every borrower in the atom has $\tau_i > \phi$. Applying~\eqref{eq:majorization} to the full atom shows that average hazard strictly exceeds $\lambda(q^+(r_a))$, so a positive measure of borrowers inside the atom incur $\hat{\lambda}_i > \lambda(q^+(r_a))$ with $\tau_i - \phi > 0$. Deviating to $r_a + \varepsilon$ (for $0 < \varepsilon < (\tau_i - \phi)(\hat{\lambda}_i - \lambda(q^+(r_a)))$ and $r_a + \varepsilon \le r_{\max}$) lowers hazard to at most $\lambda(q^+(r_a))$ and strictly cuts cost, contradicting equilibrium. Next, suppose a positive-measure subset $S_+$ of types $\tau > \phi$ with mass $\delta = \mu(S_+) > 0$ pools at $r_{\min}$. Applying~\eqref{eq:majorization} directly to $S_+$ gives
+\[
+\frac{1}{\delta}\int_{S_+} \hat{\lambda}_i\,d\mu(i) \ge \frac{1}{\delta}\int_{q^+(r_{\min}) - \delta}^{q^+(r_{\min})} \lambda(q)\,dq > \lambda\bigl(q^+(r_{\min})\bigr),
+\]
+strictly because $\lambda$ is strictly decreasing. A positive measure of borrowers in $S_+$ therefore profits strictly by bidding $r_{\min} + \varepsilon$ for small $\varepsilon > 0$. Thus zero measure of $\tau > \phi$ plays $r_{\min}$, forcing $q^+(r_{\min}) = q_0 = D H(\tau_0)$ identically.
+
+\emph{Step 3 (Strict monotonicity, no support gaps, and no atom at $r_{\max}$).} For any $\tau_2 > \tau_1 > \tau_0$ with equilibrium rates $r_1, r_2$ and hazards $\lambda_1, \lambda_2$, adding the two incentive-compatibility inequalities yields $(\tau_2 - \tau_1)(\lambda_2 - \lambda_1) \le 0$, so $\lambda_2 \le \lambda_1$. If $\lambda_2 < \lambda_1$, then $r_2 > r_1$; if $\lambda_2 = \lambda_1$, the two inequalities force $r_1 = r_2$, which by Step~2 cannot occur on a positive-measure interval inside $(r_{\min}, r_{\max})$. Hence $\rho$ is weakly increasing on $(\tau_0, \bar{\tau}]$ and strictly increasing wherever $\rho(\tau) < r_{\max}$. Suppose a jump gap $(r_-, r_+)$ occurs at some $\tau^* \in [\tau_0, \bar{\tau})$ with $r_- < r_+ < r_{\max}$. For $\tau > \tau^*$ sufficiently close to $\tau^*$, deviating down to $(r_- + r_+)/2$ saves at least $(r_+ - r_-)/2$ in interest while raising hazard by at most $\lambda(D H(\tau^*)) - \lambda(D H(\tau)) \to 0$, contradicting equilibrium. In particular, $\lim_{\tau \downarrow \tau_0} \rho(\tau) = r_{\min}$ unless all $\tau > \tau_0$ jump to an atom at $r_{\max}$. To rule out any atom at $r_{\max}$ on $(\tau_c, \bar{\tau}]$ with $\tau_c \in [\tau_0, \bar{\tau})$, note that Step~4 pins down $\rho(\tau_c^-) = r_{\min} + \int_{q_0}^{D H(\tau_c)} (H^{-1}(q/D) - \phi)(-\lambda'(q))\,dq$ (equaling $r_{\min}$ when $\tau_c = \tau_0$). By Assumption~\ref{assump:cap},
+\[
+r_{\max} - \rho(\tau_c^-) \ge \int_{D H(\tau_c)}^{D} \bigl(H^{-1}(q/D) - \phi\bigr)\bigl(-\lambda'(q)\bigr)\,dq > (\tau_c - \phi)\bigl[\lambda(D H(\tau_c)) - \lambda(D)\bigr],
+\]
+strictly because $H^{-1}(q/D) > \tau_c$ on $(D H(\tau_c), D]$ and $-\lambda'(q) > 0$. Choosing $\varepsilon > 0$ below half this strict gap, deviating to $\rho(\tau_c^-) + \varepsilon$ clears any lower atom and strictly benefits a positive measure of types $\tau \in (\tau_c, \tau_c + \delta)$, contradiction. Hence $F$ is atomless on $(r_{\min}, r_{\max}]$ and $F(\rho(\tau)) = H(\tau)$ on $(\tau_0, \bar{\tau}]$.
+
+\emph{Step 4 (Envelope closed form and global optimality).} Define $V(\tau) = \inf_{r \in [r_{\min}, r_{\max}]} J_{F^*}(r; \tau)$ on $[\tau_0, \bar{\tau}]$. As the pointwise infimum of affine functions with slopes in $[\lambda(D), \lambda(0)]$, $V$ is concave and Lipschitz, hence absolutely continuous. By \citet{milgrom2002envelope}, $V'(\tau) = \lambda(D H(\tau))$ on $(\tau_0, \bar{\tau})$, and continuity at $\tau_0$ gives $V(\tau_0) = r_{\min} + (\tau_0 - \phi)\lambda(q_0)$. Integrating over $[\tau_0, \tau]$ and solving $V(\tau) = r^*(\tau) + (\tau - \phi)\lambda(D H(\tau))$ gives~\eqref{eq:r_envelope}; Riemann--Stieltjes integration by parts and $q = D H(u)$ yield~\eqref{eq:r_stieltjes}, which lies in $[r_{\min}, r_{\max}]$ by Assumption~\ref{assump:cap}. Conversely, under~\eqref{eq:r_envelope}, any $\tau > \tau_0$ deviating to $r^*(\hat{\tau})$ ($\hat{\tau} > \tau_0$, $\hat{\tau} \neq \tau$) incurs excess cost $\int_\tau^{\hat{\tau}} [\lambda(D H(u)) - \lambda(D H(\hat{\tau}))]\,du > 0$; deviating to $r_{\min}$ when $q_0 > 0$ incurs hazard at least $\lambda(q_0) > \lambda(D H(u))$ on $(\phi, \tau]$, strictly increasing cost; and bidding above $r^*(\bar{\tau})$ strictly raises interest without cutting hazard below $\lambda(D)$.
+
+\emph{Step 5 (Homogeneous benchmark).} When $\tau_i \equiv \tau > \phi$, Steps~2--3 rule out all atoms on $[r_{\min}, r_{\max})$ (excluding symmetric pure strategies) and all support gaps above $r_{\min}$. Indifference across the support requires $r + (\tau - \phi)\lambda(D F^*(r)) = r_{\min} + (\tau - \phi)\lambda(0)$, uniquely yielding~\eqref{eq:r_hom}, implemented either by symmetric mixing or deterministic assignment $\rho(i) = (F_{\mathrm{hom}}^*)^{-1}(i/D)$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:ge}]
+\emph{Step 1 (Fubini identity and unique fixed point).} Integrating~\eqref{eq:r_stieltjes} over $q' \in [0, D]$ (with $r^* = r_{\min}$ on $[0, q_0]$) and applying Tonelli's theorem on $\{q_0 \le q \le q' \le D\}$ yields
+\[
+\bar{r}(\nu, \phi) - r_{\min} = \frac{\nu}{D}\int_{q_0}^D \bigl(H^{-1}(q/D) - \phi\bigr)g_Q(q)\!\left(\int_q^D dq'\right)dq = \nu\,A(\phi),
+\]
+proving~\eqref{eq:rbar_affine}--\eqref{eq:A_phi}. Clearly $A(\phi) > 0$ if and only if $\phi < \bar{\tau}$. Next, $\Psi(\bar{r}) = \bar{r} - r_{\min} - A(\phi)\nu(\eta \bar{r}; \phi, \theta)$ is continuous and strictly increasing on $[r_{\min}, r_{\max}]$ (since $\nu$ is nonincreasing in $\bar{r}$, $\Psi(r_2) - \Psi(r_1) \ge r_2 - r_1 > 0$) with $\Psi(r_{\min}) \le 0$ and $\Psi(r_{\max}) \ge 0$ by Assumption~\ref{assump:macro}. By the Intermediate Value Theorem and strict monotonicity, a unique root $\bar{r}^* \in [r_{\min}, r_{\max}]$ exists.
+
+\emph{Step 2 (Comparative statics).} Differentiating~\eqref{eq:A_phi} via Leibniz's rule, the boundary term $-D^{-1}(D - q_0)(H^{-1}(q_0/D) - \phi)g_Q(q_0)q_0'(\phi)$ vanishes identically: $H^{-1}(q_0/D) - \phi = 0$ on $(\underline{\tau}, \bar{\tau})$, and $q_0'(\phi) = 0$ for $\phi < \underline{\tau}$. Hence $A'(\phi) = -D^{-1}\int_{q_0}^D (D - q)g_Q(q)\,dq < 0$. Since $\partial_{\bar{r}}\Psi = 1 - \eta A(\phi)\partial_y \nu \ge 1 > 0$, the Implicit Function Theorem yields~\eqref{eq:cs_phi}--\eqref{eq:cs_theta}.
+
+\emph{Step 3 (Limits in $\sigma$ and Karlin unimodality).} For $g_{Q_\sigma}(q) = \sigma^{-1}e^{-q/\sigma}$, as $\sigma \to \infty$, $0 \le A(\phi; \sigma) \le D(\bar{\tau} - \phi)/(2\sigma) \to 0$. As $\sigma \downarrow 0$, if $\phi > \underline{\tau}$ then $q_0 > 0$ and $\sigma^{-1}e^{-q/\sigma} \le \sigma^{-1}e^{-q_0/\sigma} \to 0$ uniformly on $[q_0, D]$, giving $A \to 0$. If $\phi \le \underline{\tau}$ ($q_0 = 0$), substituting $z = q/\sigma$ gives
+\[
+A(\phi; \sigma) = \frac{1}{D}\int_0^{D/\sigma} (D - \sigma z)\bigl(H^{-1}(\sigma z/D) - \phi\bigr)e^{-z}\,dz \xrightarrow{\sigma \downarrow 0} (\underline{\tau} - \phi)\int_0^\infty e^{-z}\,dz = \underline{\tau} - \phi
+\]
+by Dominated Convergence, proving~\eqref{eq:sigma_limit}. When $\phi \in [\underline{\tau}, \bar{\tau})$, continuity on $(0, \infty)$ and vanishing limits at $0^+$ and $+\infty$ guarantee a strict interior maximum. Setting $\beta = 1/\sigma$ and $w(q) = (D - q)(H^{-1}(q/D) - \phi)$ (so $w(q_0) = w(D) = 0$), differentiating $\beta\int_{q_0}^D w(q)e^{-\beta q}\,dq$ and integrating $-\beta\int_{q_0}^D q w(q)e^{-\beta q}\,dq$ by parts cancels $\int_{q_0}^D w(q)e^{-\beta q}\,dq$ and leaves~\eqref{eq:karlin_deriv}. If $w$ is log-concave on $(q_0, D)$, then $w$ is unimodal and $-q w'(q)$ changes sign once from negative to positive; by Karlin's variation-diminishing property of the totally positive kernel $e^{-\beta q}$ \citep{karlin1968total}, the derivative changes sign at most once in $\beta \in (0, \infty)$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:poa} and Proposition~\ref{prop:recycling}]
+\emph{Theorem~\ref{thm:poa}.} By the Hardy--Littlewood--P\'olya rearrangement inequality, matching strictly increasing $H^{-1}(q/D) - \phi$ to strictly decreasing $\lambda(q)$ minimizes redemption cost uniquely, yielding $C_{\mathrm{FB}}$. Chebyshev's covariance identity on $\mathrm{Unif}[0, D]$ gives~\eqref{eq:sort_gain}. Inside $[0, q_0]$ (when $q_0 > 0$), pooling replaces $\lambda(q)$ with $\bar{\lambda}_0$, so Chebyshev's identity on $\mathrm{Unif}[0, q_0]$ gives $C_{\mathrm{PQ}}^{\mathrm{actual}} - C_{\mathrm{FB}} = \int_0^{q_0}(H^{-1}(q/D) - \phi)(\bar{\lambda}_0 - \lambda(q))\,dq = -q_0\Cov_{[0, q_0]}(H^{-1}, \lambda) > 0$, proving~\eqref{eq:floor_loss}. Defining $\tilde{\lambda}(q) = \bar{\lambda}_0$ on $[0, q_0]$ and $\lambda(q)$ on $(q_0, D]$, $\tilde{\lambda}$ shares average $\bar{\lambda}$ over $[0, D]$ and is nonincreasing and nonconstant whenever $q_0 < D$, so Chebyshev's inequality gives $C_{\mathrm{PR}} - C_{\mathrm{PQ}}^{\mathrm{actual}} = -D\Cov_{[0, D]}(H^{-1}, \tilde{\lambda}) > 0$. For homogeneous $\tau > \phi$, $T_{\mathrm{PQ}} = (\tau - \phi)\int_0^D (D - q)(-\lambda'(q))\,dq = D(\tau - \phi)(\lambda(0) - \bar{\lambda})$; adding $C_{\mathrm{PQ}}^{\mathrm{actual}} = D(\tau - \phi)\bar{\lambda}$ and using $\bar{\lambda} = (\nu/D)\E[\min(Q, D)]$ yields~\eqref{eq:poa_hom}. For $H \in C^1$ with $\phi < \underline{\tau}$, integrating $T_{\mathrm{PQ}}$ by parts with $u(q) = (D - q)(H^{-1}(q/D) - \phi)$ and $v(q) = -\lambda(q)$ produces
+\[
+T_{\mathrm{PQ}} = D(\underline{\tau} - \phi)\lambda(0) - C_{\mathrm{FB}} + \int_0^D (D - q)\frac{dH^{-1}(q/D)}{dq}\,\lambda(q)\,dq.
+\]
+Adding $C_{\mathrm{FB}}$ yields~\eqref{eq:virtual_cost}; bounding $\lambda(q) \le \lambda(0)$ with $\int_0^D (D - q)\,dH^{-1}(q/D) = D(\E[\tau] - \underline{\tau})$ and dividing by $C_{\mathrm{FB}} \ge D(\underline{\tau} - \phi)\bar{\lambda}$ gives~\eqref{eq:poa_het}. Part~(iii) follows immediately from~\eqref{eq:floor_loss}.
+
+\emph{Proposition~\ref{prop:recycling}.} Holding $\bar{R}_{\mathrm{eff}}$ fixed, transfers $D\bar{R}_{\mathrm{eff}}$ cancel identically across borrowers, SP depositors, and PIL in $\mathcal{W}$, leaving~\eqref{eq:dwl_recycling}. On $(q_0, D]$, strict Hardy--Littlewood--P\'olya optimality implies $C(\pi_{\mathrm{lumpy}}) > C_{\mathrm{PQ}}^{\mathrm{actual}}$ strictly for any positive-measure deviation from $\pi^*$, and $G_{\mathrm{lumpy}} - G^* \ge 0$ leaves the protocol to validators; thus $\mathrm{DWL} > 0$. Positive numerator and denominators yield $\mathcal{E}^* > \mathcal{E}_{\mathrm{lumpy}}$, and the comparative statics follow from $\mathrm{CE}_{\mathrm{borr}} = \bar{R}_{\mathrm{eff}} + (C(\pi) + G + \Delta\mathrm{RP}_{\mathrm{var}})/D$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:gpv}]
+By Theorem~\ref{thm:eq}, $F^*(r_{\min}) = H(\phi) = p_0$, and setting $q = Du$ in~\eqref{eq:r_stieltjes} gives $F^{-1}(s) = r_{\min} + \int_{p_0}^s (H^{-1}(u) - \phi)\nu\tilde{g}(u)\,du$ on $(p_0, 1)$. Differentiating gives $(F^{-1})'(s) = (H^{-1}(s) - \phi)\nu\tilde{g}(s)$, establishing~\eqref{eq:gpv_inv}. When $p_0 > 0$ and $H^{-1}(p_0) = \phi$, letting $s \downarrow p_0$ drives $(F^{-1})'(s) \to 0$ and $f(F^{-1}(s)) \to +\infty$. For $H \in C^1$ with $h(\phi) > 0$, expanding $H^{-1}(u) - \phi \sim (u - p_0)/h(\phi)$ gives $r - r_{\min} \sim \frac{\nu\tilde{g}(p_0)}{2h(\phi)}(s - p_0)^2$, so $s - p_0 \sim \sqrt{2h(\phi)(r - r_{\min})/(\nu\tilde{g}(p_0))}$, and substituting into $f(r) \sim h(\phi)/(\nu\tilde{g}(p_0)(s - p_0))$ yields~\eqref{eq:gpv_singularity}. For Part~(iii), necessity of~(GPV-1)--(GPV-3) follows from strict monotonicity of $H^{-1}$, finiteness of $\bar{\tau} = \lim_{s \uparrow 1} H^{-1}(s)$, and continuity $H^{-1}(p_0^+) = \phi$ when $p_0 > 0$. Conversely, under~(GPV-1)--(GPV-3), setting $\tau(s) = \phi + 1/(\nu f(F^{-1}(s))\tilde{g}(s))$ defines a continuous, strictly increasing, bounded function above $\phi$ satisfying $\lim_{s \downarrow p_0}\tau(s) = \phi$ if $p_0 > 0$, whose inverse $H = \tau^{-1}$ (completed arbitrarily on $[\underline{\tau}, \phi]$ with mass $p_0$ if $p_0 > 0$) reproduces $F^{-1}$ identically via~\eqref{eq:r_stieltjes}.
+\end{proof}
+
+\subsection{Proofs for Section~\ref{sec:cooldown}}\label{app:proofs_cooldown}
+
+\begin{proof}[Proof of Theorem~\ref{thm:failures}]
+Summing $K$ constant fees $D\bar{r}P/Y$ and dividing by $D(r_K - r_0)P/Y$ gives~\eqref{eq:sq_staircase}. After a free spike $r_{\mathrm{low}} \to r_{\mathrm{high}}$ cut back at $\Delta t \in [0, P)$, excess cost over holding $r_{\mathrm{low}}$ equals $D(r_{\mathrm{high}} - r_{\mathrm{low}})\Delta t/Y + D\bar{r}P/Y$, which falls strictly below $D(r_{\mathrm{high}} - r_{\mathrm{low}})P/Y$ if and only if~\eqref{eq:sq_cut_cond} holds; dividing savings by $D(r_{\mathrm{high}} - r_{\mathrm{low}})P/Y$ yields~\eqref{eq:sq_discount}. Since $\Phi_{\mathrm{A}} = \Phi_{\SQ}$ on cuts, Part~(ii) is identical. Under $\Phi_{\mathrm{B}}$, buying \texttt{prepaidUntil} $= t + P$ on $D_{\mathrm{small}} = 1$ BOLD reduces remaining unpaid window to zero on an immediate jump at $D_{\mathrm{large}} \gg D_{\mathrm{small}}$, violating~(A4), and requires extra storage, violating~(A5). Under $\Phi_{\mathrm{C}}$, $r_1 - r_0 > \bar{r}$ yields $D\bar{r}\Delta t/Y < D(r_1 - r_0)\Delta t/Y$ (violating~(A1)), and $\Delta t = 0$ yields zero fee.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:astar}(iii)--(iv)]
+\emph{Part~(iii).} For $K \ge 1$ cuts $r_0 > r_1 > \dots > r_K$ at cumulative times $t_k = \sum_{j=1}^k \delta_j < P$ ($t_0 = 0$), combining interest accruals with cut fees $\sum_{k=1}^K D(r_{k-1} - r_k)(P - \delta_k)/Y$ via summation by parts gives
+\[
+\frac{Y}{D}\cdot\mathrm{TotalCost}_{[0, P]} = r_K P + \sum_{k=1}^K (r_{k-1} - r_k)(t_k + P - \delta_k) = r_0 P + \sum_{k=2}^K (r_{k-1} - r_k)t_{k-1}.
+\]
+The second sum vanishes at $K = 1$ and is strictly positive for all $K \ge 2$, proving~\eqref{eq:multicut}. For a cut-then-hike oscillation $r_0 \to r_1 \to r_0$ with premature hike at $\delta \in [0, P)$, segment cost is $D r_1 \delta/Y + D(r_0 - r_1)P/Y = D r_0 \delta/Y + D(r_0 - r_1)(P - \delta)/Y > D r_0 \delta/Y$.
+
+\emph{Part~(iv).} Since $\lfloor \lfloor A/Y \rfloor / W \rfloor = \lfloor A / (YW) \rfloor$, write $x_k = \lfloor x_k \rfloor + \{x_k\}$ with $\{x_k\} \in [0, 1)$. For $K$-step hikes or $M$-way splits, $\lfloor \sum x_k \rfloor - \sum \lfloor x_k \rfloor = \lfloor \sum \{x_k\} \rfloor \in \{0, \dots, K - 1\}$ (or $\{0, \dots, M - 1\}$). For spike-and-cut, set $a = D r_0 \delta/(YW)$, $b = D(r_0 - r_1)(P - \delta)/(YW)$, $c = D r_1(P - \delta)/(YW)$, and $h = a + b + c = D r_0 P/(YW)$. Under floor division on $b$, $\lfloor h \rfloor - (\lfloor a \rfloor + \lfloor b \rfloor + \lfloor c \rfloor) = \lfloor \{a\} + \{b\} + \{c\} \rfloor \in \{0, 1, 2\}$. Under \texttt{ceilDiv}, if $\{b\} = 0$ then shortfall is $\lfloor \{a\} + \{c\} \rfloor \in \{0, 1\}$, and if $\{b\} > 0$ then shortfall is $\lfloor \{a\} + \{b\} + \{c\} \rfloor - 1 \in \{-1, 0, 1\}$ (with shortfall $1$ achieved whenever $\{a\}, \{b\}, \{c\} > 2/3$). Adding $1$ wei to positive \texttt{ceilDiv} cuts makes the shortfall at most $0$ wei identically. Finally, $(2^{256} - 1)/(2.50 \times 10^{18} \cdot 604{,}800) \approx 7.6582 \times 10^{52}$ wei (and $7.6735 \times 10^{52}$ wei for $r_{\max} - r_{\min} = 2.495 \times 10^{18}$).
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:flash}]
+\emph{Part~(i).} Under any pure in-place rule $\Phi$, after a free post-cooldown spike $r_{\mathrm{low}} \to r_{\mathrm{high}}$ held for $\delta \in [0, P)$, an atomic flash-loan \texttt{closeTrove} plus \texttt{openTrove}$(D, r_{\mathrm{low}})$ bypasses $\Phi_\downarrow$ completely at total cost $D r_{\mathrm{high}}\delta/Y + D r_{\mathrm{low}}(P - \delta)/Y + D\bar{r}P/Y + f_{\mathrm{flash}} D + g_{\mathrm{tx}}$. Subtracting from $D r_{\mathrm{high}}P/Y$ yields strict profit if and only if~\eqref{eq:flash_imposs} holds.
+
+\emph{Part~(ii).} We prove by induction on transactions that whenever $t < t_{\mathrm{end}}$ ($\tau_{\mathrm{rem}} = t_{\mathrm{end}} - t \in (0, P]$), the state maintains exact bonded coverage $B = D_{\mathrm{bonded}}(r - r_{\min})\tau_{\mathrm{rem}}/Y$ with $D_{\mathrm{bonded}} \le D_{\mathrm{curr}}$ (and $B = 0$ when $t \ge t_{\mathrm{end}}$). At \texttt{openTrove}$(D, r)$ at $t_0$, \textup{(D-Increase)} sets $t_{\mathrm{end}} = t_0 + P$, $D_{\mathrm{bonded}} = D$, and $B = D(r - r_{\min})P/Y$. Across \textup{(D-Settle)} at $t \in [t_{\mathrm{last}}, t_{\mathrm{end}})$, passive interest weakly increases $D_{\mathrm{curr}} \ge D_{\mathrm{bonded}}$ while vesting $B_{\mathrm{prev}}(t - t_{\mathrm{last}})/(t_{\mathrm{end}} - t_{\mathrm{last}})$ leaves exact remaining bond $B_{\mathrm{rem}} = D_{\mathrm{bonded}}(r - r_{\min})(t_{\mathrm{end}} - t)/Y$. Across \textup{(D-Increase)}, setting $t_{\mathrm{end}} = t + P$, $D_{\mathrm{bonded}} = D_{\mathrm{new}} \ge D_{\mathrm{curr}} \ge D_{\textup{bonded,prev}}$, and $B = D_{\mathrm{new}}(r_{\mathrm{new}} - r_{\min})P/Y$ satisfies $B_{\mathrm{target}} \ge B_{\mathrm{rem}}$ unconditionally. Across \textup{(D-Decrease)} at $t < t_{\mathrm{end}}$, on pure rate cuts~\eqref{eq:designD_cut}, $(r_{\mathrm{old}} - r_{\mathrm{new}})/(r_{\mathrm{old}} - r_{\min}) \in (0, 1]$ guarantees $0 < \mathrm{Forfeit}_{\mathrm{cut}} \le B_{\mathrm{rem}}$ and $B_{\mathrm{after}} = D_{\mathrm{bonded}}(r_{\mathrm{new}} - r_{\min})\tau_{\mathrm{rem}}/Y \ge 0$ without underflow even after compounding raises $D_{\mathrm{curr}} > D_{\mathrm{bonded}}$. On repayment~\eqref{eq:designD_repay}, the explicit $\min(B_{\mathrm{rem}}, \cdot)$ guarantees $0 \le \mathrm{Forfeit}_{\mathrm{repay}} \le B_{\mathrm{rem}}$ and leaves $B_{\mathrm{after}} = \max(0, D_{\mathrm{bonded}} - \Delta D)(r_{\mathrm{old}} - r_{\min})\tau_{\mathrm{rem}}/Y$; on full closure ($\Delta D = D_{\mathrm{curr}} \ge D_{\mathrm{bonded}}$), the entire $B_{\mathrm{rem}}$ is forfeited. Mixed transitions enforce nonnegativity by routing $B_{\textup{target,rem}} \ge B_{\mathrm{rem}}$ to \textup{(D-Increase)}.
+
+All six attack vectors fail under this invariant: unbonded high-rate opening locks full $B$ at $t_0$ and forfeits $D(r_{\mathrm{high}} - r_{\min})(P - \delta)/Y$ upon exit at $\delta$, yielding~\eqref{eq:designD_dom}; pre-aged micro-hike staircases reset $t_{\mathrm{end}} = t + P$ and top up $B$ to full target on every hike; cut-then-re-hike triggers \textup{(D-Increase)} to full target on re-hike; post-cut residual bonds vest cleanly at the preserved $t_{\mathrm{end}}$; per-borrower share accounting isolates batch exits from other depositors; and dormant low-debt shield vaults topped up via \texttt{withdrawBold} trigger \textup{(D-Increase)} regardless of $\Delta t$. Honest $P$-day holding vests 100\% of $B$ with zero forfeiture, and fixed-debt hikes telescope net incremental escrow to $D(r_K - r_0)P/Y$. Part~(iii) follows immediately from mempool causality.
+\end{proof}
+
+\subsection{Proofs for Section~\ref{sec:agency}}\label{app:proofs_agency}
+
+\begin{proof}[Proof of Theorem~\ref{thm:agency_impulse}(i) and (iii)]
+\emph{Part~(i).} Over remaining cooldown $\tau = P - t$ seconds, waiting costs $D_m \Delta_\downarrow \tau/Y$ in extra recurring interest, whereas cutting immediately costs upfront fee $D_m \bar{r}P/Y$, gas $g_{\mathrm{tx}}$, and added expected redemption cost $c_B D_m \delta\lambda_{\mathrm{cut}}\tau/Y$. Dividing $D_m \Delta_\downarrow \tau/Y > D_m \bar{r}P/Y + c_B D_m \delta\lambda_{\mathrm{cut}}\tau/Y + g_{\mathrm{tx}}$ by $D_m \tau/Y > 0$ yields~\eqref{eq:cut_bunch}.
+
+\emph{Part~(iii).} Per-dollar net gains from hiking now versus waiting $\tau$ seconds are
+\[
+\frac{\Delta\Pi_{\mathrm{borr}}(\tau)}{D_m} = (c_B \Delta\lambda - \Delta r)\frac{\tau}{Y} - K, \qquad \frac{\Delta\Pi_{\mathrm{mgr}}(\tau)}{D_m} = (c_m \Delta\lambda - \alpha_m^{\mathrm{int}}\Delta r)\frac{\tau}{Y} - \left(\alpha_m K + \frac{g_{\mathrm{tx}}}{D_m}\right).
+\]
+Setting each to zero yields~\eqref{eq:tau_dom}. If $\alpha_m K + g_{\mathrm{tx}}/D_m \le 0$, then $\tau_{\mathrm{dom}}^m = 0 < \min(P, \tau_{\mathrm{dom}}^B)$ and affinity of $\Delta\Pi_{\mathrm{mgr}}$ with $\Delta\Pi_{\mathrm{mgr}}(0) \ge 0$ and $\Delta\Pi_{\mathrm{mgr}}(P) > 0$ implies $\Delta\Pi_{\mathrm{mgr}}(\tau) > 0$ on $(0, P]$. If $\alpha_m K + g_{\mathrm{tx}}/D_m > 0$, then hypothesis~(b) ensures $c_m \Delta\lambda - \alpha_m^{\mathrm{int}}\Delta r > 0$ and $\tau_{\mathrm{dom}}^m < P$, while hypothesis~(a) combined with $c_m \ge c_B$ and $\alpha_m^{\mathrm{int}} \le 1$ forces $\tau_{\mathrm{dom}}^m < \tau_{\mathrm{dom}}^B$ strictly. Hence every $\tau \in (\tau_{\mathrm{dom}}^m, \min(P, \tau_{\mathrm{dom}}^B))$ satisfies $\Delta\Pi_{\mathrm{mgr}}(\tau) > 0 > \Delta\Pi_{\mathrm{borr}}(\tau)$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:agency_astar}]
+Part~(i) telescopes $\Phi^{*,\mathrm{tot}} = \sum_{k=1}^K D_m(r_k - r_{k-1})P/Y = D_m(r_K - r_0)P/Y$ against $\Phi_{\SQ}^{\mathrm{tot}} = K D_m \bar{r}P/Y$, proving~\eqref{eq:agency_savings}. In cost-minimization singular control with proportional upward adjustment cost $\alpha_m p_{\mathrm{inc}}$, the continuation region satisfies $\mathcal{L}V + h_1|x| - \gamma^* = 0$ and $V'(x) \le \alpha_m p_{\mathrm{inc}}$, while the upward action region satisfies $V'(x) = \alpha_m p_{\mathrm{inc}}$ and $\mathcal{L}V + h_1|x| - \gamma^* \ge 0$, verifying~\eqref{eq:singular_vi}. Part~(ii) divides $D_m \Delta r P/Y$ by $D_m \bar{r}P/Y$. Part~(iii) follows because avoiding a paid status quo update along a target trajectory requires either under-quoting (rate deficit), pre-emptive over-quoting (extra recurring interest), or clock-shifting (permission conflicts), none of which is privately optimal when $\alpha_m \le 0$, whereas $\DesignAStar$ leaves the rate path intact.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:leapfrog} and Theorem~\ref{thm:copay}]
+\emph{Theorem~\ref{thm:leapfrog}.} In the continuous-rate game ($\Delta_{\mathrm{jump}, m} > 0$), at any tie $r_1 = r_2$, the LIFO front-of-tie manager $m$ sits at $[u D, (u + w_m)D]$ and deviating to $r_1 + \delta$ ($0 < \delta < \Delta_{\mathrm{jump}, m}$) strictly gains $\Delta_{\mathrm{jump}, m} - \delta > 0$. If $r_1 < r_2$ and $r_2 - r_1 < \Delta_{\mathrm{jump}, 1}$, Manager~1 profitably leapfrogs to $r_2 + \delta$; if $r_2 - r_1 \ge \Delta_{\mathrm{jump}, 1} > 0$, Manager~2 strictly saves $(r_2 - r_1)/2$ by undercutting to $(r_1 + r_2)/2$ without losing priority. On the discrete $\varepsilon$-grid, take $(r_1, r_2) = (r, r + k\varepsilon)$ ($k \in \Z_{\ge 0}$, without loss $r_1 \le r_2$). If $k \ge 2$, Manager~2 profitably undercuts to $r + \varepsilon$. If $k = 0$, the LIFO front-of-tie manager gains $\Delta_{\mathrm{jump}, m} - \varepsilon > 0$ by jumping $+\varepsilon$. If $k = 1$ ($r_2 = r_1 + \varepsilon$), Manager~2 cannot undercut without losing LIFO priority (strictly worse when $\Delta_{\mathrm{jump}, 2} > \varepsilon$), while trailing Manager~1 jumping to $r_1 + 2\varepsilon$ nets $\Delta_{\mathrm{jump}, 1} - 2\varepsilon$, strictly positive if and only if $\Delta_{\mathrm{jump}, 1} > 2\varepsilon$. By symmetry, whenever $\Delta_{\mathrm{jump}, m} > 2\varepsilon$ for both $m \in \{1, 2\}$, no pure static Nash equilibrium exists on the discrete grid. Conversely, if $\Delta_{\mathrm{jump}, m} \le \varepsilon$ for some $m \in \{1, 2\}$, then the tied profile $(r^{(0)}, r^{(0)})$ placing manager $m$ at the front of the LIFO tie is a pure static Nash equilibrium (jumping $+\varepsilon$ nets $\Delta_{\mathrm{jump}, m} - \varepsilon \le 0$, while the sheltered back-of-tie rival receives full priority at zero rate cost); if instead $\min_m \Delta_{\mathrm{jump}, m} > \varepsilon$ and $\Delta_{\mathrm{jump}, 1} \le 2\varepsilon$ (respectively $\Delta_{\mathrm{jump}, 2} \le 2\varepsilon$), then $(r^{(0)}, r^{(0)} + \varepsilon)$ (respectively $(r^{(0)} + \varepsilon, r^{(0)})$) is a pure static Nash equilibrium. Hence~\eqref{eq:grid_iff} is necessary and sufficient. Under~\eqref{eq:grid_iff}, asynchronous best response climbs by $+\varepsilon$ then alternating $+2\varepsilon$ up to $r_{\mathrm{ceil}}$; telescoping $\DesignAStar$ yields~\eqref{eq:leap_astar}, and for $D_1 = D_2 = D_0$ and $N_{\mathrm{leap}} = 2n$ ($r_1^{(n)} - r^{(0)} = (2n - 1)\varepsilon$, $r_2^{(n)} - r^{(0)} = 2n\varepsilon$),
+\[
+\frac{\Phi_{\SQ}^{\mathrm{leap}}}{\Phi^{*,\mathrm{leap}}} = \frac{2n D_0 \bar{r}P/Y}{D_0[(2n - 1)\varepsilon + 2n\varepsilon]P/Y} = \frac{2n\,\bar{r}}{(4n - 1)\varepsilon} > \frac{\bar{r}}{2\varepsilon}.
+\]
+
+\emph{Theorem~\ref{thm:copay}.} Under non-inflating fee-base accounting and drain-proof co-pay $\beta$, the manager bears $\beta$ directly and $(1 - \beta)\alpha_0$ indirectly, giving $\alpha_{\mathrm{eff}}(\beta) = \beta + (1 - \beta)\alpha_0$. Substituting $K_{\mathrm{eff}}(\beta) = \alpha_{\mathrm{eff}}(\beta)K + g_{\mathrm{tx}}/D_m$ into~\eqref{eq:hjb_band}--\eqref{eq:fee_burn} yields borrower burn $(1 - \beta)K\Lambda^*(\beta)$ and Part~(i). When $c_m = c_B$ and $\alpha_m^{\mathrm{int}} = 1$, rejecting every borrower-dominated hike $(c_B \Delta\lambda - \Delta r)\tau/Y \le K$ holds if and only if $\alpha_{\mathrm{eff}}(\beta)K + g_{\mathrm{tx}}/D_m \ge K$, solving to~\eqref{eq:beta_pure}. When $c_m > c_B$, rejecting $(\tau_0, \bar{\lambda}_0, \Delta r)$ requires $\alpha_{\mathrm{eff}}(\beta)K + g_{\mathrm{tx}}/D_m \ge (c_m \bar{\lambda}_0 - \alpha_m^{\mathrm{int}}\Delta r)\tau_0/Y$, solving to~\eqref{eq:beta_general}, feasible inside $[0, 1]$ if and only if $\tilde{\beta} \le 1$. Part~(iii) follows from $\beta\,\bar{\phi}_{\mathrm{upf}} \le m_j$.
+\end{proof}
