@@ -1,0 +1,1160 @@
+{
+  "toolchain": {
+    "forge_version": "forge Version: 1.10.0",
+    "solc_version": "0.8.24",
+    "evm_version": "shanghai",
+    "optimizer": true,
+    "optimizer_runs": 200,
+    "build_deny_warnings_passed": true,
+    "build_warnings": 0,
+    "build_errors": 0,
+    "build_output_excerpt": "\u2570------------------------+------------------+-------------------+--------------------+---------------------\u256f"
+  },
+  "runtime_bytecode_bytes": {
+    "StatusQuoBorrowerOps": 14523,
+    "DesignABorrowerOps": 14561,
+    "DesignAStarBorrowerOps": 15009,
+    "DesignDBorrowerOps": 22767,
+    "CoPayBorrowerOps": 15463
+  },
+  "storage_layout": {
+    "baseline_contract": "StatusQuoBorrowerOps",
+    "baseline_slot_count": 11,
+    "baseline_slots": [
+      {
+        "label": "hasBeenShutDown",
+        "slot": 0,
+        "offset": 0,
+        "type": "bool",
+        "bytes": 1
+      },
+      {
+        "label": "collPrice",
+        "slot": 1,
+        "offset": 0,
+        "type": "uint256",
+        "bytes": 32
+      },
+      {
+        "label": "aggRecordedDebt",
+        "slot": 2,
+        "offset": 0,
+        "type": "uint256",
+        "bytes": 32
+      },
+      {
+        "label": "aggWeightedDebtSum",
+        "slot": 3,
+        "offset": 0,
+        "type": "uint256",
+        "bytes": 32
+      },
+      {
+        "label": "aggRecordedColl",
+        "slot": 4,
+        "offset": 0,
+        "type": "uint256",
+        "bytes": 32
+      },
+      {
+        "label": "aggWeightedBatchManagementFeeSum",
+        "slot": 5,
+        "offset": 0,
+        "type": "uint256",
+        "bytes": 32
+      },
+      {
+        "label": "lastAggUpdateTime",
+        "slot": 6,
+        "offset": 0,
+        "type": "uint256",
+        "bytes": 32
+      },
+      {
+        "label": "protocolYieldAccumulated",
+        "slot": 7,
+        "offset": 0,
+        "type": "uint256",
+        "bytes": 32
+      },
+      {
+        "label": "troves",
+        "slot": 8,
+        "offset": 0,
+        "type": "mapping(uint256 => struct LiquityV2CoreBase.Trove)",
+        "bytes": 32
+      },
+      {
+        "label": "interestBatchManagerOf",
+        "slot": 9,
+        "offset": 0,
+        "type": "mapping(uint256 => address)",
+        "bytes": 32
+      },
+      {
+        "label": "batches",
+        "slot": 10,
+        "offset": 0,
+        "type": "mapping(address => struct LiquityV2CoreBase.Batch)",
+        "bytes": 32
+      }
+    ],
+    "contract_diffs": {
+      "StatusQuoBorrowerOps": {
+        "slot_count": 11,
+        "slot_delta_vs_status_quo": 0,
+        "byte_for_byte_identical_to_status_quo": true,
+        "extra_slots": [],
+        "removed_slots": []
+      },
+      "DesignABorrowerOps": {
+        "slot_count": 11,
+        "slot_delta_vs_status_quo": 0,
+        "byte_for_byte_identical_to_status_quo": true,
+        "extra_slots": [],
+        "removed_slots": []
+      },
+      "DesignAStarBorrowerOps": {
+        "slot_count": 11,
+        "slot_delta_vs_status_quo": 0,
+        "byte_for_byte_identical_to_status_quo": true,
+        "extra_slots": [],
+        "removed_slots": []
+      },
+      "DesignDBorrowerOps": {
+        "slot_count": 14,
+        "slot_delta_vs_status_quo": 3,
+        "byte_for_byte_identical_to_status_quo": false,
+        "extra_slots": [
+          {
+            "label": "troveBonds",
+            "slot": 11,
+            "offset": 0,
+            "type": "mapping(uint256 => struct DesignDBorrowerOps.RateBond)",
+            "bytes": 32
+          },
+          {
+            "label": "batchBonds",
+            "slot": 12,
+            "offset": 0,
+            "type": "mapping(address => struct DesignDBorrowerOps.RateBond)",
+            "bytes": 32
+          },
+          {
+            "label": "batchCuts",
+            "slot": 13,
+            "offset": 0,
+            "type": "mapping(address => struct DesignDBorrowerOps.CutEvent[])",
+            "bytes": 32
+          }
+        ],
+        "removed_slots": []
+      },
+      "CoPayBorrowerOps": {
+        "slot_count": 11,
+        "slot_delta_vs_status_quo": 0,
+        "byte_for_byte_identical_to_status_quo": true,
+        "extra_slots": [],
+        "removed_slots": []
+      }
+    },
+    "design_d_rate_bond_struct": {
+      "total_bytes": 32,
+      "evm_slots_per_entry": 1,
+      "members": [
+        {
+          "label": "lockedBond",
+          "type": "t_uint104",
+          "slot": 0,
+          "offset_bytes": 0
+        },
+        {
+          "label": "highWaterRate",
+          "type": "t_uint64",
+          "slot": 0,
+          "offset_bytes": 13
+        },
+        {
+          "label": "lastUpdateTime",
+          "type": "t_uint40",
+          "slot": 0,
+          "offset_bytes": 21
+        },
+        {
+          "label": "remainingTime",
+          "type": "t_uint24",
+          "slot": 0,
+          "offset_bytes": 26
+        },
+        {
+          "label": "startCutIdx",
+          "type": "t_uint24",
+          "slot": 0,
+          "offset_bytes": 29
+        }
+      ]
+    },
+    "design_d_cut_event_struct": {
+      "total_bytes": 32,
+      "evm_slots_per_entry": 1,
+      "members": [
+        {
+          "label": "newRate",
+          "type": "t_uint64",
+          "slot": 0,
+          "offset_bytes": 0
+        },
+        {
+          "label": "cutTime",
+          "type": "t_uint40",
+          "slot": 0,
+          "offset_bytes": 8
+        },
+        {
+          "label": "coveredBefore",
+          "type": "t_uint40",
+          "slot": 0,
+          "offset_bytes": 13
+        }
+      ]
+    }
+  },
+  "isolated_gas": {
+    "CoPayBorrowerOps": {
+      "openTrove": 245792,
+      "postCooldownBatchHike": 121120,
+      "prematureBatchHike": 149509,
+      "prematureBatchCut": 146782,
+      "repayBoldPremature": 91546,
+      "closeTroveHonest": 103382,
+      "closeTrovePremature": 103382,
+      "prematureSoloHike": 93232,
+      "prematureSoloCut": 93305
+    },
+    "DesignABorrowerOps": {
+      "openTrove": 245792,
+      "postCooldownBatchHike": 118617,
+      "prematureBatchHike": 107377,
+      "prematureBatchCut": 109416,
+      "repayBoldPremature": 91546,
+      "closeTroveHonest": 103382,
+      "closeTrovePremature": 103382,
+      "prematureSoloHike": 93157,
+      "prematureSoloCut": 95195
+    },
+    "DesignAStarBorrowerOps": {
+      "openTrove": 245792,
+      "postCooldownBatchHike": 118595,
+      "prematureBatchHike": 107466,
+      "prematureBatchCut": 107528,
+      "repayBoldPremature": 91546,
+      "closeTroveHonest": 103382,
+      "closeTrovePremature": 103382,
+      "prematureSoloHike": 93356,
+      "prematureSoloCut": 93417
+    },
+    "DesignDBorrowerOps": {
+      "openTrove": 282301,
+      "postCooldownBatchHike": 164933,
+      "prematureBatchHike": 129483,
+      "prematureBatchCut": 183953,
+      "repayBoldPremature": 116256,
+      "closeTroveHonest": 120421,
+      "closeTrovePremature": 126292,
+      "prematureSoloHike": 113225,
+      "prematureSoloCut": 122626
+    },
+    "StatusQuoBorrowerOps": {
+      "openTrove": 245792,
+      "postCooldownBatchHike": 118617,
+      "prematureBatchHike": 109403,
+      "prematureBatchCut": 109391,
+      "repayBoldPremature": 91546,
+      "closeTroveHonest": 103382,
+      "closeTrovePremature": 103382,
+      "prematureSoloHike": 95183,
+      "prematureSoloCut": 95170
+    }
+  },
+  "isolated_gas_delta_vs_status_quo": {
+    "CoPayBorrowerOps": {
+      "openTrove": 0,
+      "postCooldownBatchHike": 2503,
+      "prematureBatchHike": 40106,
+      "prematureBatchCut": 37391,
+      "repayBoldPremature": 0,
+      "closeTroveHonest": 0,
+      "closeTrovePremature": 0,
+      "prematureSoloHike": -1951,
+      "prematureSoloCut": -1865
+    },
+    "DesignABorrowerOps": {
+      "openTrove": 0,
+      "postCooldownBatchHike": 0,
+      "prematureBatchHike": -2026,
+      "prematureBatchCut": 25,
+      "repayBoldPremature": 0,
+      "closeTroveHonest": 0,
+      "closeTrovePremature": 0,
+      "prematureSoloHike": -2026,
+      "prematureSoloCut": 25
+    },
+    "DesignAStarBorrowerOps": {
+      "openTrove": 0,
+      "postCooldownBatchHike": -22,
+      "prematureBatchHike": -1937,
+      "prematureBatchCut": -1863,
+      "repayBoldPremature": 0,
+      "closeTroveHonest": 0,
+      "closeTrovePremature": 0,
+      "prematureSoloHike": -1827,
+      "prematureSoloCut": -1753
+    },
+    "DesignDBorrowerOps": {
+      "openTrove": 36509,
+      "postCooldownBatchHike": 46316,
+      "prematureBatchHike": 20080,
+      "prematureBatchCut": 74562,
+      "repayBoldPremature": 24710,
+      "closeTroveHonest": 17039,
+      "closeTrovePremature": 22910,
+      "prematureSoloHike": 18042,
+      "prematureSoloCut": 27456
+    },
+    "StatusQuoBorrowerOps": {
+      "openTrove": 0,
+      "postCooldownBatchHike": 0,
+      "prematureBatchHike": 0,
+      "prematureBatchCut": 0,
+      "repayBoldPremature": 0,
+      "closeTroveHonest": 0,
+      "closeTrovePremature": 0,
+      "prematureSoloHike": 0,
+      "prematureSoloCut": 0
+    }
+  },
+  "exploit_reproductions_wei": {
+    "F2_2_ZeroFlashLoan_BatchJoinSwitch": {
+      "sqJoinFee": 1787162665163227292622,
+      "dasJoinFee": 239353793269869262084519,
+      "dasSwitchFee": 239348321120040489783931,
+      "holdCost7d": 239837990728685035480530
+    },
+    "F2_1_DormantShield_WithdrawBold": {
+      "bondLocked": 482579187106021536161108,
+      "forfeited": 479706691944676169874435,
+      "holdCost7d": 483546279665352240642392
+    },
+    "test_DesignD_OpenAtMaxRateAndEarlyClose_BlocksEscrowDodge": {
+      "openMaxClose1h_forfeited": 239798310534512182918366
+    },
+    "test_DesignD_PartialRepayBold_BlocksBypass": {
+      "partialRepay_forfeited": 18701455406869104492225
+    },
+    "test_FlashLoan_CloseAndReopen_ImpossibilityVsDesignD": {
+      "flash_DesignAStar_holdCost": 14391772694666109016936,
+      "flash_DesignAStar_bypassCost": 5219472517977685887412,
+      "flash_DesignD_holdCost": 14391772694666109016936,
+      "flash_DesignD_attackCost": 19131243423477579817303,
+      "flash_DesignD_forfeited": 13911770905499893929891,
+      "flash_DesignD_honestRefund": 13912046938177238716373
+    },
+    "test_KStep_Staircase_StatusQuoInflationVsDesignAStarPathInvariance": {
+      "staircase5_SQ_totalFees": 13284874860405874835463,
+      "staircase5_DesignAStar_totalFees": 959472299837312596610
+    },
+    "mainnet_2026_03_06_WETH": {
+      "SQ_cutFee": 1290601208966561804625,
+      "SQ_discountBps": 6161,
+      "incrHoldCost7d": 3362117298768544526343,
+      "DesignA_cutFee": 1290601208966561804625,
+      "DesignAStar_cutFee": 3341956201432610427051,
+      "DesignD_forfeited": 3341904569769995538419
+    },
+    "mainnet_2026_03_06_wstETH": {
+      "SQ_cutFee": 2306642298723309951969,
+      "SQ_discountBps": 8462,
+      "incrHoldCost7d": 15007201073510594867719,
+      "DesignA_cutFee": 2306642298723309951969,
+      "DesignAStar_cutFee": 14917164956956384839266,
+      "DesignD_forfeited": 14916979209913894267624
+    }
+  },
+  "contract_gas_reports": {
+    "CoPayBorrowerOps": {
+      "deployment_cost": 3861764,
+      "deployment_size_bytes": 18264,
+      "functions": {
+        "adjustTroveInterestRate": {
+          "min": 84844,
+          "avg": 88851,
+          "median": 88833,
+          "max": 92895,
+          "calls": 4
+        },
+        "boldToken": {
+          "min": 326,
+          "avg": 326,
+          "median": 326,
+          "max": 326,
+          "calls": 10
+        },
+        "calcInterest": {
+          "min": 596,
+          "avg": 596,
+          "median": 596,
+          "max": 596,
+          "calls": 2
+        },
+        "closeTrove": {
+          "min": 103014,
+          "avg": 103014,
+          "median": 103014,
+          "max": 103014,
+          "calls": 2
+        },
+        "flushBatchManagementFee": {
+          "min": 118609,
+          "avg": 118609,
+          "median": 118609,
+          "max": 118609,
+          "calls": 1
+        },
+        "getBatchAccruedManagementFee": {
+          "min": 2607,
+          "avg": 2607,
+          "median": 2607,
+          "max": 2607,
+          "calls": 3
+        },
+        "getLatestBatchData": {
+          "min": 10067,
+          "avg": 10067,
+          "median": 10067,
+          "max": 10067,
+          "calls": 4
+        },
+        "getLatestTroveDebt": {
+          "min": 11596,
+          "avg": 11596,
+          "median": 11596,
+          "max": 11596,
+          "calls": 2
+        },
+        "openTrove": {
+          "min": 228255,
+          "avg": 268163,
+          "median": 245355,
+          "max": 330879,
+          "calls": 3
+        },
+        "openTroveAndJoinBatch": {
+          "min": 418664,
+          "avg": 487168,
+          "median": 521420,
+          "max": 521420,
+          "calls": 3
+        },
+        "registerBatchManager": {
+          "min": 158987,
+          "avg": 158987,
+          "median": 158987,
+          "max": 158987,
+          "calls": 3
+        },
+        "repayBold": {
+          "min": 91159,
+          "avg": 91159,
+          "median": 91159,
+          "max": 91159,
+          "calls": 1
+        },
+        "setBatchManagerAnnualInterestRate": {
+          "min": 107892,
+          "avg": 127292,
+          "median": 118228,
+          "max": 149117,
+          "calls": 7
+        }
+      }
+    },
+    "DesignABorrowerOps": {
+      "deployment_cost": 3666451,
+      "deployment_size_bytes": 17152,
+      "functions": {
+        "adjustTroveInterestRate": {
+          "min": 84844,
+          "avg": 89304,
+          "median": 88795,
+          "max": 94785,
+          "calls": 4
+        },
+        "boldToken": {
+          "min": 326,
+          "avg": 326,
+          "median": 326,
+          "max": 326,
+          "calls": 3
+        },
+        "calcUpfrontFee": {
+          "min": 794,
+          "avg": 794,
+          "median": 794,
+          "max": 794,
+          "calls": 2
+        },
+        "closeTrove": {
+          "min": 103014,
+          "avg": 103014,
+          "median": 103014,
+          "max": 103014,
+          "calls": 2
+        },
+        "getLatestTroveDebt": {
+          "min": 11596,
+          "avg": 11596,
+          "median": 11596,
+          "max": 11596,
+          "calls": 2
+        },
+        "openTrove": {
+          "min": 228255,
+          "avg": 293278,
+          "median": 330879,
+          "max": 330951,
+          "calls": 5
+        },
+        "openTroveAndJoinBatch": {
+          "min": 418664,
+          "avg": 430212,
+          "median": 435980,
+          "max": 435992,
+          "calls": 3
+        },
+        "registerBatchManager": {
+          "min": 158987,
+          "avg": 158999,
+          "median": 158999,
+          "max": 159011,
+          "calls": 3
+        },
+        "repayBold": {
+          "min": 91159,
+          "avg": 91159,
+          "median": 91159,
+          "max": 91159,
+          "calls": 1
+        },
+        "setBatchManagerAnnualInterestRate": {
+          "min": 106985,
+          "avg": 112691,
+          "median": 109048,
+          "max": 118252,
+          "calls": 7
+        }
+      }
+    },
+    "DesignAStarBorrowerOps": {
+      "deployment_cost": 3763380,
+      "deployment_size_bytes": 17600,
+      "functions": {
+        "adjustTroveInterestRate": {
+          "min": 84932,
+          "avg": 85087,
+          "median": 84956,
+          "max": 93007,
+          "calls": 530
+        },
+        "aggRecordedDebt": {
+          "min": 2406,
+          "avg": 2406,
+          "median": 2406,
+          "max": 2406,
+          "calls": 257
+        },
+        "aggWeightedDebtSum": {
+          "min": 2384,
+          "avg": 2384,
+          "median": 2384,
+          "max": 2384,
+          "calls": 257
+        },
+        "boldToken": {
+          "min": 326,
+          "avg": 326,
+          "median": 326,
+          "max": 326,
+          "calls": 7
+        },
+        "calcInterest": {
+          "min": 574,
+          "avg": 574,
+          "median": 574,
+          "max": 574,
+          "calls": 3873
+        },
+        "calcInterestCeil": {
+          "min": 821,
+          "avg": 821,
+          "median": 821,
+          "max": 821,
+          "calls": 114
+        },
+        "calcUpfrontFee": {
+          "min": 772,
+          "avg": 772,
+          "median": 772,
+          "max": 772,
+          "calls": 259
+        },
+        "closeTrove": {
+          "min": 103014,
+          "avg": 103014,
+          "median": 103014,
+          "max": 103014,
+          "calls": 5
+        },
+        "getLatestBatchData": {
+          "min": 10067,
+          "avg": 10067,
+          "median": 10067,
+          "max": 10067,
+          "calls": 2
+        },
+        "getLatestTroveDebt": {
+          "min": 11574,
+          "avg": 16499,
+          "median": 19029,
+          "max": 19029,
+          "calls": 781
+        },
+        "interestBatchManagerOf": {
+          "min": 2563,
+          "avg": 2563,
+          "median": 2563,
+          "max": 2563,
+          "calls": 1
+        },
+        "openTrove": {
+          "min": 228255,
+          "avg": 302022,
+          "median": 330879,
+          "max": 330963,
+          "calls": 789
+        },
+        "openTroveAndJoinBatch": {
+          "min": 378677,
+          "avg": 379532,
+          "median": 378725,
+          "max": 435903,
+          "calls": 263
+        },
+        "quoteDesignAStarCeil": {
+          "min": 480,
+          "avg": 1018,
+          "median": 1238,
+          "max": 1238,
+          "calls": 514
+        },
+        "quoteDesignAStarFloor": {
+          "min": 545,
+          "avg": 1002,
+          "median": 1005,
+          "max": 1079,
+          "calls": 2967
+        },
+        "registerBatchManager": {
+          "min": 139015,
+          "avg": 139146,
+          "median": 139051,
+          "max": 159011,
+          "calls": 780
+        },
+        "removeFromBatch": {
+          "min": 142035,
+          "avg": 142062,
+          "median": 142059,
+          "max": 142071,
+          "calls": 258
+        },
+        "repayBold": {
+          "min": 91159,
+          "avg": 91159,
+          "median": 91159,
+          "max": 91159,
+          "calls": 2
+        },
+        "setBatchManagerAnnualInterestRate": {
+          "min": 92632,
+          "avg": 109840,
+          "median": 107160,
+          "max": 118230,
+          "calls": 11
+        },
+        "setInterestBatchManager": {
+          "min": 234372,
+          "avg": 243433,
+          "median": 241726,
+          "max": 245391,
+          "calls": 516
+        },
+        "switchBatchManager": {
+          "min": 191667,
+          "avg": 258675,
+          "median": 258935,
+          "max": 258935,
+          "calls": 259
+        }
+      }
+    },
+    "DesignDBorrowerOps": {
+      "deployment_cost": 5440260,
+      "deployment_size_bytes": 25379,
+      "functions": {
+        "adjustTroveInterestRate": {
+          "min": 111566,
+          "avg": 124050,
+          "median": 128678,
+          "max": 145790,
+          "calls": 1293
+        },
+        "aggRecordedDebt": {
+          "min": 2339,
+          "avg": 2339,
+          "median": 2339,
+          "max": 2339,
+          "calls": 42
+        },
+        "aggWeightedDebtSum": {
+          "min": 2428,
+          "avg": 2428,
+          "median": 2428,
+          "max": 2428,
+          "calls": 42
+        },
+        "batchBonds": {
+          "min": 2930,
+          "avg": 2930,
+          "median": 2930,
+          "max": 2930,
+          "calls": 3
+        },
+        "boldToken": {
+          "min": 370,
+          "avg": 370,
+          "median": 370,
+          "max": 370,
+          "calls": 9661
+        },
+        "calcInterest": {
+          "min": 618,
+          "avg": 618,
+          "median": 618,
+          "max": 618,
+          "calls": 3295
+        },
+        "calcInterestCeil": {
+          "min": 821,
+          "avg": 821,
+          "median": 821,
+          "max": 821,
+          "calls": 1285
+        },
+        "calcUpfrontFee": {
+          "min": 706,
+          "avg": 706,
+          "median": 706,
+          "max": 706,
+          "calls": 44
+        },
+        "claimVestedBatchBond": {
+          "min": 26153,
+          "avg": 31683,
+          "median": 26153,
+          "max": 47073,
+          "calls": 261
+        },
+        "claimVestedTroveBond": {
+          "min": 28616,
+          "avg": 50448,
+          "median": 50004,
+          "max": 77206,
+          "calls": 2353
+        },
+        "closeTrove": {
+          "min": 108896,
+          "avg": 122017,
+          "median": 121280,
+          "max": 200707,
+          "calls": 634
+        },
+        "getLatestBatchData": {
+          "min": 10111,
+          "avg": 10111,
+          "median": 10111,
+          "max": 10111,
+          "calls": 2
+        },
+        "getLatestTroveDebt": {
+          "min": 11618,
+          "avg": 12433,
+          "median": 11618,
+          "max": 19073,
+          "calls": 2369
+        },
+        "openTrove": {
+          "min": 231368,
+          "avg": 344132,
+          "median": 350324,
+          "max": 384572,
+          "calls": 2133
+        },
+        "openTroveAndJoinBatch": {
+          "min": 349516,
+          "avg": 432716,
+          "median": 434616,
+          "max": 542998,
+          "calls": 301
+        },
+        "protocolYieldAccumulated": {
+          "min": 2340,
+          "avg": 2340,
+          "median": 2340,
+          "max": 2340,
+          "calls": 434
+        },
+        "registerBatchManager": {
+          "min": 139015,
+          "avg": 139144,
+          "median": 139051,
+          "max": 159011,
+          "calls": 790
+        },
+        "removeFromBatch": {
+          "min": 180606,
+          "avg": 182948,
+          "median": 180630,
+          "max": 209044,
+          "calls": 157
+        },
+        "repayBold": {
+          "min": 100709,
+          "avg": 115663,
+          "median": 115893,
+          "max": 115917,
+          "calls": 259
+        },
+        "setBatchManagerAnnualInterestRate": {
+          "min": 93202,
+          "avg": 149967,
+          "median": 153591,
+          "max": 183585,
+          "calls": 328
+        },
+        "setInterestBatchManager": {
+          "min": 198441,
+          "avg": 286478,
+          "median": 288747,
+          "max": 288747,
+          "calls": 44
+        },
+        "switchBatchManager": {
+          "min": 325146,
+          "avg": 325461,
+          "median": 325146,
+          "max": 337405,
+          "calls": 39
+        },
+        "troveBonds": {
+          "min": 2807,
+          "avg": 2807,
+          "median": 2807,
+          "max": 2807,
+          "calls": 340
+        },
+        "withdrawBold": {
+          "min": 121266,
+          "avg": 138322,
+          "median": 138390,
+          "max": 138402,
+          "calls": 258
+        }
+      }
+    },
+    "StatusQuoBorrowerOps": {
+      "deployment_cost": 3658237,
+      "deployment_size_bytes": 17114,
+      "functions": {
+        "adjustTroveInterestRate": {
+          "min": 84844,
+          "avg": 91220,
+          "median": 94760,
+          "max": 94772,
+          "calls": 14
+        },
+        "boldToken": {
+          "min": 326,
+          "avg": 326,
+          "median": 326,
+          "max": 326,
+          "calls": 6
+        },
+        "calcInterest": {
+          "min": 596,
+          "avg": 596,
+          "median": 596,
+          "max": 596,
+          "calls": 5
+        },
+        "calcUpfrontFee": {
+          "min": 794,
+          "avg": 794,
+          "median": 794,
+          "max": 794,
+          "calls": 2
+        },
+        "closeTrove": {
+          "min": 103014,
+          "avg": 103014,
+          "median": 103014,
+          "max": 103014,
+          "calls": 4
+        },
+        "getBatchAccruedManagementFee": {
+          "min": 2607,
+          "avg": 2607,
+          "median": 2607,
+          "max": 2607,
+          "calls": 2
+        },
+        "getLatestBatchData": {
+          "min": 10067,
+          "avg": 10067,
+          "median": 10067,
+          "max": 10067,
+          "calls": 5
+        },
+        "getLatestTroveDebt": {
+          "min": 11596,
+          "avg": 11596,
+          "median": 11596,
+          "max": 11596,
+          "calls": 5
+        },
+        "openTrove": {
+          "min": 228255,
+          "avg": 285276,
+          "median": 288105,
+          "max": 330951,
+          "calls": 12
+        },
+        "openTroveAndJoinBatch": {
+          "min": 418664,
+          "avg": 446144,
+          "median": 435980,
+          "max": 521420,
+          "calls": 5
+        },
+        "registerBatchManager": {
+          "min": 139027,
+          "avg": 155666,
+          "median": 158987,
+          "max": 159011,
+          "calls": 6
+        },
+        "repayBold": {
+          "min": 91159,
+          "avg": 91159,
+          "median": 91159,
+          "max": 91159,
+          "calls": 2
+        },
+        "setBatchManagerAnnualInterestRate": {
+          "min": 108999,
+          "avg": 112854,
+          "median": 109023,
+          "max": 118252,
+          "calls": 12
+        },
+        "setInterestBatchManager": {
+          "min": 244606,
+          "avg": 244606,
+          "median": 244606,
+          "max": 244606,
+          "calls": 1
+        }
+      }
+    }
+  },
+  "default_profile": {
+    "suites": 3,
+    "passed": 44,
+    "failed": 0,
+    "skipped": 0,
+    "total_fuzz_runs": 32500,
+    "fuzz_tests": [
+      {
+        "test": "testFuzz_DesignAStar_BatchJoinNoArbitrage",
+        "runs": 2500,
+        "mean_gas": 4633750,
+        "median_gas": 4634010
+      },
+      {
+        "test": "testFuzz_DesignAStar_RemoveAndSwitchBatchSecurity",
+        "runs": 2500,
+        "mean_gas": 5802408,
+        "median_gas": 5802486
+      },
+      {
+        "test": "testFuzz_DesignD_BatchLifecycle_FirstPayerAndTransfer",
+        "runs": 2500,
+        "mean_gas": 7543236,
+        "median_gas": 7405570
+      },
+      {
+        "test": "testFuzz_DesignD_DormantShieldWithdrawBoldSecurity",
+        "runs": 2500,
+        "mean_gas": 6360131,
+        "median_gas": 6360413
+      },
+      {
+        "test": "testFuzz_DesignD_FlashLoanCloseAndReopenSecurity",
+        "runs": 2500,
+        "mean_gas": 6908291,
+        "median_gas": 6909663
+      },
+      {
+        "test": "testFuzz_DesignD_HonestHoldZeroPenalty",
+        "runs": 2500,
+        "mean_gas": 6226519,
+        "median_gas": 6227502
+      },
+      {
+        "test": "testFuzz_DesignD_InPlaceCutMatchesHoldCommitment",
+        "runs": 2500,
+        "mean_gas": 6362368,
+        "median_gas": 6363772
+      },
+      {
+        "test": "testFuzz_DesignD_PartialRepayBlocksBypass",
+        "runs": 2500,
+        "mean_gas": 6436153,
+        "median_gas": 6437638
+      },
+      {
+        "test": "testFuzz_DustAndMaxDebtOverflowBounds",
+        "runs": 2500,
+        "mean_gas": 17261,
+        "median_gas": 14454
+      },
+      {
+        "test": "testFuzz_MultiStepCutSuperadditivity",
+        "runs": 2500,
+        "mean_gas": 45869,
+        "median_gas": 45787
+      },
+      {
+        "test": "testFuzz_SpikeAndCutNoArbitrage_FloorAndCeil",
+        "runs": 2500,
+        "mean_gas": 38766,
+        "median_gas": 38753
+      },
+      {
+        "test": "testFuzz_StaircasePathInvariance",
+        "runs": 2500,
+        "mean_gas": 32196,
+        "median_gas": 29779
+      },
+      {
+        "test": "testFuzz_SybilDebtSplitNeutrality",
+        "runs": 2500,
+        "mean_gas": 21697,
+        "median_gas": 21857
+      }
+    ]
+  },
+  "intense_profile": {
+    "total_fuzz_runs": 130000,
+    "fuzz_properties_passed": 13,
+    "fuzz_tests": [
+      {
+        "test": "testFuzz_DesignAStar_BatchJoinNoArbitrage",
+        "runs": 10000,
+        "mean_gas": 4633666,
+        "median_gas": 4634014
+      },
+      {
+        "test": "testFuzz_DesignAStar_RemoveAndSwitchBatchSecurity",
+        "runs": 10000,
+        "mean_gas": 5802427,
+        "median_gas": 5802486
+      },
+      {
+        "test": "testFuzz_DesignD_BatchLifecycle_FirstPayerAndTransfer",
+        "runs": 10000,
+        "mean_gas": 7531564,
+        "median_gas": 7405556
+      },
+      {
+        "test": "testFuzz_DesignD_DormantShieldWithdrawBoldSecurity",
+        "runs": 10000,
+        "mean_gas": 6360134,
+        "median_gas": 6360413
+      },
+      {
+        "test": "testFuzz_DesignD_FlashLoanCloseAndReopenSecurity",
+        "runs": 10000,
+        "mean_gas": 6907919,
+        "median_gas": 6909675
+      },
+      {
+        "test": "testFuzz_DesignD_HonestHoldZeroPenalty",
+        "runs": 10000,
+        "mean_gas": 6226208,
+        "median_gas": 6227502
+      },
+      {
+        "test": "testFuzz_DesignD_InPlaceCutMatchesHoldCommitment",
+        "runs": 10000,
+        "mean_gas": 6362140,
+        "median_gas": 6363784
+      },
+      {
+        "test": "testFuzz_DesignD_PartialRepayBlocksBypass",
+        "runs": 10000,
+        "mean_gas": 6435964,
+        "median_gas": 6437662
+      },
+      {
+        "test": "testFuzz_DustAndMaxDebtOverflowBounds",
+        "runs": 10000,
+        "mean_gas": 17303,
+        "median_gas": 14454
+      },
+      {
+        "test": "testFuzz_MultiStepCutSuperadditivity",
+        "runs": 10000,
+        "mean_gas": 45897,
+        "median_gas": 46064
+      },
+      {
+        "test": "testFuzz_SpikeAndCutNoArbitrage_FloorAndCeil",
+        "runs": 10000,
+        "mean_gas": 38776,
+        "median_gas": 38753
+      },
+      {
+        "test": "testFuzz_StaircasePathInvariance",
+        "runs": 10000,
+        "mean_gas": 31391,
+        "median_gas": 29488
+      },
+      {
+        "test": "testFuzz_SybilDebtSplitNeutrality",
+        "runs": 10000,
+        "mean_gas": 21683,
+        "median_gas": 21857
+      }
+    ]
+  }
+}
