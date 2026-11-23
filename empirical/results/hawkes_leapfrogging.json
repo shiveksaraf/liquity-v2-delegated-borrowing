@@ -1,0 +1,1933 @@
+{
+  "module": "hawkes_leapfrogging",
+  "clustering_and_leapfrogging": {
+    "development": {
+      "n_genuine_updates": 1268,
+      "n_genuine_hikes": 1012,
+      "cross_manager_pairs": {
+        "1h": {
+          "total_pairs": 1540,
+          "same_dir": 1489,
+          "both_hike": 1280,
+          "both_cut": 209,
+          "same_dir_pct": 96.69,
+          "binom_p_vs_50pct": 0.0
+        },
+        "2h": {
+          "total_pairs": 1734,
+          "same_dir": 1664,
+          "both_hike": 1451,
+          "both_cut": 213,
+          "same_dir_pct": 95.96,
+          "binom_p_vs_50pct": 0.0
+        },
+        "6h": {
+          "total_pairs": 2216,
+          "same_dir": 2092,
+          "both_hike": 1859,
+          "both_cut": 233,
+          "same_dir_pct": 94.4,
+          "binom_p_vs_50pct": 0.0
+        },
+        "24h": {
+          "total_pairs": 3616,
+          "same_dir": 3348,
+          "both_hike": 3074,
+          "both_cut": 274,
+          "same_dir_pct": 92.59,
+          "binom_p_vs_50pct": 0.0
+        }
+      },
+      "multi_hike_branch_days": {
+        "days_with_ge2_hikes": 203,
+        "days_with_ge5_hikes": 82,
+        "max_hikes_in_one_branch_day": 18
+      },
+      "seven_day_leapfrogs": {
+        "n_leapfrog_reversals": 3505,
+        "n_unique_retaliation_hikes": 701,
+        "median_retaliation_hours": 44.98,
+        "retaliation_hike_fees_bold": 286764.58
+      }
+    },
+    "confirmation": {
+      "n_genuine_updates": 372,
+      "n_genuine_hikes": 259,
+      "cross_manager_pairs": {
+        "1h": {
+          "total_pairs": 397,
+          "same_dir": 348,
+          "both_hike": 262,
+          "both_cut": 86,
+          "same_dir_pct": 87.66,
+          "binom_p_vs_50pct": 5.899867752125004e-57
+        },
+        "2h": {
+          "total_pairs": 454,
+          "same_dir": 389,
+          "both_hike": 291,
+          "both_cut": 98,
+          "same_dir_pct": 85.68,
+          "binom_p_vs_50pct": 1.2950476981013492e-57
+        },
+        "6h": {
+          "total_pairs": 623,
+          "same_dir": 515,
+          "both_hike": 412,
+          "both_cut": 103,
+          "same_dir_pct": 82.66,
+          "binom_p_vs_50pct": 9.135261143887911e-65
+        },
+        "24h": {
+          "total_pairs": 1084,
+          "same_dir": 808,
+          "both_hike": 645,
+          "both_cut": 163,
+          "same_dir_pct": 74.54,
+          "binom_p_vs_50pct": 2.516076545991243e-61
+        }
+      },
+      "multi_hike_branch_days": {
+        "days_with_ge2_hikes": 49,
+        "days_with_ge5_hikes": 24,
+        "max_hikes_in_one_branch_day": 13
+      },
+      "seven_day_leapfrogs": {
+        "n_leapfrog_reversals": 757,
+        "n_unique_retaliation_hikes": 155,
+        "median_retaliation_hours": 56.04,
+        "retaliation_hike_fees_bold": 90245.64
+      }
+    },
+    "pooled": {
+      "n_genuine_updates": 1640,
+      "n_genuine_hikes": 1271,
+      "cross_manager_pairs": {
+        "1h": {
+          "total_pairs": 1937,
+          "same_dir": 1837,
+          "both_hike": 1542,
+          "both_cut": 295,
+          "same_dir_pct": 94.84,
+          "binom_p_vs_50pct": 0.0
+        },
+        "2h": {
+          "total_pairs": 2188,
+          "same_dir": 2053,
+          "both_hike": 1742,
+          "both_cut": 311,
+          "same_dir_pct": 93.83,
+          "binom_p_vs_50pct": 0.0
+        },
+        "6h": {
+          "total_pairs": 2839,
+          "same_dir": 2607,
+          "both_hike": 2271,
+          "both_cut": 336,
+          "same_dir_pct": 91.83,
+          "binom_p_vs_50pct": 0.0
+        },
+        "24h": {
+          "total_pairs": 4740,
+          "same_dir": 4179,
+          "both_hike": 3741,
+          "both_cut": 438,
+          "same_dir_pct": 88.16,
+          "binom_p_vs_50pct": 0.0
+        }
+      },
+      "multi_hike_branch_days": {
+        "days_with_ge2_hikes": 252,
+        "days_with_ge5_hikes": 106,
+        "max_hikes_in_one_branch_day": 18
+      },
+      "seven_day_leapfrogs": {
+        "n_leapfrog_reversals": 4472,
+        "n_unique_retaliation_hikes": 870,
+        "median_retaliation_hours": 48.66,
+        "retaliation_hike_fees_bold": 385840.34
+      }
+    }
+  },
+  "same_manager_post_1h_gap_diagnostics": {
+    "pos_debt_hikes_only": {
+      "WETH": {
+        "n_same_manager_hike_gaps": 98,
+        "n_lt_1h": 0,
+        "n_in_1h_2h": 3,
+        "pct_in_1h_2h": 3.06,
+        "n_in_1h_6h": 5,
+        "pct_in_1h_6h": 5.1,
+        "n_in_1h_24h": 7,
+        "pct_in_1h_24h": 7.14
+      },
+      "wstETH": {
+        "n_same_manager_hike_gaps": 266,
+        "n_lt_1h": 0,
+        "n_in_1h_2h": 6,
+        "pct_in_1h_2h": 2.26,
+        "n_in_1h_6h": 10,
+        "pct_in_1h_6h": 3.76,
+        "n_in_1h_24h": 26,
+        "pct_in_1h_24h": 9.77
+      },
+      "rETH": {
+        "n_same_manager_hike_gaps": 145,
+        "n_lt_1h": 0,
+        "n_in_1h_2h": 19,
+        "pct_in_1h_2h": 13.1,
+        "n_in_1h_6h": 36,
+        "pct_in_1h_6h": 24.83,
+        "n_in_1h_24h": 50,
+        "pct_in_1h_24h": 34.48
+      }
+    },
+    "all_genuine_hikes": {
+      "WETH": {
+        "n_same_manager_hike_gaps": 299,
+        "n_lt_1h": 0,
+        "n_in_1h_2h": 4,
+        "pct_in_1h_2h": 1.34,
+        "n_in_1h_6h": 11,
+        "pct_in_1h_6h": 3.68,
+        "n_in_1h_24h": 22,
+        "pct_in_1h_24h": 7.36
+      },
+      "wstETH": {
+        "n_same_manager_hike_gaps": 476,
+        "n_lt_1h": 0,
+        "n_in_1h_2h": 6,
+        "pct_in_1h_2h": 1.26,
+        "n_in_1h_6h": 11,
+        "pct_in_1h_6h": 2.31,
+        "n_in_1h_24h": 29,
+        "pct_in_1h_24h": 6.09
+      },
+      "rETH": {
+        "n_same_manager_hike_gaps": 463,
+        "n_lt_1h": 0,
+        "n_in_1h_2h": 29,
+        "pct_in_1h_2h": 6.26,
+        "n_in_1h_6h": 80,
+        "pct_in_1h_6h": 17.28,
+        "n_in_1h_24h": 109,
+        "pct_in_1h_24h": 23.54
+      }
+    }
+  },
+  "multivariate_hawkes_mle": {
+    "all_genuine_hikes": {
+      "development": {
+        "WETH": {
+          "n_events": 248,
+          "n_managers": 11,
+          "T_hours": 9775.52,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -1713.95,
+              "ks_stat": 0.4437,
+              "ks_p": 5.3114587933528014e-45
+            },
+            "M1_exog_only": {
+              "ll": -1680.44,
+              "ks_stat": 0.4349,
+              "ks_p": 3.650145818579185e-43
+            },
+            "M2_self_only": {
+              "ll": -1674.86,
+              "ks_stat": 0.4224,
+              "ks_p": 1.2007341035405527e-40,
+              "alpha_self": 0.1824
+            },
+            "M3_full_hawkes": {
+              "ll": -1381.27,
+              "ks_stat": 0.135,
+              "ks_p": 0.00020980325947754597
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 67.03,
+            "exog_vs_poisson_p": 2.7904746986787725e-15,
+            "full_hawkes_vs_exog_stat": 598.35,
+            "full_hawkes_vs_exog_p": 2.299491681573854e-129,
+            "cross_excitation_vs_self_only_stat": 587.19,
+            "cross_excitation_vs_self_only_p": 1.0218146318210743e-129
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.002201,
+            "mu_tot_se": 0.002768,
+            "gamma_red_per_hour": 0.002783,
+            "gamma_red_se": 0.000909,
+            "gamma_vol_per_hour": 0.009214,
+            "gamma_vol_se": 0.002916,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.4402,
+            "alpha_cross_se": 0.0436,
+            "beta_per_hour": 3.6767,
+            "beta_se": 0.4922,
+            "branching_ratio_rho": 0.4402,
+            "half_life_hours": 0.189,
+            "half_life_minutes": 11.31,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.0867,
+              "exogenous_redemp_vol": 0.4731,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.4402,
+              "total_endogenous": 0.4402
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 35952.0,
+              "baseline_bold": 3689.09,
+              "exogenous_bold": 26742.09,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 5520.82,
+              "cross_manager_pct": 15.36,
+              "total_endogenous_pct": 15.36
+            }
+          }
+        },
+        "wstETH": {
+          "n_events": 391,
+          "n_managers": 10,
+          "T_hours": 9775.52,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -2544.83,
+              "ks_stat": 0.4657,
+              "ks_p": 3.3622177558566965e-78
+            },
+            "M1_exog_only": {
+              "ll": -2460.64,
+              "ks_stat": 0.4357,
+              "ks_p": 5.165563727194913e-68
+            },
+            "M2_self_only": {
+              "ll": -2437.02,
+              "ks_stat": 0.4221,
+              "ks_p": 1.1301113197065617e-63,
+              "alpha_self": 0.5077
+            },
+            "M3_full_hawkes": {
+              "ll": -1911.93,
+              "ks_stat": 0.1291,
+              "ks_p": 3.828365350247137e-06
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 168.38,
+            "exog_vs_poisson_p": 2.7274641549579157e-37,
+            "full_hawkes_vs_exog_stat": 1097.43,
+            "full_hawkes_vs_exog_p": 1.3147372900699438e-237,
+            "cross_excitation_vs_self_only_stat": 1050.18,
+            "cross_excitation_vs_self_only_p": 2.22253759298246e-230
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.011111,
+            "mu_tot_se": 0.001405,
+            "gamma_red_per_hour": 0.009559,
+            "gamma_red_se": 0.001396,
+            "gamma_vol_per_hour": 0.0,
+            "gamma_vol_se": null,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.4832,
+            "alpha_cross_se": 0.0363,
+            "beta_per_hour": 4.3873,
+            "beta_se": 0.4376,
+            "branching_ratio_rho": 0.4832,
+            "half_life_hours": 0.158,
+            "half_life_minutes": 9.48,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.2778,
+              "exogenous_redemp_vol": 0.239,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.4832,
+              "total_endogenous": 0.4832
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 137236.45,
+              "baseline_bold": 42419.63,
+              "exogenous_bold": 45542.31,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 49274.51,
+              "cross_manager_pct": 35.9,
+              "total_endogenous_pct": 35.9
+            }
+          }
+        },
+        "rETH": {
+          "n_events": 373,
+          "n_managers": 10,
+          "T_hours": 9775.52,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -2398.62,
+              "ks_stat": 0.6254,
+              "ks_p": 1.6878197923463976e-141
+            },
+            "M1_exog_only": {
+              "ll": -2349.04,
+              "ks_stat": 0.6019,
+              "ks_p": 7.29908997182797e-130
+            },
+            "M2_self_only": {
+              "ll": -2277.24,
+              "ks_stat": 0.5545,
+              "ks_p": 2.1920168552676583e-108,
+              "alpha_self": 0.4296
+            },
+            "M3_full_hawkes": {
+              "ll": -1499.33,
+              "ks_stat": 0.2087,
+              "ks_p": 9.928192265342179e-15
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 99.16,
+            "exog_vs_poisson_p": 2.93066560029372e-22,
+            "full_hawkes_vs_exog_stat": 1699.42,
+            "full_hawkes_vs_exog_p": 0.0,
+            "cross_excitation_vs_self_only_stat": 1555.82,
+            "cross_excitation_vs_self_only_p": 0.0
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.006421,
+            "mu_tot_se": 0.00261,
+            "gamma_red_per_hour": 0.006203,
+            "gamma_red_se": 0.001197,
+            "gamma_vol_per_hour": 0.002163,
+            "gamma_vol_se": 0.002575,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.6124,
+            "alpha_cross_se": 0.0423,
+            "beta_per_hour": 6.5942,
+            "beta_se": 0.8698,
+            "branching_ratio_rho": 0.6124,
+            "half_life_hours": 0.105,
+            "half_life_minutes": 6.31,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.1683,
+              "exogenous_redemp_vol": 0.2193,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.6124,
+              "total_endogenous": 0.6124
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 139001.62,
+              "baseline_bold": 24579.33,
+              "exogenous_bold": 45607.86,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 68814.44,
+              "cross_manager_pct": 49.51,
+              "total_endogenous_pct": 49.51
+            }
+          }
+        },
+        "aggregate_all_branches_fee_attribution": {
+          "total_hike_fees_bold": 312190.07,
+          "baseline_bold": 70688.05,
+          "exogenous_bold": 117892.26,
+          "self_excitation_bold": 0.0,
+          "cross_manager_bold": 123609.77,
+          "cross_manager_share_pct": 39.59,
+          "total_endogenous_share_pct": 39.59
+        }
+      },
+      "confirmation": {
+        "WETH": {
+          "n_events": 62,
+          "n_managers": 10,
+          "T_hours": 1817.57,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -404.01,
+              "ks_stat": 0.2936,
+              "ks_p": 3.1304511860210755e-05
+            },
+            "M1_exog_only": {
+              "ll": -388.12,
+              "ks_stat": 0.2563,
+              "ks_p": 0.00044364287047220593
+            },
+            "M2_self_only": {
+              "ll": -388.12,
+              "ks_stat": 0.2563,
+              "ks_p": 0.0004436443494237376,
+              "alpha_self": 0.0
+            },
+            "M3_full_hawkes": {
+              "ll": -351.3,
+              "ks_stat": 0.1611,
+              "ks_p": 0.07131412192567232
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 31.78,
+            "exog_vs_poisson_p": 1.257229772118897e-07,
+            "full_hawkes_vs_exog_stat": 73.65,
+            "full_hawkes_vs_exog_p": 7.061708133241892e-16,
+            "cross_excitation_vs_self_only_stat": 73.65,
+            "cross_excitation_vs_self_only_p": 9.338140930955129e-18
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.003887,
+            "mu_tot_se": 0.006766,
+            "gamma_red_per_hour": 0.009651,
+            "gamma_red_se": 0.002958,
+            "gamma_vol_per_hour": 0.014777,
+            "gamma_vol_se": 0.007309,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.1722,
+            "alpha_cross_se": 0.0546,
+            "beta_per_hour": 52.125,
+            "beta_se": 22.5872,
+            "branching_ratio_rho": 0.1722,
+            "half_life_hours": 0.013,
+            "half_life_minutes": 0.8,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.1139,
+              "exogenous_redemp_vol": 0.7166,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.1694,
+              "total_endogenous": 0.1694
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 8.13,
+              "baseline_bold": 0.35,
+              "exogenous_bold": 2.05,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 5.73,
+              "cross_manager_pct": 70.51,
+              "total_endogenous_pct": 70.51
+            }
+          }
+        },
+        "wstETH": {
+          "n_events": 96,
+          "n_managers": 11,
+          "T_hours": 1817.57,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -601.81,
+              "ks_stat": 0.5318,
+              "ks_p": 7.164676581140112e-26
+            },
+            "M1_exog_only": {
+              "ll": -585.96,
+              "ks_stat": 0.4938,
+              "ks_p": 3.9322287862430694e-22
+            },
+            "M2_self_only": {
+              "ll": -585.96,
+              "ks_stat": 0.4938,
+              "ks_p": 3.9327990787030603e-22,
+              "alpha_self": 0.0
+            },
+            "M3_full_hawkes": {
+              "ll": -434.42,
+              "ks_stat": 0.1776,
+              "ks_p": 0.00405037611836323
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 31.7,
+            "exog_vs_poisson_p": 1.3077619692510054e-07,
+            "full_hawkes_vs_exog_stat": 303.09,
+            "full_hawkes_vs_exog_p": 2.134966784349684e-65,
+            "cross_excitation_vs_self_only_stat": 303.09,
+            "cross_excitation_vs_self_only_p": 6.9980170133927494e-68
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.0,
+            "mu_tot_se": null,
+            "gamma_red_per_hour": 0.006579,
+            "gamma_red_se": 0.002667,
+            "gamma_vol_per_hour": 0.020453,
+            "gamma_vol_se": 0.003904,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.4878,
+            "alpha_cross_se": 0.0742,
+            "beta_per_hour": 9.3153,
+            "beta_se": 2.5314,
+            "branching_ratio_rho": 0.4878,
+            "half_life_hours": 0.074,
+            "half_life_minutes": 4.46,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.0,
+              "exogenous_redemp_vol": 0.5122,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.4878,
+              "total_endogenous": 0.4878
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 73577.9,
+              "baseline_bold": 0.15,
+              "exogenous_bold": 65582.69,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 7995.06,
+              "cross_manager_pct": 10.87,
+              "total_endogenous_pct": 10.87
+            }
+          }
+        },
+        "rETH": {
+          "n_events": 101,
+          "n_managers": 10,
+          "T_hours": 1817.57,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -584.56,
+              "ks_stat": 0.6064,
+              "ks_p": 3.948925290163903e-36
+            },
+            "M1_exog_only": {
+              "ll": -534.72,
+              "ks_stat": 0.5382,
+              "ks_p": 6.705730204936255e-28
+            },
+            "M2_self_only": {
+              "ll": -518.44,
+              "ks_stat": 0.3878,
+              "ks_p": 3.482372687383545e-14,
+              "alpha_self": 0.194
+            },
+            "M3_full_hawkes": {
+              "ll": -427.85,
+              "ks_stat": 0.1427,
+              "ks_p": 0.02941772226644579
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 99.68,
+            "exog_vs_poisson_p": 2.264487852744373e-22,
+            "full_hawkes_vs_exog_stat": 213.72,
+            "full_hawkes_vs_exog_p": 4.562306427435277e-46,
+            "cross_excitation_vs_self_only_stat": 181.16,
+            "cross_excitation_vs_self_only_p": 2.70126749462871e-41
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.0,
+            "mu_tot_se": null,
+            "gamma_red_per_hour": 0.006976,
+            "gamma_red_se": 0.003047,
+            "gamma_vol_per_hour": 0.025564,
+            "gamma_vol_se": 0.004185,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.4139,
+            "alpha_cross_se": 0.0678,
+            "beta_per_hour": 8.4443,
+            "beta_se": 1.9948,
+            "branching_ratio_rho": 0.4139,
+            "half_life_hours": 0.082,
+            "half_life_minutes": 4.93,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.0,
+              "exogenous_redemp_vol": 0.5861,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.4139,
+              "total_endogenous": 0.4139
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 25572.9,
+              "baseline_bold": 0.04,
+              "exogenous_bold": 12846.15,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 12726.72,
+              "cross_manager_pct": 49.77,
+              "total_endogenous_pct": 49.77
+            }
+          }
+        },
+        "aggregate_all_branches_fee_attribution": {
+          "total_hike_fees_bold": 99158.93,
+          "baseline_bold": 0.54,
+          "exogenous_bold": 78430.89,
+          "self_excitation_bold": 0.0,
+          "cross_manager_bold": 20727.51,
+          "cross_manager_share_pct": 20.9,
+          "total_endogenous_share_pct": 20.9
+        }
+      },
+      "pooled": {
+        "WETH": {
+          "n_events": 310,
+          "n_managers": 11,
+          "T_hours": 11593.09,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -2142.57,
+              "ks_stat": 0.399,
+              "ks_p": 4.856448107968487e-45
+            },
+            "M1_exog_only": {
+              "ll": -2096.57,
+              "ks_stat": 0.3878,
+              "ks_p": 1.807965409571525e-42
+            },
+            "M2_self_only": {
+              "ll": -2082.95,
+              "ks_stat": 0.3824,
+              "ks_p": 2.8658135291339814e-41,
+              "alpha_self": 0.3391
+            },
+            "M3_full_hawkes": {
+              "ll": -1766.4,
+              "ks_stat": 0.1299,
+              "ks_p": 5.07451822982669e-05
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 91.99,
+            "exog_vs_poisson_p": 1.0562847041787474e-20,
+            "full_hawkes_vs_exog_stat": 660.35,
+            "full_hawkes_vs_exog_p": 8.295285975426575e-143,
+            "cross_excitation_vs_self_only_stat": 633.11,
+            "cross_excitation_vs_self_only_p": 1.0552195117820716e-139
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.004738,
+            "mu_tot_se": 0.002502,
+            "gamma_red_per_hour": 0.003466,
+            "gamma_red_se": 0.000884,
+            "gamma_vol_per_hour": 0.007789,
+            "gamma_vol_se": 0.002555,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.4035,
+            "alpha_cross_se": 0.0375,
+            "beta_per_hour": 4.1166,
+            "beta_se": 0.4983,
+            "branching_ratio_rho": 0.4035,
+            "half_life_hours": 0.168,
+            "half_life_minutes": 10.1,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.1772,
+              "exogenous_redemp_vol": 0.4212,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.4016,
+              "total_endogenous": 0.4016
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 35960.13,
+              "baseline_bold": 6996.85,
+              "exogenous_bold": 23835.71,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 5127.56,
+              "cross_manager_pct": 14.26,
+              "total_endogenous_pct": 14.26
+            }
+          }
+        },
+        "wstETH": {
+          "n_events": 487,
+          "n_managers": 11,
+          "T_hours": 11593.09,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -3166.24,
+              "ks_stat": 0.4769,
+              "ks_p": 2.677454780036726e-102
+            },
+            "M1_exog_only": {
+              "ll": -3076.59,
+              "ks_stat": 0.4495,
+              "ks_p": 2.66183280809867e-90
+            },
+            "M2_self_only": {
+              "ll": -3039.15,
+              "ks_stat": 0.4338,
+              "ks_p": 7.540328923736388e-84,
+              "alpha_self": 0.5114
+            },
+            "M3_full_hawkes": {
+              "ll": -2387.2,
+              "ks_stat": 0.1411,
+              "ks_p": 6.409546515858255e-09
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 179.31,
+            "exog_vs_poisson_p": 1.1562852623066978e-39,
+            "full_hawkes_vs_exog_stat": 1378.77,
+            "full_hawkes_vs_exog_p": 1.1938000312415813e-298,
+            "cross_excitation_vs_self_only_stat": 1303.9,
+            "cross_excitation_vs_self_only_p": 1.6086449191847573e-285
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.011727,
+            "mu_tot_se": 0.002597,
+            "gamma_red_per_hour": 0.008989,
+            "gamma_red_se": 0.00126,
+            "gamma_vol_per_hour": 0.000702,
+            "gamma_vol_se": 0.002311,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.4901,
+            "alpha_cross_se": 0.0329,
+            "beta_per_hour": 4.7025,
+            "beta_se": 0.448,
+            "branching_ratio_rho": 0.4901,
+            "half_life_hours": 0.147,
+            "half_life_minutes": 8.84,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.2792,
+              "exogenous_redemp_vol": 0.2307,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.4901,
+              "total_endogenous": 0.4901
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 210814.34,
+              "baseline_bold": 76285.47,
+              "exogenous_bold": 76402.65,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 58126.23,
+              "cross_manager_pct": 27.57,
+              "total_endogenous_pct": 27.57
+            }
+          }
+        },
+        "rETH": {
+          "n_events": 474,
+          "n_managers": 11,
+          "T_hours": 11593.09,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -3063.91,
+              "ks_stat": 0.6224,
+              "ks_p": 1.0670427370794957e-177
+            },
+            "M1_exog_only": {
+              "ll": -2989.24,
+              "ks_stat": 0.5927,
+              "ks_p": 2.5894826493026843e-159
+            },
+            "M2_self_only": {
+              "ll": -2851.52,
+              "ks_stat": 0.5229,
+              "ks_p": 3.610114194951933e-121,
+              "alpha_self": 0.472
+            },
+            "M3_full_hawkes": {
+              "ll": -2039.71,
+              "ks_stat": 0.1823,
+              "ks_p": 2.918167837530373e-14
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 149.33,
+            "exog_vs_poisson_p": 3.738223485763704e-33,
+            "full_hawkes_vs_exog_stat": 1899.06,
+            "full_hawkes_vs_exog_p": 0.0,
+            "cross_excitation_vs_self_only_stat": 1623.63,
+            "cross_excitation_vs_self_only_p": 0.0
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.008363,
+            "mu_tot_se": 0.002674,
+            "gamma_red_per_hour": 0.005281,
+            "gamma_red_se": 0.001068,
+            "gamma_vol_per_hour": 0.004129,
+            "gamma_vol_se": 0.002646,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.5652,
+            "alpha_cross_se": 0.0358,
+            "beta_per_hour": 7.4487,
+            "beta_se": 0.8545,
+            "branching_ratio_rho": 0.5652,
+            "half_life_hours": 0.093,
+            "half_life_minutes": 5.58,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.2045,
+              "exogenous_redemp_vol": 0.2302,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.5652,
+              "total_endogenous": 0.5652
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 164574.53,
+              "baseline_bold": 35448.61,
+              "exogenous_bold": 49314.0,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 79811.92,
+              "cross_manager_pct": 48.5,
+              "total_endogenous_pct": 48.5
+            }
+          }
+        },
+        "aggregate_all_branches_fee_attribution": {
+          "total_hike_fees_bold": 411349.0,
+          "baseline_bold": 118730.93,
+          "exogenous_bold": 149552.36,
+          "self_excitation_bold": 0.0,
+          "cross_manager_bold": 143065.71,
+          "cross_manager_share_pct": 34.78,
+          "total_endogenous_share_pct": 34.78
+        }
+      }
+    },
+    "pos_debt_hikes_only": {
+      "development": {
+        "WETH": {
+          "n_events": 82,
+          "n_managers": 5,
+          "T_hours": 9775.52,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -578.78,
+              "ks_stat": 0.3212,
+              "ks_p": 4.992691356922215e-08
+            },
+            "M1_exog_only": {
+              "ll": -560.21,
+              "ks_stat": 0.299,
+              "ks_p": 5.360246492166292e-07
+            },
+            "M2_self_only": {
+              "ll": -553.46,
+              "ks_stat": 0.2719,
+              "ks_p": 7.602781692755206e-06,
+              "alpha_self": 0.3058
+            },
+            "M3_full_hawkes": {
+              "ll": -505.41,
+              "ks_stat": 0.1094,
+              "ks_p": 0.2603664323150269
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 37.14,
+            "exog_vs_poisson_p": 8.599612696731548e-09,
+            "full_hawkes_vs_exog_stat": 109.6,
+            "full_hawkes_vs_exog_p": 1.337770926099946e-23,
+            "cross_excitation_vs_self_only_stat": 96.1,
+            "cross_excitation_vs_self_only_p": 1.0915394635722474e-22
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.0,
+            "mu_tot_se": null,
+            "gamma_red_per_hour": 0.001801,
+            "gamma_red_se": 0.000664,
+            "gamma_vol_per_hour": 0.004473,
+            "gamma_vol_se": 0.000842,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.2518,
+            "alpha_cross_se": 0.0569,
+            "beta_per_hour": 3.7669,
+            "beta_se": 0.9189,
+            "branching_ratio_rho": 0.2518,
+            "half_life_hours": 0.184,
+            "half_life_minutes": 11.04,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.0,
+              "exogenous_redemp_vol": 0.7482,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.2518,
+              "total_endogenous": 0.2518
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 35952.0,
+              "baseline_bold": 0.38,
+              "exogenous_bold": 31745.3,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 4206.32,
+              "cross_manager_pct": 11.7,
+              "total_endogenous_pct": 11.7
+            }
+          }
+        },
+        "wstETH": {
+          "n_events": 219,
+          "n_managers": 10,
+          "T_hours": 9775.52,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -1472.05,
+              "ks_stat": 0.4218,
+              "ks_p": 7.552717504710483e-36
+            },
+            "M1_exog_only": {
+              "ll": -1387.96,
+              "ks_stat": 0.3718,
+              "ks_p": 1.0999003208114882e-27
+            },
+            "M2_self_only": {
+              "ll": -1359.58,
+              "ks_stat": 0.3667,
+              "ks_p": 6.417305475564658e-27,
+              "alpha_self": 0.4611
+            },
+            "M3_full_hawkes": {
+              "ll": -1195.09,
+              "ks_stat": 0.0558,
+              "ks_p": 0.4859681322541013
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 168.18,
+            "exog_vs_poisson_p": 3.0271008734302384e-37,
+            "full_hawkes_vs_exog_stat": 385.74,
+            "full_hawkes_vs_exog_p": 2.7129951979238263e-83,
+            "cross_excitation_vs_self_only_stat": 328.98,
+            "cross_excitation_vs_self_only_p": 1.602295120140729e-73
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.005368,
+            "mu_tot_se": 0.001007,
+            "gamma_red_per_hour": 0.007827,
+            "gamma_red_se": 0.001172,
+            "gamma_vol_per_hour": 0.0,
+            "gamma_vol_se": null,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.411,
+            "alpha_cross_se": 0.0463,
+            "beta_per_hour": 2.1791,
+            "beta_se": 0.3338,
+            "branching_ratio_rho": 0.411,
+            "half_life_hours": 0.318,
+            "half_life_minutes": 19.09,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.2396,
+              "exogenous_redemp_vol": 0.3494,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.411,
+              "total_endogenous": 0.411
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 137236.45,
+              "baseline_bold": 42321.53,
+              "exogenous_bold": 63660.45,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 31254.46,
+              "cross_manager_pct": 22.77,
+              "total_endogenous_pct": 22.77
+            }
+          }
+        },
+        "rETH": {
+          "n_events": 133,
+          "n_managers": 7,
+          "T_hours": 9775.52,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -896.6,
+              "ks_stat": 0.5312,
+              "ks_p": 1.4932305149828426e-35
+            },
+            "M1_exog_only": {
+              "ll": -851.33,
+              "ks_stat": 0.5106,
+              "ks_p": 1.0999895260232506e-32
+            },
+            "M2_self_only": {
+              "ll": -769.38,
+              "ks_stat": 0.3496,
+              "ks_p": 4.909513634576852e-15,
+              "alpha_self": 0.4722
+            },
+            "M3_full_hawkes": {
+              "ll": -688.29,
+              "ks_stat": 0.1518,
+              "ks_p": 0.0038594056208773875
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 90.54,
+            "exog_vs_poisson_p": 2.1825423309199487e-20,
+            "full_hawkes_vs_exog_stat": 326.08,
+            "full_hawkes_vs_exog_p": 2.247342844782503e-70,
+            "cross_excitation_vs_self_only_stat": 162.19,
+            "cross_excitation_vs_self_only_p": 3.7650762204268865e-37
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.002279,
+            "mu_tot_se": 0.00153,
+            "gamma_red_per_hour": 0.003511,
+            "gamma_red_se": 0.000837,
+            "gamma_vol_per_hour": 0.000434,
+            "gamma_vol_se": 0.001533,
+            "alpha_self": 0.0913,
+            "alpha_self_se": 0.042,
+            "alpha_cross": 0.4512,
+            "alpha_cross_se": 0.0658,
+            "beta_per_hour": 1.1058,
+            "beta_se": 0.218,
+            "branching_ratio_rho": 0.5425,
+            "half_life_hours": 0.627,
+            "half_life_minutes": 37.61,
+            "cross_share_of_excitation": 0.8318
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.1675,
+              "exogenous_redemp_vol": 0.29,
+              "self_excitation": 0.0913,
+              "cross_manager_contagion": 0.4512,
+              "total_endogenous": 0.5425
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 139001.62,
+              "baseline_bold": 26083.68,
+              "exogenous_bold": 55883.66,
+              "self_excitation_bold": 12794.66,
+              "cross_manager_bold": 44239.62,
+              "cross_manager_pct": 31.83,
+              "total_endogenous_pct": 41.03
+            }
+          }
+        },
+        "aggregate_all_branches_fee_attribution": {
+          "total_hike_fees_bold": 312190.07,
+          "baseline_bold": 68405.59,
+          "exogenous_bold": 151289.41,
+          "self_excitation_bold": 12794.66,
+          "cross_manager_bold": 79700.4,
+          "cross_manager_share_pct": 25.53,
+          "total_endogenous_share_pct": 29.63
+        }
+      },
+      "confirmation": {
+        "WETH": {
+          "n_events": 23,
+          "n_managers": 5,
+          "T_hours": 1817.57,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -158.01,
+              "ks_stat": 0.1778,
+              "ks_p": 0.4128577573840577
+            },
+            "M1_exog_only": {
+              "ll": -151.78,
+              "ks_stat": 0.2365,
+              "ks_p": 0.12921382859653852
+            },
+            "M2_self_only": {
+              "ll": -151.78,
+              "ks_stat": 0.2365,
+              "ks_p": 0.12921539638896007,
+              "alpha_self": 0.0
+            },
+            "M3_full_hawkes": {
+              "ll": -147.05,
+              "ks_stat": 0.1544,
+              "ks_p": 0.5899386569128042
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 12.46,
+            "exog_vs_poisson_p": 0.001969233271614131,
+            "full_hawkes_vs_exog_stat": 9.45,
+            "full_hawkes_vs_exog_p": 0.023874685507838143,
+            "cross_excitation_vs_self_only_stat": 9.45,
+            "cross_excitation_vs_self_only_p": 0.00211206421003064
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.003561,
+            "mu_tot_se": 0.00424,
+            "gamma_red_per_hour": 0.002079,
+            "gamma_red_se": 0.001556,
+            "gamma_vol_per_hour": 0.005039,
+            "gamma_vol_se": 0.004312,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.1666,
+            "alpha_cross_se": 0.0933,
+            "beta_per_hour": 2.9671,
+            "beta_se": 1.6695,
+            "branching_ratio_rho": 0.1666,
+            "half_life_hours": 0.234,
+            "half_life_minutes": 14.02,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.2814,
+              "exogenous_redemp_vol": 0.5629,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.1557,
+              "total_endogenous": 0.1557
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 8.13,
+              "baseline_bold": 1.82,
+              "exogenous_bold": 4.71,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 1.6,
+              "cross_manager_pct": 19.69,
+              "total_endogenous_pct": 19.69
+            }
+          }
+        },
+        "wstETH": {
+          "n_events": 58,
+          "n_managers": 6,
+          "T_hours": 1817.57,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -356.85,
+              "ks_stat": 0.6352,
+              "ks_p": 3.101324474117835e-23
+            },
+            "M1_exog_only": {
+              "ll": -342.98,
+              "ks_stat": 0.6047,
+              "ks_p": 7.600648596517247e-21
+            },
+            "M2_self_only": {
+              "ll": -342.98,
+              "ks_stat": 0.6047,
+              "ks_p": 7.600679279134391e-21,
+              "alpha_self": 0.0
+            },
+            "M3_full_hawkes": {
+              "ll": -200.24,
+              "ks_stat": 0.2309,
+              "ks_p": 0.0033442161630340417
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 27.75,
+            "exog_vs_poisson_p": 9.445498884338372e-07,
+            "full_hawkes_vs_exog_stat": 285.48,
+            "full_hawkes_vs_exog_p": 1.3810778483034939e-61,
+            "cross_excitation_vs_self_only_stat": 285.48,
+            "cross_excitation_vs_self_only_p": 4.804211536331565e-64
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.0,
+            "mu_tot_se": null,
+            "gamma_red_per_hour": 0.002697,
+            "gamma_red_se": 0.001645,
+            "gamma_vol_per_hour": 0.008555,
+            "gamma_vol_se": 0.002434,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.6471,
+            "alpha_cross_se": 0.1066,
+            "beta_per_hour": 6.2559,
+            "beta_se": 1.2956,
+            "branching_ratio_rho": 0.6471,
+            "half_life_hours": 0.111,
+            "half_life_minutes": 6.65,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.0,
+              "exogenous_redemp_vol": 0.3529,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.6471,
+              "total_endogenous": 0.6471
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 73577.9,
+              "baseline_bold": 0.35,
+              "exogenous_bold": 64284.29,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 9293.26,
+              "cross_manager_pct": 12.63,
+              "total_endogenous_pct": 12.63
+            }
+          }
+        },
+        "rETH": {
+          "n_events": 20,
+          "n_managers": 5,
+          "T_hours": 1817.57,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -138.18,
+              "ks_stat": 0.4955,
+              "ks_p": 4.650350069590237e-05
+            },
+            "M1_exog_only": {
+              "ll": -117.56,
+              "ks_stat": 0.4386,
+              "ks_p": 0.0005100776489344039
+            },
+            "M2_self_only": {
+              "ll": -117.53,
+              "ks_stat": 0.424,
+              "ks_p": 0.0008879901590209682,
+              "alpha_self": 0.0612
+            },
+            "M3_full_hawkes": {
+              "ll": -94.13,
+              "ks_stat": 0.105,
+              "ks_p": 0.9634383781713471
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 41.25,
+            "exog_vs_poisson_p": 1.1036711290878769e-09,
+            "full_hawkes_vs_exog_stat": 46.86,
+            "full_hawkes_vs_exog_p": 3.7204896304396194e-10,
+            "cross_excitation_vs_self_only_stat": 46.8,
+            "cross_excitation_vs_self_only_p": 7.84377539531334e-12
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.000188,
+            "mu_tot_se": 0.002252,
+            "gamma_red_per_hour": 0.003321,
+            "gamma_red_se": 0.001583,
+            "gamma_vol_per_hour": 0.00243,
+            "gamma_vol_se": 0.00239,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.46,
+            "alpha_cross_se": 0.1584,
+            "beta_per_hour": 3.8973,
+            "beta_se": 1.3965,
+            "branching_ratio_rho": 0.46,
+            "half_life_hours": 0.178,
+            "half_life_minutes": 10.67,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.0171,
+              "exogenous_redemp_vol": 0.5229,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.46,
+              "total_endogenous": 0.46
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 25572.9,
+              "baseline_bold": 858.69,
+              "exogenous_bold": 24240.19,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 474.03,
+              "cross_manager_pct": 1.85,
+              "total_endogenous_pct": 1.85
+            }
+          }
+        },
+        "aggregate_all_branches_fee_attribution": {
+          "total_hike_fees_bold": 99158.93,
+          "baseline_bold": 860.86,
+          "exogenous_bold": 88529.19,
+          "self_excitation_bold": 0.0,
+          "cross_manager_bold": 9768.89,
+          "cross_manager_share_pct": 9.85,
+          "total_endogenous_share_pct": 9.85
+        }
+      },
+      "pooled": {
+        "WETH": {
+          "n_events": 105,
+          "n_managers": 7,
+          "T_hours": 11593.09,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -753.53,
+              "ks_stat": 0.2877,
+              "ks_p": 3.4653152047674384e-08
+            },
+            "M1_exog_only": {
+              "ll": -730.7,
+              "ks_stat": 0.277,
+              "ks_p": 1.297097231125816e-07
+            },
+            "M2_self_only": {
+              "ll": -723.03,
+              "ks_stat": 0.2516,
+              "ks_p": 2.403367094618535e-06,
+              "alpha_self": 0.4552
+            },
+            "M3_full_hawkes": {
+              "ll": -677.86,
+              "ks_stat": 0.1409,
+              "ks_p": 0.027818020536426347
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 45.66,
+            "exog_vs_poisson_p": 1.215891170887926e-10,
+            "full_hawkes_vs_exog_stat": 105.68,
+            "full_hawkes_vs_exog_p": 9.343587451804452e-23,
+            "cross_excitation_vs_self_only_stat": 90.34,
+            "cross_excitation_vs_self_only_p": 2.009359563070305e-21
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.000976,
+            "mu_tot_se": 0.001365,
+            "gamma_red_per_hour": 0.001812,
+            "gamma_red_se": 0.000607,
+            "gamma_vol_per_hour": 0.00421,
+            "gamma_vol_se": 0.001515,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.2301,
+            "alpha_cross_se": 0.0489,
+            "beta_per_hour": 3.7016,
+            "beta_se": 0.8404,
+            "branching_ratio_rho": 0.2301,
+            "half_life_hours": 0.187,
+            "half_life_minutes": 11.24,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.1077,
+              "exogenous_redemp_vol": 0.6653,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.227,
+              "total_endogenous": 0.227
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 35960.13,
+              "baseline_bold": 3313.19,
+              "exogenous_bold": 28731.35,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 3915.59,
+              "cross_manager_pct": 10.89,
+              "total_endogenous_pct": 10.89
+            }
+          }
+        },
+        "wstETH": {
+          "n_events": 277,
+          "n_managers": 11,
+          "T_hours": 11593.09,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -1876.96,
+              "ks_stat": 0.4598,
+              "ks_p": 4.3726043700371885e-54
+            },
+            "M1_exog_only": {
+              "ll": -1787.53,
+              "ks_stat": 0.4184,
+              "ks_p": 1.9105235621933097e-44
+            },
+            "M2_self_only": {
+              "ll": -1725.69,
+              "ks_stat": 0.414,
+              "ks_p": 1.7673578484985661e-43,
+              "alpha_self": 0.5264
+            },
+            "M3_full_hawkes": {
+              "ll": -1467.97,
+              "ks_stat": 0.0937,
+              "ks_p": 0.014441167773633449
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 178.87,
+            "exog_vs_poisson_p": 1.4407315813548272e-39,
+            "full_hawkes_vs_exog_stat": 639.13,
+            "full_hawkes_vs_exog_p": 3.3152902155844134e-138,
+            "cross_excitation_vs_self_only_stat": 515.45,
+            "cross_excitation_vs_self_only_p": 4.139896038973583e-114
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.004807,
+            "mu_tot_se": 0.001844,
+            "gamma_red_per_hour": 0.007148,
+            "gamma_red_se": 0.001033,
+            "gamma_vol_per_hour": 0.001067,
+            "gamma_vol_se": 0.001685,
+            "alpha_self": 0.0,
+            "alpha_self_se": null,
+            "alpha_cross": 0.455,
+            "alpha_cross_se": 0.0425,
+            "beta_per_hour": 2.8877,
+            "beta_se": 0.357,
+            "branching_ratio_rho": 0.455,
+            "half_life_hours": 0.24,
+            "half_life_minutes": 14.4,
+            "cross_share_of_excitation": 1.0
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.2012,
+              "exogenous_redemp_vol": 0.3439,
+              "self_excitation": 0.0,
+              "cross_manager_contagion": 0.455,
+              "total_endogenous": 0.455
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 210814.34,
+              "baseline_bold": 61714.9,
+              "exogenous_bold": 109712.04,
+              "self_excitation_bold": 0.0,
+              "cross_manager_bold": 39387.41,
+              "cross_manager_pct": 18.68,
+              "total_endogenous_pct": 18.68
+            }
+          }
+        },
+        "rETH": {
+          "n_events": 153,
+          "n_managers": 8,
+          "T_hours": 11593.09,
+          "models_ll_and_ks": {
+            "M0_poisson": {
+              "ll": -1048.79,
+              "ks_stat": 0.5265,
+              "ks_p": 4.732169534327871e-40
+            },
+            "M1_exog_only": {
+              "ll": -985.82,
+              "ks_stat": 0.4941,
+              "ks_p": 5.236537578365443e-35
+            },
+            "M2_self_only": {
+              "ll": -902.99,
+              "ks_stat": 0.3759,
+              "ks_p": 6.240308907837037e-20,
+              "alpha_self": 0.535
+            },
+            "M3_full_hawkes": {
+              "ll": -807.53,
+              "ks_stat": 0.1333,
+              "ks_p": 0.007820498458527376
+            }
+          },
+          "lrt_tests": {
+            "exog_vs_poisson_stat": 125.94,
+            "exog_vs_poisson_p": 4.490948321781944e-28,
+            "full_hawkes_vs_exog_stat": 356.57,
+            "full_hawkes_vs_exog_p": 5.641230696209973e-77,
+            "cross_excitation_vs_self_only_stat": 190.91,
+            "cross_excitation_vs_self_only_p": 2.0163652389529744e-43
+          },
+          "full_hawkes_params": {
+            "mu_tot_per_hour": 0.002028,
+            "mu_tot_se": 0.001351,
+            "gamma_red_per_hour": 0.003551,
+            "gamma_red_se": 0.000748,
+            "gamma_vol_per_hour": 0.000754,
+            "gamma_vol_se": 0.001373,
+            "alpha_self": 0.0642,
+            "alpha_self_se": 0.0339,
+            "alpha_cross": 0.4558,
+            "alpha_cross_se": 0.0602,
+            "beta_per_hour": 1.3765,
+            "beta_se": 0.2842,
+            "branching_ratio_rho": 0.52,
+            "half_life_hours": 0.504,
+            "half_life_minutes": 30.21,
+            "cross_share_of_excitation": 0.8765
+          },
+          "attribution": {
+            "event_shares": {
+              "baseline": 0.1537,
+              "exogenous_redemp_vol": 0.3263,
+              "self_excitation": 0.0642,
+              "cross_manager_contagion": 0.4558,
+              "total_endogenous": 0.52
+            },
+            "fee_weighted_shares": {
+              "total_hike_fees_bold": 164574.53,
+              "baseline_bold": 34599.86,
+              "exogenous_bold": 74493.5,
+              "self_excitation_bold": 9240.22,
+              "cross_manager_bold": 46240.95,
+              "cross_manager_pct": 28.1,
+              "total_endogenous_pct": 33.71
+            }
+          }
+        },
+        "aggregate_all_branches_fee_attribution": {
+          "total_hike_fees_bold": 411349.0,
+          "baseline_bold": 99627.95,
+          "exogenous_bold": 212936.89,
+          "self_excitation_bold": 9240.22,
+          "cross_manager_bold": 89543.95,
+          "cross_manager_share_pct": 21.77,
+          "total_endogenous_share_pct": 24.01
+        }
+      }
+    }
+  },
+  "hawkes_mle_free_kappa_red_robustness": {
+    "all_genuine_hikes": {
+      "development": {
+        "WETH": {
+          "n_events": 248,
+          "n_managers": 11,
+          "m2_null_best_red_half_life_min": 113.46,
+          "m2_null_ll": -1675.49,
+          "m3_full_best_red_half_life_min": 1.18,
+          "m3_full_ll": -1370.33,
+          "lrt_cross_vs_self_free_kappa_stat": 610.32,
+          "lrt_cross_vs_self_free_kappa_p": 9.517447565800047e-135,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.4474,
+          "branching_ratio_rho": 0.4474,
+          "cross_half_life_minutes": 11.89,
+          "ks_stat_exact": 0.1365,
+          "ks_p_exact": 0.00017112120272809063,
+          "cross_event_share": 0.4474,
+          "cross_fee_pct": 16.11
+        },
+        "wstETH": {
+          "n_events": 391,
+          "n_managers": 10,
+          "m2_null_best_red_half_life_min": 126.82,
+          "m2_null_ll": -2433.07,
+          "m3_full_best_red_half_life_min": 158.75,
+          "m3_full_ll": -1910.15,
+          "lrt_cross_vs_self_free_kappa_stat": 1045.85,
+          "lrt_cross_vs_self_free_kappa_p": 1.9391126843959325e-229,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.481,
+          "branching_ratio_rho": 0.481,
+          "cross_half_life_minutes": 9.41,
+          "ks_stat_exact": 0.1293,
+          "ks_p_exact": 3.7233994909640423e-06,
+          "cross_event_share": 0.481,
+          "cross_fee_pct": 35.72
+        },
+        "rETH": {
+          "n_events": 373,
+          "n_managers": 10,
+          "m2_null_best_red_half_life_min": 54.86,
+          "m2_null_ll": -2255.78,
+          "m3_full_best_red_half_life_min": 3.14,
+          "m3_full_ll": -1494.33,
+          "lrt_cross_vs_self_free_kappa_stat": 1522.9,
+          "lrt_cross_vs_self_free_kappa_p": 0.0,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.6346,
+          "branching_ratio_rho": 0.6346,
+          "cross_half_life_minutes": 7.81,
+          "ks_stat_exact": 0.2276,
+          "ks_p_exact": 1.8603658814436572e-17,
+          "cross_event_share": 0.6346,
+          "cross_fee_pct": 51.04
+        }
+      },
+      "confirmation": {
+        "WETH": {
+          "n_events": 62,
+          "n_managers": 10,
+          "m2_null_best_red_half_life_min": 1.71,
+          "m2_null_ll": -378.44,
+          "m3_full_best_red_half_life_min": 1.74,
+          "m3_full_ll": -335.89,
+          "lrt_cross_vs_self_free_kappa_stat": 85.09,
+          "lrt_cross_vs_self_free_kappa_p": 2.852858580516047e-20,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.2676,
+          "branching_ratio_rho": 0.2676,
+          "cross_half_life_minutes": 5.34,
+          "ks_stat_exact": 0.1058,
+          "ks_p_exact": 0.4605506085027262,
+          "cross_event_share": 0.2626,
+          "cross_fee_pct": 70.25
+        },
+        "wstETH": {
+          "n_events": 96,
+          "n_managers": 11,
+          "m2_null_best_red_half_life_min": 4.78,
+          "m2_null_ll": -568.8,
+          "m3_full_best_red_half_life_min": 4.56,
+          "m3_full_ll": -425.06,
+          "lrt_cross_vs_self_free_kappa_stat": 287.48,
+          "lrt_cross_vs_self_free_kappa_p": 1.7593638722348838e-64,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.5141,
+          "branching_ratio_rho": 0.5141,
+          "cross_half_life_minutes": 6.97,
+          "ks_stat_exact": 0.2069,
+          "ks_p_exact": 0.0004406727058005717,
+          "cross_event_share": 0.5141,
+          "cross_fee_pct": 10.99
+        },
+        "rETH": {
+          "n_events": 101,
+          "n_managers": 10,
+          "m2_null_best_red_half_life_min": 16.99,
+          "m2_null_ll": -472.42,
+          "m3_full_best_red_half_life_min": 10.05,
+          "m3_full_ll": -404.91,
+          "lrt_cross_vs_self_free_kappa_stat": 135.02,
+          "lrt_cross_vs_self_free_kappa_p": 3.261425121086777e-31,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.3407,
+          "branching_ratio_rho": 0.3407,
+          "cross_half_life_minutes": 4.46,
+          "ks_stat_exact": 0.1895,
+          "ks_p_exact": 0.0011924497767300535,
+          "cross_event_share": 0.3407,
+          "cross_fee_pct": 40.16
+        }
+      },
+      "pooled": {
+        "WETH": {
+          "n_events": 310,
+          "n_managers": 11,
+          "m2_null_best_red_half_life_min": 80.11,
+          "m2_null_ll": -2087.04,
+          "m3_full_best_red_half_life_min": 1.52,
+          "m3_full_ll": -1738.49,
+          "lrt_cross_vs_self_free_kappa_stat": 697.1,
+          "lrt_cross_vs_self_free_kappa_p": 1.276372046645153e-153,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.4116,
+          "branching_ratio_rho": 0.4116,
+          "cross_half_life_minutes": 10.63,
+          "ks_stat_exact": 0.1311,
+          "ks_p_exact": 4.147973523743275e-05,
+          "cross_event_share": 0.4097,
+          "cross_fee_pct": 15.35
+        },
+        "wstETH": {
+          "n_events": 487,
+          "n_managers": 11,
+          "m2_null_best_red_half_life_min": 78.88,
+          "m2_null_ll": -3066.08,
+          "m3_full_best_red_half_life_min": 53.18,
+          "m3_full_ll": -2378.96,
+          "lrt_cross_vs_self_free_kappa_stat": 1374.24,
+          "lrt_cross_vs_self_free_kappa_p": 8.310858588951342e-301,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.4865,
+          "branching_ratio_rho": 0.4865,
+          "cross_half_life_minutes": 8.84,
+          "ks_stat_exact": 0.1402,
+          "ks_p_exact": 8.068248708566228e-09,
+          "cross_event_share": 0.4865,
+          "cross_fee_pct": 27.3
+        },
+        "rETH": {
+          "n_events": 474,
+          "n_managers": 11,
+          "m2_null_best_red_half_life_min": 15.02,
+          "m2_null_ll": -2801.7,
+          "m3_full_best_red_half_life_min": 3.11,
+          "m3_full_ll": -2017.04,
+          "lrt_cross_vs_self_free_kappa_stat": 1569.31,
+          "lrt_cross_vs_self_free_kappa_p": 0.0,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.5732,
+          "branching_ratio_rho": 0.5732,
+          "cross_half_life_minutes": 6.38,
+          "ks_stat_exact": 0.1926,
+          "ks_p_exact": 6.982251006322085e-16,
+          "cross_event_share": 0.5732,
+          "cross_fee_pct": 48.62
+        }
+      }
+    },
+    "pos_debt_hikes_only": {
+      "development": {
+        "WETH": {
+          "n_events": 82,
+          "n_managers": 5,
+          "m2_null_best_red_half_life_min": 86.17,
+          "m2_null_ll": -551.73,
+          "m3_full_best_red_half_life_min": 72.63,
+          "m3_full_ll": -502.12,
+          "lrt_cross_vs_self_free_kappa_stat": 99.22,
+          "lrt_cross_vs_self_free_kappa_p": 2.2595633586683966e-23,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.2506,
+          "branching_ratio_rho": 0.2506,
+          "cross_half_life_minutes": 11.06,
+          "ks_stat_exact": 0.1115,
+          "ks_p_exact": 0.2414863069798151,
+          "cross_event_share": 0.2506,
+          "cross_fee_pct": 11.65
+        },
+        "wstETH": {
+          "n_events": 219,
+          "n_managers": 10,
+          "m2_null_best_red_half_life_min": 91.43,
+          "m2_null_ll": -1348.03,
+          "m3_full_best_red_half_life_min": 123.16,
+          "m3_full_ll": -1191.94,
+          "lrt_cross_vs_self_free_kappa_stat": 312.18,
+          "lrt_cross_vs_self_free_kappa_p": 7.300273672995599e-70,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.4081,
+          "branching_ratio_rho": 0.4081,
+          "cross_half_life_minutes": 19.55,
+          "ks_stat_exact": 0.0559,
+          "ks_p_exact": 0.48445324557524727,
+          "cross_event_share": 0.4081,
+          "cross_fee_pct": 22.96
+        },
+        "rETH": {
+          "n_events": 133,
+          "n_managers": 7,
+          "m2_null_best_red_half_life_min": 49.87,
+          "m2_null_ll": -754.54,
+          "m3_full_best_red_half_life_min": 6.32,
+          "m3_full_ll": -673.23,
+          "lrt_cross_vs_self_free_kappa_stat": 162.63,
+          "lrt_cross_vs_self_free_kappa_p": 3.007179286370641e-37,
+          "alpha_self": 0.1134,
+          "alpha_cross": 0.4452,
+          "branching_ratio_rho": 0.5586,
+          "cross_half_life_minutes": 42.43,
+          "ks_stat_exact": 0.1542,
+          "ks_p_exact": 0.0031648437156903686,
+          "cross_event_share": 0.4452,
+          "cross_fee_pct": 30.54
+        }
+      },
+      "confirmation": {
+        "WETH": {
+          "n_events": 23,
+          "n_managers": 5,
+          "m2_null_best_red_half_life_min": 53.98,
+          "m2_null_ll": -148.62,
+          "m3_full_best_red_half_life_min": 0.49,
+          "m3_full_ll": -142.05,
+          "lrt_cross_vs_self_free_kappa_stat": 13.14,
+          "lrt_cross_vs_self_free_kappa_p": 0.0002894329165394857,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.1763,
+          "branching_ratio_rho": 0.1763,
+          "cross_half_life_minutes": 13.83,
+          "ks_stat_exact": 0.1269,
+          "ks_p_exact": 0.8081428329301134,
+          "cross_event_share": 0.1648,
+          "cross_fee_pct": 20.87
+        },
+        "wstETH": {
+          "n_events": 58,
+          "n_managers": 6,
+          "m2_null_best_red_half_life_min": 5.16,
+          "m2_null_ll": -331.13,
+          "m3_full_best_red_half_life_min": 4.7,
+          "m3_full_ll": -194.92,
+          "lrt_cross_vs_self_free_kappa_stat": 272.41,
+          "lrt_cross_vs_self_free_kappa_p": 3.3859441061864686e-61,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.6428,
+          "branching_ratio_rho": 0.6428,
+          "cross_half_life_minutes": 6.82,
+          "ks_stat_exact": 0.2319,
+          "ks_p_exact": 0.0031670868617529324,
+          "cross_event_share": 0.6428,
+          "cross_fee_pct": 12.3
+        },
+        "rETH": {
+          "n_events": 20,
+          "n_managers": 5,
+          "m2_null_best_red_half_life_min": 17.12,
+          "m2_null_ll": -97.61,
+          "m3_full_best_red_half_life_min": 10.68,
+          "m3_full_ll": -79.82,
+          "lrt_cross_vs_self_free_kappa_stat": 35.57,
+          "lrt_cross_vs_self_free_kappa_p": 2.466613309318795e-09,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.3855,
+          "branching_ratio_rho": 0.3855,
+          "cross_half_life_minutes": 10.59,
+          "ks_stat_exact": 0.1161,
+          "ks_p_exact": 0.9221749795297031,
+          "cross_event_share": 0.3855,
+          "cross_fee_pct": 1.74
+        }
+      },
+      "pooled": {
+        "WETH": {
+          "n_events": 105,
+          "n_managers": 7,
+          "m2_null_best_red_half_life_min": 75.58,
+          "m2_null_ll": -719.85,
+          "m3_full_best_red_half_life_min": 52.27,
+          "m3_full_ll": -672.03,
+          "lrt_cross_vs_self_free_kappa_stat": 95.65,
+          "lrt_cross_vs_self_free_kappa_p": 1.3683908546211883e-22,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.2291,
+          "branching_ratio_rho": 0.2291,
+          "cross_half_life_minutes": 11.33,
+          "ks_stat_exact": 0.1388,
+          "ks_p_exact": 0.031695051784568884,
+          "cross_event_share": 0.2259,
+          "cross_fee_pct": 11.01
+        },
+        "wstETH": {
+          "n_events": 277,
+          "n_managers": 11,
+          "m2_null_best_red_half_life_min": 79.44,
+          "m2_null_ll": -1709.51,
+          "m3_full_best_red_half_life_min": 95.09,
+          "m3_full_ll": -1461.93,
+          "lrt_cross_vs_self_free_kappa_stat": 495.16,
+          "lrt_cross_vs_self_free_kappa_p": 1.0764427689282467e-109,
+          "alpha_self": 0.0,
+          "alpha_cross": 0.4496,
+          "branching_ratio_rho": 0.4496,
+          "cross_half_life_minutes": 14.56,
+          "ks_stat_exact": 0.095,
+          "ks_p_exact": 0.012574829105976836,
+          "cross_event_share": 0.4496,
+          "cross_fee_pct": 18.41
+        },
+        "rETH": {
+          "n_events": 153,
+          "n_managers": 8,
+          "m2_null_best_red_half_life_min": 27.74,
+          "m2_null_ll": -877.09,
+          "m3_full_best_red_half_life_min": 5.68,
+          "m3_full_ll": -781.82,
+          "lrt_cross_vs_self_free_kappa_stat": 190.53,
+          "lrt_cross_vs_self_free_kappa_p": 2.4364909666717666e-43,
+          "alpha_self": 0.0856,
+          "alpha_cross": 0.4492,
+          "branching_ratio_rho": 0.5348,
+          "cross_half_life_minutes": 34.52,
+          "ks_stat_exact": 0.1274,
+          "ks_p_exact": 0.012648953134501203,
+          "cross_event_share": 0.4492,
+          "cross_fee_pct": 27.5
+        }
+      }
+    }
+  },
+  "methodological_notes": {
+    "ogata_integrals": "Exact analytical piecewise integrals int_{t_{k-1}}^{t_k} (mu + g_red*R(s) + g_vol*V(s) + Hawkes(s)) ds (zero trapezoidal approximation error).",
+    "free_kappa_red": "Jointly profiles redemption decay half-life from 0.5 min to 24h in both M2 (null) and M3 (full), proving cross-manager contagion survives 6/6 branch-samples.",
+    "alpha_self_1h_lock": "MIN_INTEREST_RATE_CHANGE_PERIOD = 3,600s enforces 0 same-manager gaps <1h, constraining sub-hour self-excitation on WETH/wstETH while rETH exhibits 13.1% post-1h same-manager gaps in [1h,2h)."
+  }
+}
