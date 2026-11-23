@@ -1,0 +1,141 @@
+{
+  "source_url": "https://api.llama.fi/protocols",
+  "fetched_utc": "2026-11-23T14:10:00Z",
+  "n_v2_and_forks": 9,
+  "total_current_tvl_usd": 81864713.23351692,
+  "simultaneous_peak_sample_tvl_usd": 425058776.0,
+  "simultaneous_peak_sample_date": "2025-07-14",
+  "simultaneous_peak_alltime_tvl_usd": 425058776.0,
+  "simultaneous_peak_alltime_date": "2025-07-14",
+  "simultaneous_peak_alltime_breakdown_usd": {
+    "felix-cdp": 294067741.0,
+    "liquity-v2": 128244709.0,
+    "orki-finance": 999911.0,
+    "ebisu-v2": 917531.0,
+    "quill-finance": 703546.0,
+    "asymmetry-usdaf": 125338.0
+  },
+  "sum_peak_sample_tvl_usd": 524565818.0,
+  "sum_peak_alltime_tvl_usd": 524565818.0,
+  "peak_methodology_note": "simultaneous_peak_*_tvl_usd sums TVL across all verified Liquity V2 friendly forks on the exact same UTC calendar day; sum_peak_*_tvl_usd sums each protocol's individual non-simultaneous peak TVL.",
+  "v2_and_forks": [
+    {
+      "name": "Felix CDP",
+      "slug": "felix-cdp",
+      "category": "CDP",
+      "chains": [
+        "Hyperliquid L1"
+      ],
+      "current_tvl_usd": 16616426.613863211,
+      "peak_sample_tvl_usd": 294067741.0,
+      "peak_sample_date": "2025-07-14",
+      "peak_alltime_tvl_usd": 294067741.0,
+      "peak_alltime_date": "2025-07-14"
+    },
+    {
+      "name": "Liquity V2",
+      "slug": "liquity-v2",
+      "category": "CDP",
+      "chains": [
+        "Ethereum"
+      ],
+      "current_tvl_usd": 60967960.761520475,
+      "peak_sample_tvl_usd": 180025138.0,
+      "peak_sample_date": "2025-10-07",
+      "peak_alltime_tvl_usd": 180025138.0,
+      "peak_alltime_date": "2025-10-07"
+    },
+    {
+      "name": "Asymmetry USDaf",
+      "slug": "asymmetry-usdaf",
+      "category": "CDP",
+      "chains": [
+        "Ethereum"
+      ],
+      "current_tvl_usd": 296070.85168989265,
+      "peak_sample_tvl_usd": 21059112.0,
+      "peak_sample_date": "2025-10-05",
+      "peak_alltime_tvl_usd": 21059112.0,
+      "peak_alltime_date": "2025-10-05"
+    },
+    {
+      "name": "Enosys Loans",
+      "slug": "enosys-loans",
+      "category": "CDP",
+      "chains": [
+        "Flare"
+      ],
+      "current_tvl_usd": 3861011.6445901203,
+      "peak_sample_tvl_usd": 18511871.0,
+      "peak_sample_date": "2026-04-18",
+      "peak_alltime_tvl_usd": 18511871.0,
+      "peak_alltime_date": "2026-04-18"
+    },
+    {
+      "name": "Nerite",
+      "slug": "nerite",
+      "category": "CDP",
+      "chains": [
+        "Arbitrum"
+      ],
+      "current_tvl_usd": 49235.36225320488,
+      "peak_sample_tvl_usd": 5361996.0,
+      "peak_sample_date": "2025-10-07",
+      "peak_alltime_tvl_usd": 5361996.0,
+      "peak_alltime_date": "2025-10-07"
+    },
+    {
+      "name": "Orki Finance",
+      "slug": "orki-finance",
+      "category": "CDP",
+      "chains": [
+        "Swellchain"
+      ],
+      "current_tvl_usd": 0.0,
+      "peak_sample_tvl_usd": 1638812.0,
+      "peak_sample_date": "2025-05-20",
+      "peak_alltime_tvl_usd": 1638812.0,
+      "peak_alltime_date": "2025-05-20"
+    },
+    {
+      "name": "Ebisu V2",
+      "slug": "ebisu-v2",
+      "category": "CDP",
+      "chains": [
+        "Ethereum",
+        "Plasma"
+      ],
+      "current_tvl_usd": 0.0,
+      "peak_sample_tvl_usd": 1513180.0,
+      "peak_sample_date": "2025-10-07",
+      "peak_alltime_tvl_usd": 1513180.0,
+      "peak_alltime_date": "2025-10-07"
+    },
+    {
+      "name": "DeFi Dollar",
+      "slug": "defi-dollar",
+      "category": "CDP",
+      "chains": [
+        "Ethereum"
+      ],
+      "current_tvl_usd": 869.1990220482415,
+      "peak_sample_tvl_usd": 1444937.0,
+      "peak_sample_date": "2025-08-23",
+      "peak_alltime_tvl_usd": 1444937.0,
+      "peak_alltime_date": "2025-08-23"
+    },
+    {
+      "name": "Quill Finance",
+      "slug": "quill-finance",
+      "category": "CDP",
+      "chains": [
+        "Scroll"
+      ],
+      "current_tvl_usd": 73138.80057796306,
+      "peak_sample_tvl_usd": 943031.0,
+      "peak_sample_date": "2025-08-23",
+      "peak_alltime_tvl_usd": 943031.0,
+      "peak_alltime_date": "2025-08-23"
+    }
+  ]
+}

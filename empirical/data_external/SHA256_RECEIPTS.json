@@ -1,0 +1,377 @@
+{
+  "generated_utc": "2026-11-23T14:10:00Z",
+  "integrity_guarantee": "100% live real public RPC & API fetches; zero synthetic or interpolated points.",
+  "n_files": 20,
+  "receipts": [
+    {
+      "file": "manager_permissions_rpc.json",
+      "source": "https://ethereum-rpc.publicnode.com",
+      "fetched_utc": "2026-11-23T13:11:07Z",
+      "bytes": 53927,
+      "sha256": "58f05d7645be59a6594cdd95bb2c8fab3dd6dd1bc88357cb2fcdf1e1c1fc62e3",
+      "block_number": 26478046,
+      "n_managers": 23,
+      "n_registered_pairs": 37
+    },
+    {
+      "file": "defillama_price_BOLD.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0x6440f144b7e50D6a8439336510312d2F54beB01D",
+      "fetched_utc": "2026-11-23T13:11:10Z",
+      "bytes": 59855,
+      "sha256": "959612d12dfe60f3da04381694f3b4bdbb6af9e4e4595a2483adfff3b46d9a49",
+      "symbol": "BOLD",
+      "n_unique_days": 494
+    },
+    {
+      "file": "defillama_price_LUSD.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0x5f98805A4E8be255a32880FDeC7F6728C6568bA0",
+      "fetched_utc": "2026-11-23T13:11:13Z",
+      "bytes": 62229,
+      "sha256": "9a4d3697e9520dcbb603756c0f523e51b4c605391eab1f5b43b89a543f8c0f3d",
+      "symbol": "LUSD",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_price_DAI.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "fetched_utc": "2026-11-23T13:11:17Z",
+      "bytes": 62419,
+      "sha256": "f32c4946a239b473de230f62b69998bec415877ecbb202008a99e2b4d227ce40",
+      "symbol": "DAI",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_price_USDS.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0xdC035D45d973E3EC169d2276DDab16f1e407384F",
+      "fetched_utc": "2026-11-23T13:11:22Z",
+      "bytes": 62639,
+      "sha256": "7210a27f4386009ed14f180db8dba477fb660285ad53c5b8e343e9d64e450a39",
+      "symbol": "USDS",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_price_crvUSD.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+      "fetched_utc": "2026-11-23T13:11:25Z",
+      "bytes": 62468,
+      "sha256": "a86eadd2cafa4d49b674b342efff5505a34600a10e3fd58bed7c89df8d295540",
+      "symbol": "crvUSD",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_price_GHO.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+      "fetched_utc": "2026-11-23T13:11:28Z",
+      "bytes": 62703,
+      "sha256": "55a651be5b87bf1d01dcb4613a37be804966938eebb94912d4c2023fd6f65b4a",
+      "symbol": "GHO",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_price_WETH.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "fetched_utc": "2026-11-23T13:11:30Z",
+      "bytes": 62443,
+      "sha256": "ed991dcc7a184415cc6556d3807a279497568dac04c49e6f6aa24ab9338c2369",
+      "symbol": "WETH",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_price_wstETH.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+      "fetched_utc": "2026-11-23T13:11:34Z",
+      "bytes": 62412,
+      "sha256": "747593d43ee90ba6041b982a94d34d75e2f4e509c162cd89d996d81dad64a56d",
+      "symbol": "wstETH",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_price_rETH.json",
+      "source": "https://coins.llama.fi/chart/ethereum:0xae78736Cd615f374D3085123A210448E74Fc6393",
+      "fetched_utc": "2026-11-23T13:11:37Z",
+      "bytes": 62404,
+      "sha256": "0b6ea778c61ce9e2fc94cd84515993f5c24d874e4ca1077f313bcbdb36072932",
+      "symbol": "rETH",
+      "n_unique_days": 520
+    },
+    {
+      "file": "defillama_yield_liquity_v2_sp_WETH.json",
+      "source": "https://yields.llama.fi/chart/a635df9a-4cfc-4d17-86d0-934ea441e79f",
+      "fetched_utc": "2026-11-23T13:11:38Z",
+      "bytes": 81819,
+      "sha256": "c595961d76c258734f68db1a08e453e438cd07b7d0386d9be40594288e92669f",
+      "pool_id": "a635df9a-4cfc-4d17-86d0-934ea441e79f",
+      "n_points": 531
+    },
+    {
+      "file": "defillama_yield_liquity_v2_sp_wstETH.json",
+      "source": "https://yields.llama.fi/chart/dac71f4f-7b97-463a-b19f-9796c56c21f1",
+      "fetched_utc": "2026-11-23T13:11:38Z",
+      "bytes": 82092,
+      "sha256": "297010c93291b4ab34de26c9a2051179705b79d8d73ba358161e9f21476264cf",
+      "pool_id": "dac71f4f-7b97-463a-b19f-9796c56c21f1",
+      "n_points": 531
+    },
+    {
+      "file": "defillama_yield_liquity_v2_sp_rETH.json",
+      "source": "https://yields.llama.fi/chart/326739f2-4650-4992-a8eb-a400e7790499",
+      "fetched_utc": "2026-11-23T13:11:39Z",
+      "bytes": 81752,
+      "sha256": "0b52203850c3b6833e644b6eb4bbbdaf4d247d750054b4c163bf9869003f4a2e",
+      "pool_id": "326739f2-4650-4992-a8eb-a400e7790499",
+      "n_points": 531
+    },
+    {
+      "file": "defillama_yield_sky_sUSDS.json",
+      "source": "https://yields.llama.fi/chart/d8c4eff5-c8a9-46fc-a888-057c4c668e72",
+      "fetched_utc": "2026-11-23T13:11:39Z",
+      "bytes": 97579,
+      "sha256": "1c8ff535cb51ef6532addce5a218065a846d0f76dfec87b70de9f1e9228a3d53",
+      "pool_id": "d8c4eff5-c8a9-46fc-a888-057c4c668e72",
+      "n_points": 641
+    },
+    {
+      "file": "defillama_yield_aave_v3_USDC_supply.json",
+      "source": "https://yields.llama.fi/chart/aa70268e-4b52-42bf-a116-608b370f9501",
+      "fetched_utc": "2026-11-23T13:11:39Z",
+      "bytes": 220146,
+      "sha256": "3edffc21e468fec7330e33414f254fc9bc570e379ad20ebf29a7339bc00f8134",
+      "pool_id": "aa70268e-4b52-42bf-a116-608b370f9501",
+      "n_points": 1387
+    },
+    {
+      "file": "defillama_yield_crvusd_scrvUSD.json",
+      "source": "https://yields.llama.fi/chart/5fd328af-4203-471b-bd16-1705c726d926",
+      "fetched_utc": "2026-11-23T13:11:40Z",
+      "bytes": 117365,
+      "sha256": "f8e3ab588d12804273364e1abfb08ecad5a31a9658105eedc785c947e1352733",
+      "pool_id": "5fd328af-4203-471b-bd16-1705c726d926",
+      "n_points": 740
+    },
+    {
+      "file": "curve_crvusd_WETH_daily.json",
+      "source": "https://prices.curve.finance/v1/crvusd/markets/ethereum/0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635/snapshots",
+      "fetched_utc": "2026-11-23T13:11:45Z",
+      "bytes": 784875,
+      "sha256": "595720b233a6a6872038f1c200e96d206470e73fac5ad8abce38825c18c8c352",
+      "n_days": 485
+    },
+    {
+      "file": "curve_crvusd_wstETH_daily.json",
+      "source": "https://prices.curve.finance/v1/crvusd/markets/ethereum/0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE/snapshots",
+      "fetched_utc": "2026-11-23T13:11:51Z",
+      "bytes": 789126,
+      "sha256": "cdae1e03f08b5415fdbb12b16e36f2184cb1d22ee7f393b4e76f45f88ad50902",
+      "n_days": 485
+    },
+    {
+      "file": "onchain_competing_borrow_rates.json",
+      "source": "https://eth.drpc.org",
+      "fetched_utc": "2026-11-23T14:09:55Z",
+      "bytes": 34993,
+      "sha256": "72236020fd331b750acac6581ac4d69bb096826ec533322f5fa9f87832ae29c4",
+      "n_dates": 71,
+      "date_min": "2025-05-19",
+      "date_max": "2026-09-15"
+    },
+    {
+      "file": "liquity_v2_fork_ecosystem.json",
+      "source": "https://api.llama.fi/protocols",
+      "fetched_utc": "2026-11-23T14:10:00Z",
+      "bytes": 4056,
+      "sha256": "92731fdda1f97c1df0c463dbbf8ae072019519da5eae46d98e23f5b8472d15d9",
+      "n_v2_and_forks": 9,
+      "current_tvl_usd": 81864713.23,
+      "simultaneous_peak_alltime_tvl_usd": 425058776.0,
+      "simultaneous_peak_alltime_date": "2025-07-14",
+      "sum_peak_alltime_tvl_usd": 524565818.0
+    }
+  ],
+  "derived_files": [
+    {
+      "file": "daily_prices_and_vol.csv",
+      "derived_from": "raw_receipts_in_manifest",
+      "sha256": "9caf94252f646091dcf8a7ec24281ba96abcba038bd588dd9abbaf3776b5780b",
+      "bytes": 219813,
+      "recorded_utc": "2026-11-23T14:10:00Z"
+    },
+    {
+      "file": "onchain_competing_borrow_rates.csv",
+      "derived_from": "raw_receipts_in_manifest",
+      "sha256": "a275c106f97ff883c54859d922c17d082251d75079d38988f9579b2ec8386a50",
+      "bytes": 6551,
+      "recorded_utc": "2026-11-23T14:10:00Z"
+    }
+  ],
+  "summary": {
+    "manager_permissions": {
+      "n_unique_managers": 23,
+      "n_registered_pairs": 37,
+      "block_number": 26478046
+    },
+    "prices": {
+      "n_days_total": 503,
+      "date_min": "2025-05-01",
+      "date_max": "2026-09-15"
+    },
+    "yields": {
+      "liquity_v2_sp_WETH": {
+        "status": 200,
+        "pool_id": "a635df9a-4cfc-4d17-86d0-934ea441e79f",
+        "n_points_total": 531,
+        "n_points_sample": 462,
+        "mean_apy_sample": 4.038682272727272,
+        "mean_tvl_usd_sample": 7626234.088744589
+      },
+      "liquity_v2_sp_wstETH": {
+        "status": 200,
+        "pool_id": "dac71f4f-7b97-463a-b19f-9796c56c21f1",
+        "n_points_total": 531,
+        "n_points_sample": 462,
+        "mean_apy_sample": 4.030461753246754,
+        "mean_tvl_usd_sample": 14811227.731601732
+      },
+      "liquity_v2_sp_rETH": {
+        "status": 200,
+        "pool_id": "326739f2-4650-4992-a8eb-a400e7790499",
+        "n_points_total": 531,
+        "n_points_sample": 462,
+        "mean_apy_sample": 3.969514523809524,
+        "mean_tvl_usd_sample": 3143504.077922078
+      },
+      "sky_sUSDS": {
+        "status": 200,
+        "pool_id": "d8c4eff5-c8a9-46fc-a888-057c4c668e72",
+        "n_points_total": 641,
+        "n_points_sample": 485,
+        "mean_apy_sample": 4.104206185567011,
+        "mean_tvl_usd_sample": 4146135086.9835052
+      },
+      "aave_v3_USDC_supply": {
+        "status": 200,
+        "pool_id": "aa70268e-4b52-42bf-a116-608b370f9501",
+        "n_points_total": 1387,
+        "n_points_sample": 485,
+        "mean_apy_sample": 3.6170870103092785,
+        "mean_tvl_usd_sample": 634846473.3608247
+      },
+      "crvusd_scrvUSD": {
+        "status": 200,
+        "pool_id": "5fd328af-4203-471b-bd16-1705c726d926",
+        "n_points_total": 740,
+        "n_points_sample": 485,
+        "mean_apy_sample": 4.50827612371134,
+        "mean_tvl_usd_sample": 34047925.315463915
+      }
+    },
+    "curve_crvusd": {
+      "WETH": {
+        "controller": "0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635",
+        "n_days": 485,
+        "mean_borrow_apr_pct": 5.684161611238323,
+        "sd_borrow_apr_pct": 4.7227432515354515,
+        "median_borrow_apr_pct": 4.8689544409200005
+      },
+      "wstETH": {
+        "controller": "0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE",
+        "n_days": 485,
+        "mean_borrow_apr_pct": 6.363973329716399,
+        "sd_borrow_apr_pct": 4.709361259210693,
+        "median_borrow_apr_pct": 5.3945016696288
+      }
+    },
+    "onchain_competing_rates": {
+      "n_dates": 71,
+      "sky_ETH_A_apr_pct": {
+        "n_obs": 71,
+        "mean": 7.880281563380282,
+        "std": 0.933368555374085,
+        "median": 8.0,
+        "min": 6.0,
+        "max": 9.5
+      },
+      "sky_ETH_C_apr_pct": {
+        "n_obs": 71,
+        "mean": 7.630281718309859,
+        "std": 0.9333686444048657,
+        "median": 7.75,
+        "min": 5.75,
+        "max": 9.25
+      },
+      "sky_WSTETH_A_apr_pct": {
+        "n_obs": 71,
+        "mean": 8.880281774647887,
+        "std": 0.9333684680677861,
+        "median": 9.0,
+        "min": 7.000001,
+        "max": 10.5
+      },
+      "sky_WSTETH_B_apr_pct": {
+        "n_obs": 71,
+        "mean": 8.630281605633803,
+        "std": 0.9333686297460929,
+        "median": 8.75,
+        "min": 6.75,
+        "max": 10.25
+      },
+      "aave_USDC_supply_apr_pct": {
+        "n_obs": 71,
+        "mean": 4.1238192957746485,
+        "std": 2.12149789136037,
+        "median": 3.621889,
+        "min": 1.739646,
+        "max": 12.599147
+      },
+      "aave_USDC_borrow_apr_pct": {
+        "n_obs": 71,
+        "mean": 5.2952689859154916,
+        "std": 2.1961435499032356,
+        "median": 4.83764,
+        "min": 2.899001,
+        "max": 13.999148
+      },
+      "aave_GHO_supply_apr_pct": {
+        "n_obs": 71,
+        "mean": 0.0,
+        "std": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "aave_GHO_borrow_apr_pct": {
+        "n_obs": 71,
+        "mean": 4.537746478873239,
+        "std": 0.9621288853119992,
+        "median": 4.62,
+        "min": 3.0,
+        "max": 6.2
+      },
+      "liquity_v1_onetime_fee_pct": {
+        "n_obs": 71,
+        "mean": 0.5258332676056336,
+        "std": 0.08378415434247997,
+        "median": 0.500009,
+        "min": 0.5,
+        "max": 1.154398
+      },
+      "liquity_v1_recurring_apr_pct": {
+        "n_obs": 71,
+        "mean": 0.0,
+        "std": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      }
+    },
+    "liquity_v2_ecosystem": {
+      "n_protocols": 9,
+      "total_current_tvl_usd": 81864713.23351692,
+      "simultaneous_peak_sample_tvl_usd": 425058776.0,
+      "simultaneous_peak_sample_date": "2025-07-14",
+      "simultaneous_peak_alltime_tvl_usd": 425058776.0,
+      "simultaneous_peak_alltime_date": "2025-07-14",
+      "sum_peak_sample_tvl_usd": 524565818.0,
+      "sum_peak_alltime_tvl_usd": 524565818.0
+    }
+  }
+}

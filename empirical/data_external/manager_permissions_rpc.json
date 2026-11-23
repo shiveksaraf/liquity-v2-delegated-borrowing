@@ -1,0 +1,1496 @@
+{
+  "rpc_url": "https://ethereum-rpc.publicnode.com",
+  "queried_block_number": 26478046,
+  "fetched_utc": "2026-11-23T13:11:07Z",
+  "n_unique_managers": 23,
+  "n_registered_manager_branches": 37,
+  "managers": {
+    "0x000000000017d2a7b863e9ebbe6f9ab7255eb7c5": {
+      "label": "M01",
+      "address": "0x000000000017d2a7b863e9ebbe6f9ab7255eb7c5",
+      "branches_seen_in_events": [
+        "wstETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x0000000000704f94ce2fe636dab92677a9745dc3": {
+      "label": "M02",
+      "address": "0x0000000000704f94ce2fe636dab92677a9745dc3",
+      "branches_seen_in_events": [
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        }
+      }
+    },
+    "0x00000000001991cee928c561e37725816cbf73ba": {
+      "label": "M03",
+      "address": "0x00000000001991cee928c561e37725816cbf73ba",
+      "branches_seen_in_events": [
+        "WETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x8869a6fb59a8df330f90d9fbf46ebfaff6d4bc14": {
+      "label": "M04",
+      "address": "0x8869a6fb59a8df330f90d9fbf46ebfaff6d4bc14",
+      "branches_seen_in_events": [
+        "wstETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000001,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 3601,
+          "min_change_period_hours": 1.0003
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x25bc0272217fb0fd7a2ff0d62cebe1aba15e4d91": {
+      "label": "M05",
+      "address": "0x25bc0272217fb0fd7a2ff0d62cebe1aba15e4d91",
+      "branches_seen_in_events": [
+        "WETH",
+        "wstETH",
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        }
+      }
+    },
+    "0xe507e4d0763851a6287238aadd243948d18ab60a": {
+      "label": "M06",
+      "address": "0xe507e4d0763851a6287238aadd243948d18ab60a",
+      "branches_seen_in_events": [
+        "WETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000001,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 3601,
+          "min_change_period_hours": 1.0003
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x1578ed833d986c1188d1a998aa5fecd418bef5da": {
+      "label": "M07",
+      "address": "0x1578ed833d986c1188d1a998aa5fecd418bef5da",
+      "branches_seen_in_events": [
+        "WETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 10000000000000001,
+          "max_interest_rate_wad": 200000000000000001,
+          "min_interest_rate_pct": 1.0,
+          "max_interest_rate_pct": 20.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x50bc02c6c7124e6e1b8333b80a0416e504e2d044": {
+      "label": "M08",
+      "address": "0x50bc02c6c7124e6e1b8333b80a0416e504e2d044",
+      "branches_seen_in_events": [
+        "WETH",
+        "wstETH",
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        }
+      }
+    },
+    "0x000000000036abd8fe2238a541ec72f91ceebefa": {
+      "label": "M09",
+      "address": "0x000000000036abd8fe2238a541ec72f91ceebefa",
+      "branches_seen_in_events": [
+        "wstETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0xe707784292289be3aa0fb6f9d33d420291f98695": {
+      "label": "M10",
+      "address": "0xe707784292289be3aa0fb6f9d33d420291f98695",
+      "branches_seen_in_events": [
+        "WETH",
+        "wstETH",
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        }
+      }
+    },
+    "0x0000000000cbed6433d0777552ee00f9c8e40f76": {
+      "label": "M11",
+      "address": "0x0000000000cbed6433d0777552ee00f9c8e40f76",
+      "branches_seen_in_events": [
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        }
+      }
+    },
+    "0x50bc019abdb9951602bc4fe92947d3c15d5e45df": {
+      "label": "M12",
+      "address": "0x50bc019abdb9951602bc4fe92947d3c15d5e45df",
+      "branches_seen_in_events": [
+        "WETH",
+        "wstETH",
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        }
+      }
+    },
+    "0x75bc02022344159b7ef50a3ff5291dd2bc6918c7": {
+      "label": "M13",
+      "address": "0x75bc02022344159b7ef50a3ff5291dd2bc6918c7",
+      "branches_seen_in_events": [
+        "WETH",
+        "wstETH",
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 86400,
+          "min_change_period_hours": 24.0
+        }
+      }
+    },
+    "0x00000000003b24f6895911d5e7ba18d6caa1da2b": {
+      "label": "M14",
+      "address": "0x00000000003b24f6895911d5e7ba18d6caa1da2b",
+      "branches_seen_in_events": [
+        "WETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x25bc01fd5a01b1864a7dbaddb05bfed642340da2": {
+      "label": "M15",
+      "address": "0x25bc01fd5a01b1864a7dbaddb05bfed642340da2",
+      "branches_seen_in_events": [
+        "WETH",
+        "wstETH",
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        }
+      }
+    },
+    "0x7700b2d305f47ae82e9598bab6d7ccb57299a82b": {
+      "label": "M16",
+      "address": "0x7700b2d305f47ae82e9598bab6d7ccb57299a82b",
+      "branches_seen_in_events": [
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000001,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 3601,
+          "min_change_period_hours": 1.0003
+        }
+      }
+    },
+    "0x75bc01bf1e21ed33915777c131b62bb13b5f2552": {
+      "label": "M17",
+      "address": "0x75bc01bf1e21ed33915777c131b62bb13b5f2552",
+      "branches_seen_in_events": [
+        "WETH",
+        "wstETH",
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        }
+      }
+    },
+    "0x00000000006c021d70549b7ee216f7ca8d7b6263": {
+      "label": "M18",
+      "address": "0x00000000006c021d70549b7ee216f7ca8d7b6263",
+      "branches_seen_in_events": [
+        "wstETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x8069d9cc7ab443a06f7e639d703eb0819cf0a2b9": {
+      "label": "M19",
+      "address": "0x8069d9cc7ab443a06f7e639d703eb0819cf0a2b9",
+      "branches_seen_in_events": [
+        "wstETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000001,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x0000000000c9b5c50439608f2b8df9fad5362a08": {
+      "label": "Z_000000",
+      "address": "0x0000000000c9b5c50439608f2b8df9fad5362a08",
+      "branches_seen_in_events": [
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        }
+      }
+    },
+    "0x0000000000b1b2ea2ecdaed0c7a3c402218e3cb0": {
+      "label": "Z_000000",
+      "address": "0x0000000000b1b2ea2ecdaed0c7a3c402218e3cb0",
+      "branches_seen_in_events": [
+        "WETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000000,
+          "max_interest_rate_wad": 2500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 250.0,
+          "min_change_period_seconds": 3600,
+          "min_change_period_hours": 1.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x42f38f32ee2d6d62352566656358dfa0a96deffc": {
+      "label": "Z_42f38f",
+      "address": "0x42f38f32ee2d6d62352566656358dfa0a96deffc",
+      "branches_seen_in_events": [
+        "WETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000001,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        }
+      }
+    },
+    "0x471d636f6bb50bba23ec1df56c5b4aa2dfa789ba": {
+      "label": "Z_471d63",
+      "address": "0x471d636f6bb50bba23ec1df56c5b4aa2dfa789ba",
+      "branches_seen_in_events": [
+        "rETH"
+      ],
+      "branches": {
+        "WETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "wstETH": {
+          "registered": false,
+          "min_interest_rate_wad": 0,
+          "max_interest_rate_wad": 0,
+          "min_interest_rate_pct": 0.0,
+          "max_interest_rate_pct": 0.0,
+          "min_change_period_seconds": 0,
+          "min_change_period_hours": 0.0
+        },
+        "rETH": {
+          "registered": true,
+          "min_interest_rate_wad": 5000000000000001,
+          "max_interest_rate_wad": 500000000000000000,
+          "min_interest_rate_pct": 0.5,
+          "max_interest_rate_pct": 50.0,
+          "min_change_period_seconds": 604800,
+          "min_change_period_hours": 168.0
+        }
+      }
+    }
+  },
+  "summary_rows": [
+    {
+      "label": "M01",
+      "address": "0x000000000017d2a7b863e9ebbe6f9ab7255eb7c5",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M02",
+      "address": "0x0000000000704f94ce2fe636dab92677a9745dc3",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M03",
+      "address": "0x00000000001991cee928c561e37725816cbf73ba",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M04",
+      "address": "0x8869a6fb59a8df330f90d9fbf46ebfaff6d4bc14",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 3601
+    },
+    {
+      "label": "M05",
+      "address": "0x25bc0272217fb0fd7a2ff0d62cebe1aba15e4d91",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M05",
+      "address": "0x25bc0272217fb0fd7a2ff0d62cebe1aba15e4d91",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M05",
+      "address": "0x25bc0272217fb0fd7a2ff0d62cebe1aba15e4d91",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M06",
+      "address": "0xe507e4d0763851a6287238aadd243948d18ab60a",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 3601
+    },
+    {
+      "label": "M07",
+      "address": "0x1578ed833d986c1188d1a998aa5fecd418bef5da",
+      "branch": "WETH",
+      "min_rate_pct": 1.0,
+      "max_rate_pct": 20.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M08",
+      "address": "0x50bc02c6c7124e6e1b8333b80a0416e504e2d044",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M08",
+      "address": "0x50bc02c6c7124e6e1b8333b80a0416e504e2d044",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M08",
+      "address": "0x50bc02c6c7124e6e1b8333b80a0416e504e2d044",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M09",
+      "address": "0x000000000036abd8fe2238a541ec72f91ceebefa",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M10",
+      "address": "0xe707784292289be3aa0fb6f9d33d420291f98695",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M10",
+      "address": "0xe707784292289be3aa0fb6f9d33d420291f98695",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M10",
+      "address": "0xe707784292289be3aa0fb6f9d33d420291f98695",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M11",
+      "address": "0x0000000000cbed6433d0777552ee00f9c8e40f76",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M12",
+      "address": "0x50bc019abdb9951602bc4fe92947d3c15d5e45df",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M12",
+      "address": "0x50bc019abdb9951602bc4fe92947d3c15d5e45df",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M12",
+      "address": "0x50bc019abdb9951602bc4fe92947d3c15d5e45df",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M13",
+      "address": "0x75bc02022344159b7ef50a3ff5291dd2bc6918c7",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M13",
+      "address": "0x75bc02022344159b7ef50a3ff5291dd2bc6918c7",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M13",
+      "address": "0x75bc02022344159b7ef50a3ff5291dd2bc6918c7",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 86400
+    },
+    {
+      "label": "M14",
+      "address": "0x00000000003b24f6895911d5e7ba18d6caa1da2b",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M15",
+      "address": "0x25bc01fd5a01b1864a7dbaddb05bfed642340da2",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M15",
+      "address": "0x25bc01fd5a01b1864a7dbaddb05bfed642340da2",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M15",
+      "address": "0x25bc01fd5a01b1864a7dbaddb05bfed642340da2",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M16",
+      "address": "0x7700b2d305f47ae82e9598bab6d7ccb57299a82b",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 3601
+    },
+    {
+      "label": "M17",
+      "address": "0x75bc01bf1e21ed33915777c131b62bb13b5f2552",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M17",
+      "address": "0x75bc01bf1e21ed33915777c131b62bb13b5f2552",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M17",
+      "address": "0x75bc01bf1e21ed33915777c131b62bb13b5f2552",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "M18",
+      "address": "0x00000000006c021d70549b7ee216f7ca8d7b6263",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "M19",
+      "address": "0x8069d9cc7ab443a06f7e639d703eb0819cf0a2b9",
+      "branch": "wstETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "Z_000000",
+      "address": "0x0000000000c9b5c50439608f2b8df9fad5362a08",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "Z_000000",
+      "address": "0x0000000000b1b2ea2ecdaed0c7a3c402218e3cb0",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 250.0,
+      "min_period_s": 3600
+    },
+    {
+      "label": "Z_42f38f",
+      "address": "0x42f38f32ee2d6d62352566656358dfa0a96deffc",
+      "branch": "WETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 604800
+    },
+    {
+      "label": "Z_471d63",
+      "address": "0x471d636f6bb50bba23ec1df56c5b4aa2dfa789ba",
+      "branch": "rETH",
+      "min_rate_pct": 0.5,
+      "max_rate_pct": 50.0,
+      "min_period_s": 604800
+    }
+  ],
+  "raw_rpc_responses": [
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000e11"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000e11"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "result": "0x000000000000000000000000000000000000000000000000002386f26fc1000100000000000000000000000000000000000000000000000002c68af0bb1400010000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000015180"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 40,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 41,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 42,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 43,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 44,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 45,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 46,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 47,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 48,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000000e11"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 49,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 50,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 51,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 52,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 53,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 54,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 55,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 56,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 57,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 58,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 59,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 60,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 61,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000022b1c8c1227a00000000000000000000000000000000000000000000000000000000000000000e10"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 62,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 63,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 64,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000093a80"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 65,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 66,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 67,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 68,
+      "result": "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 69,
+      "result": "0x0000000000000000000000000000000000000000000000000011c37937e0800100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000000000000000093a80"
+    }
+  ]
+}
