@@ -68,6 +68,16 @@ Each paper compiles with standard TeX Live (`pdflatex` and `bibtex`). Run builds
 
 Replace `main` with `blinded` to rebuild the double-blind PDFs. Both `main.tex` and `blinded.tex` include the same `body.tex` file, so every theorem, table, and numerical figure stays identical across the two versions.
 
+## Methodology
+
+The work in this repository rests on four independent verification layers: exact integer-arithmetic replay of canonical Ethereum mainnet logs, mathematical proofs of equilibrium and mechanism security, kernel-checked Lean 4 mechanization, and compiled Solidity `0.8.24` testing.
+
+All empirical observations come directly from verified Ethereum mainnet event logs (May 19, 2025 through September 15, 2026), live and archive Ethereum RPC `eth_call` queries, and archived public DefiLlama and Curve API snapshots recorded with SHA-256 hashes under `empirical/data_external/SHA256_RECEIPTS.json`. Every empirical split preserves the chronological partition between the 408-day Development book and the 77-day frozen Confirmation holdout with zero forward boundary leakage, and exact integer EVM replay reconciles all 18 Development and 3 Confirmation on-chain RPC checkpoints with 0 wei discrepancy.
+
+Mathematical theorems in the theoretical paper are proved directly and cross-checked at two independent levels. First, the core equilibrium, cooldown uniqueness, flash-loan escrow, and delegation agency theorems are formalized in Lean 4 under `lean/` and checked by the Lean kernel using strictly `[propext, Classical.choice, Quot.sound]`. Second, the deployed status quo and candidate mechanism contracts compile under pinned `solc 0.8.24` in Foundry (`forge build --deny warnings`), pass 25 deterministic exploit and invariant reproductions alongside 130,000 randomized differential fuzz runs with zero failures, and verify exact storage layouts and `gasleft()` execution costs.
+
+Automated research, coding, proof-engineering, and editing assistants were used during mathematical exploration, Lean 4 formalization, Solidity test construction, econometric scripting, adversarial review, and prose revision. Human authors directed the research questions, audited every step, and take full responsibility for every claim; every mathematical, smart-contract, and empirical claim is independently verifiable through the Lean 4 kernel, Foundry compiler and fuzz suite, and deterministic Python replication scripts in this repository.
+
 ## License and citation
 
 Project-authored code, Lean proofs, Solidity contracts, and documentation are released under the [MIT License](LICENSE). [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) states how upstream Liquity V2 Solidity sources, Lean 4, Mathlib, Foundry, Python libraries, external market snapshots, and TeX distributions are handled.

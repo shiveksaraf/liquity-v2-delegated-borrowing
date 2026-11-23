@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, formal verification suite, or replication package, please cite this release."
+title: "Reverse Priority Queues, Cooldown Fee Mechanisms, and Delegated Borrowing in Liquity V2"
+type: software
+version: 1.0.0
+date-released: 2026-11-23
+license: MIT
+repository-code: "https://github.com/shiveksaraf/liquity-v2-delegated-borrowing"
+authors:
+  - family-names: Saraf
+    given-names: Shivek
+    email: shivek.sethi.saraf@gmail.com
+  - family-names: Sankar
+    given-names: Ayush
+    email: ayushsankar013@gmail.com
+abstract: >-
+  Two companion manuscripts, a Lean 4 formalization (3,752 lines, 113 theorems),
+  Solidity 0.8.24 reference contracts and differential fuzz tests, and a 485-day
+  Ethereum mainnet empirical and structural replication archive for Liquity V2
+  reverse priority queues and delegated rate management.
+keywords:
+  - stablecoins
+  - reverse priority queues
+  - delegated borrowing
+  - cooldown fee mechanisms
+  - formal verification
+  - Lean 4
+  - Solidity
+  - decentralized finance
